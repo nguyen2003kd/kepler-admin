@@ -1,0 +1,16 @@
+/* eslint-disable */
+import type { UserSessionMutateDeviceInfo } from './userSessionMutateDeviceInfo';
+
+export interface UserSessionMutate {
+  user_id?: string;
+  session_token?: string;
+  refresh_token?: string;
+  token_version?: number;
+  device_info?: UserSessionMutateDeviceInfo;
+  ip_address?: string;
+  user_agent?: string;
+  expires_at?: string;
+  refresh_expires_at?: string;
+  is_active?: boolean;
+  last_activity_at?: string;
+}

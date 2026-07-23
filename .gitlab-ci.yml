@@ -1,0 +1,67 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  dist_output_path: build
+# Build Production
+build_production:
+  stage: build
+  before_script:
+    - echo "Building for production environment"
+    - tag=$(echo $CI_COMMIT_MESSAGE | sed -r 's/.*(\[tag\])//')
+    - export tag=$tag
+    - export cicd_path=$(pwd)/cicd
+    - export docker_path=$(pwd)
+    - source ./env-param.sh
+    - export CI_REGISTRY_PW=$CI_REGISTRY_PW
+    - export CI_REGISTRY_USER=$CI_REGISTRY_USER
+    - echo "tag is $tag"
+    - export image_name=$image_name
+    - export tag=0.1-case
+  script:
+    - cp /home/gitlab-runner/case-smeq-backend/.env .env
+    - echo "Building Docker image"
+    - echo $cicd_path/build.sh
+    - chmod +x $cicd_path/build.sh
+    - bash $cicd_path/build.sh
+  only:
+    - release/product
+  tags:
+    - runner-builder
+
+# Deploy Production
+deploy_production:
+  stage: deploy
+  before_script:
+    - source ./env-param.sh
+    - export CI_REGISTRY_PW=$CI_REGISTRY_PW
+    - export CI_REGISTRY_USER=$CI_REGISTRY_USER
+    - tag=$(echo $CI_COMMIT_MESSAGE | sed -r 's/.*(\[tag\])//')
+    - export cicd_path=$(pwd)/cicd
+    - export tag=0.1-case
+    - |
+      if [ ! -d $mount_data_folder ]; then
+        sudo mkdir $mount_data_folder
+        sudo chown -R gitlab-runner.gitlab-runner $mount_data_folder
+      fi
+    - |
+      if [ ! -d $mount_data_folder/$project_name ]; then
+        sudo mkdir $mount_data_folder/$project_name
+        sudo chown -R gitlab-runner.gitlab-runner $mount_data_folder/$project_name
+      fi
+  script:
+    - chmod +x $cicd_path/deploy.sh
+    - bash $cicd_path/deploy.sh
+  only:
+    - release/product
+  dependencies:
+    - build_production
+  environment:
+    name: production
+  tags:
+    - runner-inet-79
+
+
+
+

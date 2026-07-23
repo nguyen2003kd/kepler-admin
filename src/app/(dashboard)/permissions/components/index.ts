@@ -1,0 +1,9 @@
+export { PermissionMatrix } from './permission-matrix';
+export { UserPermissionsDialog } from './user-permissions-dialog';
+export { RoleTemplates } from './role-templates';
+export { RoleManagement } from './role-management';
+export { RoleFormDialog } from './role-form-dialog';
+export { UserRoleList } from './user-role-list';
+export { RoleEditInfoDialog } from './role-edit-info-dialog';
+export { RoleEditPermissionsDialog } from './role-edit-permissions-dialog';
+export { RoleAddUserDialog } from './role-add-user-dialog';

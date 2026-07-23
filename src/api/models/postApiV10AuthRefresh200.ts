@@ -1,0 +1,9 @@
+/* eslint-disable */
+import type { LoginResponse } from './loginResponse';
+import type { PostApiV10AuthRefresh200Message } from './postApiV10AuthRefresh200Message';
+
+export type PostApiV10AuthRefresh200 = {
+  success?: boolean;
+  data?: LoginResponse;
+  message?: PostApiV10AuthRefresh200Message;
+};
