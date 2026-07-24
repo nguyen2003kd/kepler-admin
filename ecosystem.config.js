@@ -1,13 +1,13 @@
 module.exports = {
   apps: [
     {
-      name: "kepler-frontend-client",
+      name: "kepler-frontend-admin",
       script: "pnpm",
       args: "staging",
-      cwd: "/opt/kepler/kepler-frontend-2",
+      cwd: "/opt/kepler/kepler-frontend-admin",
       env: {
         NODE_ENV: "production",
-        PORT: 3030
+        PORT: 3031
       },
       instances: 1,
       exec_mode: "fork",
