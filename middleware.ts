@@ -41,24 +41,28 @@ export function middleware(request: NextRequest) {
 
   const hasAuthCookie = !!request.cookies.get(AUTH_PRESENCE_COOKIE)?.value
 
+  const proto = request.headers.get('x-forwarded-proto') || 'https'
+  const baseUrl = new URL(request.url)
+  baseUrl.protocol = proto
+
   if (pathname === '/') {
     const redirectUrl = new URL(
       withBasePath(hasAuthCookie ? '/dashboard' : '/login'),
-      request.url
+      baseUrl
     )
     return NextResponse.redirect(redirectUrl)
   }
 
   if (PUBLIC_PATHS.has(pathname)) {
     if (pathname === '/login' && hasAuthCookie) {
-      const redirectUrl = new URL(withBasePath('/dashboard'), request.url)
+      const redirectUrl = new URL(withBasePath('/dashboard'), baseUrl)
       return NextResponse.redirect(redirectUrl)
     }
     return NextResponse.next()
   }
 
   if (isProtectedPath(pathname) && !hasAuthCookie) {
-    const loginUrl = new URL(withBasePath('/login'), request.url)
+    const loginUrl = new URL(withBasePath('/login'), baseUrl)
     loginUrl.searchParams.set('returnUrl', pathname)
     return NextResponse.redirect(loginUrl)
   }
