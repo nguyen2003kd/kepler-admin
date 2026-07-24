@@ -7,7 +7,7 @@ import ServicesPageContent from './components/services-page-content';
 // Page metadata (REQUIRED cho SEO)
 export const metadata: Metadata = constructMetadata({
   title: 'Quản lý dịch vụ',
-  description: 'Quản lý danh mục dịch vụ kiểm định và thử nghiệm chất lượng',
+  description: 'Quản lý danh mục dịch vụ bất động sản',
   url: '/dashboard/services',
 });
 

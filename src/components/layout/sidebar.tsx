@@ -1,5 +1,4 @@
 "use client";
-import Logo from "@/assets/images/logo-smeq.jpg";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSidebarStore } from "@/hooks/use-sidebar";
@@ -113,8 +112,8 @@ export function Sidebar() {
             {isOpen && (
               <Link href="/dashboard" className="flex items-center space-x-1">
                 <Image
-                  src={Logo}
-                  alt="SMEQ Logo"
+                  src="/logo.png"
+                  alt="Kepler Property Logo"
                   width={120}
                   height={120}
                   className="rounded-xl object-cover"
@@ -180,9 +179,9 @@ export function Sidebar() {
               {isOpen ? (
                 <div className="space-y-1">
                   <div className="font-medium text-black dark:text-gray-300">
-                    SMEQ System
+                    Kepler Property
                   </div>
-                  <div className="text-black">© 2025 All rights reserved</div>
+                  <div className="text-black">© 2026 All rights reserved</div>
                 </div>
               ) : (
                 <div className="text-xs text-black">©</div>

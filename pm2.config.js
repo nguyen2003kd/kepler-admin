@@ -1,8 +1,8 @@
 module.exports = {
     apps: [
         {
-            name: "admin-case-smeq",
-            cwd: "/home/gitlab-runner/case-smeq/admin-case-smeq",
+            name: "admin-kepler-property",
+            cwd: "/home/gitlab-runner/kepler-property/admin-kepler-property",
             script: "npm",
             args: "run staging",
             autorestart: true,
@@ -16,8 +16,8 @@ module.exports = {
                 HOST: "0.0.0.0",
             },
             env_file: ".env",
-            out_file: "./logs/admin-case-smeq.out.log",
-            error_file: "./logs/admin-case-smeq.err.log",
+            out_file: "./logs/admin-kepler-property.out.log",
+            error_file: "./logs/admin-kepler-property.err.log",
             merge_logs: true
         }
     ]

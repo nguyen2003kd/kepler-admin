@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 
-const CaseSmqProSpinner: React.FC<{ size?: number }> = ({ size = 700 }) => {
+const KeplerPropertySpinner: React.FC<{ size?: number }> = ({ size = 700 }) => {
   const colors = {
     text: '#342E86',
     swooshStart: '#1ABCF0',
@@ -80,7 +80,7 @@ export const FallbackSpinner: React.FC<FallbackSpinnerProps> = ({
 
   const spinner = (
     <div className="flex items-center gap-3">
-      <CaseSmqProSpinner size={{ sm: 120, md: 320, lg: 480, xl: 700 }[size]} />
+      <KeplerPropertySpinner size={{ sm: 120, md: 320, lg: 480, xl: 700 }[size]} />
       <div className="leading-tight">
         <p className={cn('font-semibold text-gray-800 dark:text-gray-100', textSizeClasses[size])}>{text}</p>
         <span className="sr-only">{text}</span>

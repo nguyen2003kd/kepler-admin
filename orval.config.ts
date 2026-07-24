@@ -5,14 +5,14 @@ import baseConfig from './src/configs/base'
 const orvalConfig = async () => {
   const { backendDomain, frontendDomain } = baseConfig
 
-  const [caseSmeqBESwagger] = await Promise.all([
+  const [keplerPropertyBESwagger] = await Promise.all([
     axios.get(`${backendDomain}/swagger-output.json`, {
       headers: { Origin: frontendDomain }
     })
   ])
 
   return defineConfig({
-    'case-smeq-be': {
+    'kepler-property-be': {
       output: {
         mode: 'tags',
         target: 'src/api/endpoints',
@@ -45,7 +45,7 @@ const orvalConfig = async () => {
         }
       },
       input: {
-        target: caseSmeqBESwagger.data,
+        target: keplerPropertyBESwagger.data,
         filters: {
           tags: ['Authentication', /(((Library)|(Module)) - )?/]
         }

@@ -20,7 +20,7 @@ build_production:
     - export image_name=$image_name
     - export tag=0.1-case
   script:
-    - cp /home/gitlab-runner/case-smeq-backend/.env .env
+    - cp /home/gitlab-runner/kepler-backend/.env .env
     - echo "Building Docker image"
     - echo $cicd_path/build.sh
     - chmod +x $cicd_path/build.sh
