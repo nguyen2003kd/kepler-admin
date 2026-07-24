@@ -20,7 +20,7 @@ const resolveApiBaseUrl = (): string => {
     return envApiUrl.replace(/\/$/, '');
   }
 
-  return (baseConfig.backendDomain || 'http://localhost:3003').replace(/\/$/, '');
+  return (baseConfig.backendDomain || 'http://localhost:3001').replace(/\/$/, '');
 };
 
 export const buildNotificationSseUrl = (): string => {
