@@ -1,67 +1,40 @@
 stages:
-  - build
+  - test
   - deploy
 
-variables:
-  dist_output_path: build
-# Build Production
-build_production:
-  stage: build
-  before_script:
-    - echo "Building for production environment"
-    - tag=$(echo $CI_COMMIT_MESSAGE | sed -r 's/.*(\[tag\])//')
-    - export tag=$tag
-    - export cicd_path=$(pwd)/cicd
-    - export docker_path=$(pwd)
-    - source ./env-param.sh
-    - export CI_REGISTRY_PW=$CI_REGISTRY_PW
-    - export CI_REGISTRY_USER=$CI_REGISTRY_USER
-    - echo "tag is $tag"
-    - export image_name=$image_name
-    - export tag=0.1-case
+test_job:
+  stage: test
   script:
-    - cp /home/gitlab-runner/kepler-backend/.env .env
-    - echo "Building Docker image"
-    - echo $cicd_path/build.sh
-    - chmod +x $cicd_path/build.sh
-    - bash $cicd_path/build.sh
-  only:
-    - release/product
+    - echo "Skip, chưa có unit test"
   tags:
-    - runner-builder
+    - runner-vpd-que
+  only:
+    - release/staging
 
-# Deploy Production
-deploy_production:
+deploy_job:
   stage: deploy
   before_script:
-    - source ./env-param.sh
-    - export CI_REGISTRY_PW=$CI_REGISTRY_PW
-    - export CI_REGISTRY_USER=$CI_REGISTRY_USER
-    - tag=$(echo $CI_COMMIT_MESSAGE | sed -r 's/.*(\[tag\])//')
-    - export cicd_path=$(pwd)/cicd
-    - export tag=0.1-case
+    - check=$(echo "$CI_COMMIT_MESSAGE" | sed -nE 's/^.*(\[tag\]staging).*$/\1/p')
     - |
-      if [ ! -d $mount_data_folder ]; then
-        sudo mkdir $mount_data_folder
-        sudo chown -R gitlab-runner.gitlab-runner $mount_data_folder
+      if [ "$check" != "[tag]staging" ]; then
+        echo "Commit message does not contain [tag]staging → skip pipeline"
+        exit 0
       fi
-    - |
-      if [ ! -d $mount_data_folder/$project_name ]; then
-        sudo mkdir $mount_data_folder/$project_name
-        sudo chown -R gitlab-runner.gitlab-runner $mount_data_folder/$project_name
-      fi
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | ssh-add -
+    - mkdir -p ~/.ssh
+    - ssh-keyscan -p $SERVER_SSH_PORT -H $SERVER_HOST >> ~/.ssh/known_hosts
+    - mkdir -p /tmp/ssh-mux
+    - ssh -p $SERVER_SSH_PORT -M -S /tmp/ssh-mux/master -fnN $SERVER_USER@$SERVER_HOST
+    - echo "SSH master connection established"
   script:
-    - chmod +x $cicd_path/deploy.sh
-    - bash $cicd_path/deploy.sh
-  only:
-    - release/product
-  dependencies:
-    - build_production
-  environment:
-    name: production
+    - bash cicd/deploy.sh
+    - bash cicd/healthcheck.sh
+    - bash cicd/clean.sh
+  after_script:
+    - ssh -S /tmp/ssh-mux/master -O exit $SERVER_USER@$SERVER_HOST
   tags:
-    - runner-inet-79
-
-
-
-
+    - runner-vpd-que
+  only:
+    - release/staging
+#SBien
