@@ -590,7 +590,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
                                 Tiêu đề
                               </Label>
                               <Input
-                                value={link.title}
+                                value={link.title as string}
                                 onChange={(e) =>
                                   handleLinkChange(
                                     index,
@@ -608,7 +608,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
                                 Đường dẫn (URL)
                               </Label>
                               <Input
-                                value={link.link}
+                                value={link.link as string}
                                 onChange={(e) =>
                                   handleLinkChange(
                                     index,

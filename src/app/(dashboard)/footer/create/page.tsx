@@ -436,7 +436,7 @@ export default function CreateFooterPage() {
                                 Tiêu đề
                               </Label>
                               <Input
-                                value={link.title}
+                                value={link.title as string}
                                 onChange={(e) =>
                                   handleLinkChange(
                                     index,
@@ -454,7 +454,7 @@ export default function CreateFooterPage() {
                                 Đường dẫn (URL)
                               </Label>
                               <Input
-                                value={link.link}
+                                value={link.link as string}
                                 onChange={(e) =>
                                   handleLinkChange(
                                     index,

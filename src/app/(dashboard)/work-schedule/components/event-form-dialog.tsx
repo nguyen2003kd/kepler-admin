@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { UserSelect } from '@/components/shared/user-select';
 import { WorkEvent, WorkScheduleMutate } from '@/types/work-schedule';
 import { format } from 'date-fns';
 import { Loader2 } from 'lucide-react';
@@ -37,8 +38,7 @@ const eventSchema = z.object({
   title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
   description: z.string().optional(),
   tasks: z.string().min(1, 'Vui lòng nhập Công tác chuẩn bị'),
-  host: z.string().optional(),
-  participants: z.string().optional(),
+  host_id: z.string().min(1, 'Vui lòng chọn người chủ trì'),
   schedule_time: z.string().min(1, 'Vui lòng chọn ngày và giờ'),
   end_time: z.string().optional(),
 });
@@ -72,8 +72,7 @@ export function EventFormDialog({
       title: '',
       description: '',
       tasks: '',
-      host: '',
-      participants: '',
+      host_id: '',
       schedule_time: defaultScheduleTime,
       end_time: '',
     },
@@ -87,8 +86,7 @@ export function EventFormDialog({
         title: initialData.title || '',
         description: initialData.description || '',
         tasks: (raw.tasks as string) || '',
-        host: (raw.host as string) || '',
-        participants: (raw.participants as string) || '',
+        host_id: (raw.host_id as string) || '',
         schedule_time: isoToDateTimeLocal(raw.schedule_time as string) || defaultScheduleTime,
         end_time: isoToDateTimeLocal(raw.end_time as string) || '',
       });
@@ -97,8 +95,7 @@ export function EventFormDialog({
         title: '',
         description: '',
         tasks: '',
-        host: '',
-        participants: '',
+        host_id: '',
         schedule_time: defaultScheduleTime,
         end_time: '',
       });
@@ -110,11 +107,10 @@ export function EventFormDialog({
       title: values.title,
       description: values.description || '',
       tasks: values.tasks,
-      host: values.host || '',
-      participants: values.participants || '',
+      host_id: values.host_id,
       schedule_time: values.schedule_time,
       end_time: values.end_time || null,
-    } as unknown as WorkScheduleMutate;
+    };
 
     onSubmit(payload, initialData ?? undefined);
   };
@@ -214,27 +210,16 @@ export function EventFormDialog({
             {/* Người chủ trì */}
             <FormField
               control={form.control}
-              name="host"
+              name="host_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Người chủ trì</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập tên người chủ trì" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Người tham gia */}
-            <FormField
-              control={form.control}
-              name="participants"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Người tham gia</FormLabel>
-                  <FormControl>
-                    <Input placeholder="VD: Nguyễn Văn A, Trần Thị B" {...field} />
+                    <UserSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Chọn người chủ trì"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

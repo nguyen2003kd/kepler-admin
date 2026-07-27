@@ -73,7 +73,7 @@ export function useFooterForm(initialData?: Partial<FooterMutate>) {
     );
 
     const filteredLinks = links.filter(
-      (link) => link.title?.trim() && link.link?.trim(),
+      (link) => (link.title as string)?.trim() && (link.link as string)?.trim(),
     );
 
     return {

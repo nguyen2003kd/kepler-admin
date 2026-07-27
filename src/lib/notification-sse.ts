@@ -20,7 +20,7 @@ const resolveApiBaseUrl = (): string => {
     return envApiUrl.replace(/\/$/, '');
   }
 
-  return baseConfig.backendDomain.replace(/\/$/, '');
+  return (baseConfig.backendDomain ?? '').replace(/\/$/, '');
 };
 
 export const buildNotificationSseUrl = (): string => {

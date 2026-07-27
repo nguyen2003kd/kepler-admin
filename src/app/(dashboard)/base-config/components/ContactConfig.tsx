@@ -88,7 +88,6 @@ export function ContactConfig({
   const isLoading = viLoading || enLoading;
 
   // Derive active language state
-  const pageContactConfig = lang === "vi" ? viPageContactConfig : enPageContactConfig;
   const editPageContactConfig = lang === "vi" ? viEditPageContactConfig : enEditPageContactConfig;
   const setEditPageContactConfig = lang === "vi" ? setViEditPageContactConfig : setEnEditPageContactConfig;
   const configId = lang === "vi" ? viConfigId : enConfigId;
@@ -202,7 +201,7 @@ export function ContactConfig({
             is_active: true,
           },
         });
-        const newId = (created as any)?.responseData?.id;
+        const newId = created?.responseData?.id;
         if (newId) {
           if (lang === "vi") setViConfigId(newId);
           else setEnConfigId(newId);

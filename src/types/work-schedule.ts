@@ -17,10 +17,8 @@ export interface WorkSchedule {
   title?: string
   description?: string | null
   tasks?: string | null
-  /** Free-text name of the host */
-  host?: string | null
-  /** Free-text list of participants */
-  participants?: string | null
+  /** Host user ID */
+  host_id?: string
   schedule_time?: string
   end_time?: string | null
   status?: string | null
@@ -32,8 +30,8 @@ export interface WorkScheduleMutate {
   title: string
   description?: string | null
   tasks?: string | null
-  host?: string | null
-  participants?: string | null
+  /** Host user ID */
+  host_id: string
   schedule_time: string
   end_time?: string | null
   status?: string
@@ -48,8 +46,10 @@ export interface WorkEvent {
   title: string
   description: string
   tasks: string
+  /** Host user ID */
+  host_id: string
+  /** Resolved host display name */
   host: string
-  participants: string
   startTime: string   // h:mm a — for calendar display
   endTime: string
   date: string        // YYYY-MM-DD — for calendar display
@@ -85,8 +85,8 @@ export function mapWorkScheduleToWorkEvent(ws: WorkSchedule): WorkEvent {
     title: ws.title ?? '',
     description: ws.description ?? '',
     tasks: ws.tasks ?? '',
-    host: ws.host ?? '',
-    participants: ws.participants ?? '',
+    host_id: ws.host_id ?? '',
+    host: '',
     startTime,
     endTime,
     date: dateStr,
@@ -114,8 +114,7 @@ export function mapWorkEventToWorkScheduleMutate(
     title: event.title,
     description: event.description || null,
     tasks: event.tasks || null,
-    host: event.host || null,
-    participants: event.participants || null,
+    host_id: event.host_id,
     schedule_time,
     end_time,
     status,
