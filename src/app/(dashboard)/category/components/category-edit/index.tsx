@@ -14,11 +14,11 @@ import { usePutApiV10CategoryId, useGetApiV10CategoryId } from '@/api/endpoints/
 
 import { CategoryForm } from '../category-form'
 import type { CategoryMutate } from '@/api/models'
-import type { Category, CategoryFormProps } from '@/types/category'
+import type { Category, CategoryFormProps, CategoryLanguage } from '@/types/category'
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
 
-export const CategoryEdit: React.FC<{ category: Category; onDone?: () => void }> = ({ category, onDone }) => {
+export const CategoryEdit: React.FC<{ category: Category; language?: CategoryLanguage; onDone?: () => void }> = ({ category, language = 'vi', onDone }) => {
   const [open, setOpen] = useState(true)
   const handleClose = () => {
     setOpen(false)
@@ -48,6 +48,7 @@ export const CategoryEdit: React.FC<{ category: Category; onDone?: () => void }>
   const [values, setValues] = React.useState<CategoryFormProps['values']>({
     name: '',
     code: '',
+    language,
     description: '',
     position: '',
     parent_category_id: '',
@@ -62,6 +63,7 @@ export const CategoryEdit: React.FC<{ category: Category; onDone?: () => void }>
     setValues({
       name: sourceCategory.name || '',
       code: sourceCategory.code || '',
+      language: (sourceCategory.language as CategoryLanguage) || language,
       description: sourceCategory.description || '',
       position: sourceCategory.position != null ? String(sourceCategory.position) : '',
       parent_category_id: sourceCategory.parent_category_id || '',
@@ -85,6 +87,7 @@ export const CategoryEdit: React.FC<{ category: Category; onDone?: () => void }>
     if (values.parent_category_id?.trim()) payload.parent_category_id = values.parent_category_id
     if (values.link?.trim()) payload.link = values.link
     if (values.icon_url?.trim()) payload.icon_url = values.icon_url
+    payload.language = values.language
 
     try {
       await putMutation.mutateAsync({ id: category.id, data: payload as CategoryMutate })

@@ -129,6 +129,20 @@ export const createCategoryColumns = ({
     },
   },
   {
+    accessorKey: "language",
+    header: "Ngôn ngữ",
+    cell: ({ row }) => {
+      const lang = row.getValue("language") as string;
+      return lang ? (
+        <Badge variant="secondary" className="text-xs">
+          {lang === "vi" ? "Tiếng Việt" : "English"}
+        </Badge>
+      ) : (
+        <span className="text-gray-400">-</span>
+      );
+    },
+  },
+  {
     accessorKey: "position",
     header: "Vị trí",
     cell: ({ row }) => {

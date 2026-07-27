@@ -1,7 +1,10 @@
+export type CategoryLanguage = 'vi' | 'en'
+
 export type Category = {
 	id: string
 	name: string
 	code?: string
+	language?: CategoryLanguage
 	position?: number
 	note?: string | null
 	description?: string | null
@@ -30,6 +33,7 @@ export interface CategoryFormProps {
 	values: {
 		name: string
 		code: string
+		language: CategoryLanguage
 		description: string
 		position: string
 		parent_category_id: string

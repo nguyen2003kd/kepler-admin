@@ -43,7 +43,7 @@ export default function EditNewsPage() {
   const { data: response, isLoading, error } = useGetApiV10PostId(newsId);
   const news = response?.responseData;
   const updatePostMutation = usePutApiV10PostId();
-  const { data: categoriesData } = useGetApiV10Category({
+  const { data: categoriesData } = useGetApiV10Category(undefined, {
     query: {
       enabled: !!news,
     },

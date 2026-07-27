@@ -28,7 +28,10 @@ const Page: React.FC = () => {
   const { confirm } = useConfirmModal()
 
   // Data fetching
-  const { data: servicesData, isLoading } = useGetApiV10Service()
+  const { data: servicesData, isLoading } = useGetApiV10Service({
+    sortField: "created_at",
+    sortOrder: "desc",
+  })
 
   // Mutations
   const createMutation = usePostApiV10Service()

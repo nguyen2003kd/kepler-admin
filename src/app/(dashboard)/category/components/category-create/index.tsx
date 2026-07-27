@@ -14,20 +14,21 @@ import {
 import { Plus } from 'lucide-react'
 import { usePostApiV10Category, getGetApiV10CategoryQueryKey } from '@/api/endpoints/category'
 import { CategoryForm } from '../category-form'
-import type { CategoryFormProps } from '@/types/category'
+import type { CategoryFormProps, CategoryLanguage } from '@/types/category'
 // import { Switch } from '@/components/ui/switch'
 // import { Label } from '@/components/ui/label'
 import type { CategoryMutate } from '@/api/models'
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
 
-export const CategoryCreate: React.FC<{ parentId?: string; onOpenChange?: (open: boolean) => void }> = ({ parentId, onOpenChange }) => {
+export const CategoryCreate: React.FC<{ parentId?: string; language?: CategoryLanguage; onOpenChange?: (open: boolean) => void }> = ({ parentId, language = 'vi', onOpenChange }) => {
   const queryClient = useQueryClient()
   const postMutation = usePostApiV10Category()
   const [open, setOpen] = React.useState(!!parentId)
   const [values, setValues] = React.useState<CategoryFormProps['values']>({
     name: '',
     code: '',
+    language,
     description: '',
     position: '',
     parent_category_id: parentId ?? '',
@@ -44,6 +45,11 @@ export const CategoryCreate: React.FC<{ parentId?: string; onOpenChange?: (open:
     }
   }, [parentId])
 
+  // Sync language from prop when it changes
+  React.useEffect(() => {
+    setValues(v => ({ ...v, language }))
+  }, [language])
+
   const creating = postMutation.isPending
 
   const handleSave = async () => {
@@ -56,9 +62,10 @@ export const CategoryCreate: React.FC<{ parentId?: string; onOpenChange?: (open:
     if (values.link?.trim()) payload.link = values.link
     if (values.is_service != null) payload.is_service = values.is_service
     if (values.icon_url?.trim()) payload.icon_url = values.icon_url
+    payload.language = values.language
     try {
       await postMutation.mutateAsync({ data: payload as CategoryMutate })
-      setValues({ name: '', code: '', description: '', position: '', parent_category_id: '', link: '', is_service: false, icon_url: '' })
+      setValues({ name: '', code: '', language, description: '', position: '', parent_category_id: '', link: '', is_service: false, icon_url: '' })
       await queryClient.invalidateQueries({ queryKey: getGetApiV10CategoryQueryKey() })
       toast.success({ title: 'Tạo danh mục thành công', content: 'Danh mục mới đã được tạo.' })
       setOpen(false)
@@ -73,7 +80,7 @@ export const CategoryCreate: React.FC<{ parentId?: string; onOpenChange?: (open:
   const handleCancel = () => {
     setOpen(false)
     onOpenChange?.(false)
-      setValues({ name: '', code: '', description: '', position: '', parent_category_id: '', link: '', is_service: false, icon_url: '' })
+      setValues({ name: '', code: '', language, description: '', position: '', parent_category_id: '', link: '', is_service: false, icon_url: '' })
   }
 
   return (

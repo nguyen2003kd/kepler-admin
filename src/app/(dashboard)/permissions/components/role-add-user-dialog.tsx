@@ -57,6 +57,10 @@ export function RoleAddUserDialog({
   // --- Fetch all users (for search to add) ---
   const { data: usersResponse, isLoading: isLoadingUsers } = useGetApiV10User({
     pageSize: 200,
+    sortField: 'created_at',
+    sortOrder: 'desc',
+  }, {
+    query: { enabled: open },
   });
 
   // --- Fetch users already assigned to this role ---

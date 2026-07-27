@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-// import { UploadCloud } from "lucide-react";
 import {
   usePostApiV10CategoryBulk,
   getGetApiV10CategoryQueryKey,
@@ -19,9 +18,10 @@ import {
 import { toast } from "@/components/ui/toaster";
 import { extractErrorMessage } from "@/utils/error";
 import { generateCategoryLink } from "@/utils/slug";
-import type { CategoryBulkItem } from "@/api/models";
-// import Can from '@/acl/Can';
-export const CategoryBulkCreate: React.FC = () => {
+import type { CategoryBulkItem, CategoryBulkItemLanguage } from "@/api/models";
+import type { CategoryLanguage } from "@/types/category";
+
+export const CategoryBulkCreate: React.FC<{ language?: CategoryLanguage }> = ({ language = 'vi' }) => {
   const queryClient = useQueryClient();
   const postBulk = usePostApiV10CategoryBulk();
   const [open, setOpen] = React.useState(false);
@@ -31,35 +31,36 @@ export const CategoryBulkCreate: React.FC = () => {
     categories?: Draft[];
   };
 
-  const [items, setItems] = React.useState<Draft[]>([
-    {
-      name: "",
-      code: "",
-      position: 0,
-      note: "",
-      description: "",
-      link: "",
-      is_service: false,
-      categories: [],
-    },
-  ]);
+  const makeDraft = (): Draft => ({
+    name: "",
+    code: "",
+    language: language as CategoryBulkItemLanguage,
+    position: 0,
+    note: "",
+    description: "",
+    link: "",
+    is_service: false,
+    categories: [],
+  });
 
-  const addItem = () =>
-    setItems((s) => [
-      ...s,
-      {
-        name: "",
-        code: "",
-        position: 0,
-        note: "",
-        description: "",
-        link: "",
-        is_service: false,
-        categories: [],
-      },
-    ]);
-  const removeItem = (idx: number) =>
-    setItems((s) => s.filter((_, i) => i !== idx));
+  const [items, setItems] = React.useState<Draft[]>([makeDraft()]);
+
+  // Sync language to all items when language prop changes
+  React.useEffect(() => {
+    setItems((prevItems) =>
+      prevItems.map((item) => ({
+        ...item,
+        language: language as CategoryBulkItemLanguage,
+        categories: item.categories?.map((cat) => ({
+          ...cat,
+          language: language as CategoryBulkItemLanguage,
+        })),
+      }))
+    );
+  }, [language]);
+
+  const addItem = () => setItems((s) => [...s, makeDraft()]);
+  const removeItem = (idx: number) => setItems((s) => s.filter((_, i) => i !== idx));
 
   const updateField = (
     idx: number,
@@ -69,7 +70,6 @@ export const CategoryBulkCreate: React.FC = () => {
     setItems((s) =>
       s.map((it, i) => {
         if (i !== idx) return it;
-        // Auto-generate link when name changes
         if (field === "name" && typeof value === "string") {
           return { ...it, name: value, link: generateCategoryLink(value) };
         }
@@ -82,22 +82,10 @@ export const CategoryBulkCreate: React.FC = () => {
     setItems((s) =>
       s.map((it, i) =>
         i === idx
-          ? {
+          ? ({
               ...it,
-              categories: [
-                ...(it.categories || []),
-                {
-                  name: "",
-                  code: "",
-                  position: 0,
-                  note: "",
-                  description: "",
-                  link: "",
-                  is_service: false,
-                  categories: [],
-                },
-              ],
-            }
+              categories: [...(it.categories || []), makeDraft()],
+            } as Draft)
           : it,
       ),
     );
@@ -114,7 +102,6 @@ export const CategoryBulkCreate: React.FC = () => {
         if (i !== idx) return it;
         const cats = (it.categories || []).map((c, j) => {
           if (j !== cidx) return c;
-          // Auto-generate link when name changes
           if (field === "name" && typeof value === "string") {
             return { ...c, name: value, link: generateCategoryLink(value) };
           }
@@ -138,8 +125,24 @@ export const CategoryBulkCreate: React.FC = () => {
     );
   };
 
+  const normalizeDraft = (
+    d: Draft,
+  ): CategoryBulkItem & { is_service?: boolean | null } => {
+    return {
+      name: String(d.name || ""),
+      code: String(d.code ?? ""),
+      language: (d.language as CategoryBulkItemLanguage) || (language as CategoryBulkItemLanguage),
+      position:
+        typeof d.position === "number" ? d.position : Number(d.position || 0),
+      note: d.note ?? null,
+      description: d.description ?? null,
+      link: d.link ?? null,
+      is_service: Boolean(d.is_service),
+      categories: (d.categories || []).map(normalizeDraft),
+    };
+  };
+
   const handleSave = async () => {
-    // validate
     const payload = items.map((it) => normalizeDraft(it));
     try {
       await postBulk.mutateAsync({ data: payload });
@@ -150,40 +153,13 @@ export const CategoryBulkCreate: React.FC = () => {
         title: "Tạo hàng loạt thành công",
         content: "Danh mục đã được tạo.",
       });
-      setItems([
-        {
-          name: "",
-          code: "",
-          position: 0,
-          note: "",
-          description: "",
-          link: "",
-          is_service: false,
-          categories: [],
-        },
-      ]);
+      setItems([makeDraft()]);
       setOpen(false);
     } catch (err) {
       console.error(err);
       const msg = extractErrorMessage(err);
       toast.error({ title: "Tạo thất bại", content: msg });
     }
-  };
-
-  const normalizeDraft = (
-    d: Draft,
-  ): CategoryBulkItem & { is_service?: boolean | null } => {
-    return {
-      name: String(d.name || ""),
-      code: String(d.code ?? ""),
-      position:
-        typeof d.position === "number" ? d.position : Number(d.position || 0),
-      note: d.note ?? null,
-      description: d.description ?? null,
-      link: d.link ?? null,
-      is_service: Boolean(d.is_service),
-      categories: (d.categories || []).map(normalizeDraft),
-    };
   };
 
   return (
@@ -231,10 +207,6 @@ export const CategoryBulkCreate: React.FC = () => {
                     onChange={(e) => updateField(idx, "name", e.target.value)}
                   />
                 </div>
-                {/* <div>
-                  <label htmlFor={`code-${idx}`} className="block text-sm font-medium mb-1">Mã (tùy chọn)</label>
-                  <input id={`code-${idx}`} className="border rounded p-2 w-full" placeholder="Mã (tùy chọn)" value={it.code ?? ''} onChange={(e) => updateField(idx, 'code', e.target.value)} />
-                </div> */}
                 <div>
                   <label
                     htmlFor={`position-${idx}`}
@@ -254,20 +226,7 @@ export const CategoryBulkCreate: React.FC = () => {
                   />
                 </div>
                 <div className="flex justify-center items-center">
-                  {/* <label htmlFor={`is-service-${idx}`} className="block text-sm font-medium mb-1">Là dịch vụ</label> */}
-                  <div className="flex items-center gap-2 mt-2">
-                    {/* <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        id={`is-service-${idx}`} 
-                        type="checkbox" 
-                        className="sr-only peer" 
-                        checked={Boolean(it.is_service)} 
-                        onChange={(e) => updateField(idx, 'is_service', e.target.checked)} 
-                      />
-                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                    </label>
-                    <span className="text-sm">Đánh dấu là dịch vụ</span> */}
-                  </div>
+                  {/* is_service toggle placeholder */}
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-2 mt-2">
@@ -351,10 +310,6 @@ export const CategoryBulkCreate: React.FC = () => {
                           }
                         />
                       </div>
-                      {/* <div>
-                        <label htmlFor={`child-code-${idx}-${cidx}`} className="block text-sm font-medium mb-1">Mã (tùy chọn)</label>
-                        <input id={`child-code-${idx}-${cidx}`} className="border rounded p-2 w-full" placeholder="Mã (tùy chọn)" value={c.code ?? ''} onChange={(e) => updateChild(idx, cidx, 'code', e.target.value)} />
-                      </div> */}
                       <div>
                         <label
                           htmlFor={`child-pos-${idx}-${cidx}`}
@@ -379,7 +334,6 @@ export const CategoryBulkCreate: React.FC = () => {
                         />
                       </div>
                       <div className="flex justify-center items-center">
-                        {/* <label htmlFor={`child-is-service-${idx}-${cidx}`} className="block text-sm font-medium mb-1">Dịch vụ</label> */}
                         <div className="flex items-center gap-2 mt-2">
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input
@@ -481,18 +435,7 @@ export const CategoryBulkCreate: React.FC = () => {
             <Button
               variant="ghost"
               onClick={() => {
-                setItems([
-                  {
-                    name: "",
-                    code: "",
-                    position: 0,
-                    note: "",
-                    description: "",
-                    link: "",
-                    is_service: false,
-                    categories: [],
-                  },
-                ]);
+                setItems([makeDraft()]);
                 setOpen(false);
               }}
             >

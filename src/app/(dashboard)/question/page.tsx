@@ -24,7 +24,10 @@ const Page: React.FC = () => {
   const queryClient = useQueryClient()
   const { confirm } = useConfirmModal()
 
-  const { data: questionData, isLoading } = useGetApiV10Question()
+  const { data: questionData, isLoading } = useGetApiV10Question({
+    sortField: "created_at",
+    sortOrder: "desc",
+  })
 
   const updateMutation = usePutApiV10QuestionId()
   const deleteMutation = useDeleteApiV10QuestionId()

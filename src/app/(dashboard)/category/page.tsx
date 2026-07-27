@@ -4,20 +4,23 @@ import React, { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Header } from '@/components/layout/header'
 import Can from '@/acl/Can'
-import { CategoryEdit } from '@/app/(dashboard)/category/components/category-edit'
-import { CategoryCreate } from '@/app/(dashboard)/category/components/category-create'
-import { CategoryBulkCreate } from '@/app/(dashboard)/category/components/category-buikcreate'
-import { CategoryStats } from '@/app/(dashboard)/category/components/category-stats'
-import { CategoryTable } from '@/app/(dashboard)/category/components/category-table'
+import {
+  CategoryEdit,
+  CategoryCreate,
+  CategoryBulkCreate,
+  CategoryStats,
+  CategoryTable,
+} from './components'
 import {
   useGetApiV10Category,
   useDeleteApiV10CategoryId,
   getGetApiV10CategoryQueryKey,
 } from '@/api/endpoints/category'
-import type { Category } from '@/types/category'
+import type { Category, CategoryLanguage } from '@/types/category'
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
 import { useAbility } from "@/hooks/use-ability";
+
 // Helper: flatten nested categories into rows with depth for indentation
 const flattenCategories = (items: Category[], depth = 0, parentId: string | null = null) => {
 	const rows: Array<Category & { depth: number; parentId: string | null }> = []
@@ -33,31 +36,34 @@ const flattenCategories = (items: Category[], depth = 0, parentId: string | null
 const Page: React.FC = () => {
 	const queryClient = useQueryClient()
 
-	// Use generated query hook to fetch categories
-	const { data: categoriesData, isLoading } = useGetApiV10Category(undefined, undefined)
+	// Language filter state
+	const [language, setLanguage] = useState<CategoryLanguage>('vi')
+
+	// Use generated query hook to fetch categories with language filter
+	const { data: categoriesData, isLoading } = useGetApiV10Category({ language }, undefined)
 
 	// Normalize categories from the API envelope
 	const categories: Category[] = React.useMemo(() => {
 		if (!categoriesData) return []
-		
+
 		// Handle different possible response structures
 		if (Array.isArray(categoriesData)) {
 			return categoriesData as Category[]
 		}
-		
+
 		// Check for nested response data
 		const responseData = (categoriesData as { responseData?: Category[] })?.responseData
 		if (Array.isArray(responseData)) {
 			return responseData
 		}
-		
+
 		const data = (categoriesData as { data?: Category[] })?.data
 		if (Array.isArray(data)) {
 			return data
 		}
-		
+
 		return []
-	}, [categoriesData])
+	}, [categoriesData, language])
 
 	// Mutations
 	const deleteMutation = useDeleteApiV10CategoryId()
@@ -66,7 +72,7 @@ const Page: React.FC = () => {
 	const [editing, setEditing] = useState<Category | null>(null)
 	const [createParentId, setCreateParentId] = useState<string | undefined>(undefined)
 	const [expanded, setExpanded] = React.useState<Record<string, boolean>>({})
- 	 const ability = useAbility();
+	const ability = useAbility();
 	const rows = React.useMemo(() => flattenCategories(categories), [categories])
 
 	// Filter visible rows based on expanded state
@@ -100,7 +106,7 @@ const Page: React.FC = () => {
 		if (!confirm('Bạn có chắc chắn muốn xóa danh mục này? Điều này sẽ ảnh hưởng đến các danh mục con.')) return
 		try {
 			await deleteMutation.mutateAsync({ id })
-			await queryClient.invalidateQueries({ queryKey: getGetApiV10CategoryQueryKey() })
+			await queryClient.invalidateQueries({ queryKey: getGetApiV10CategoryQueryKey({ language }) })
 			toast.success({title:'Xóa danh mục thành công', content:'Danh mục đã được xóa.'})
 		} catch (e) {
 			console.error('Delete failed', e)
@@ -138,17 +144,32 @@ const Page: React.FC = () => {
 								Quản lý danh mục sản phẩm
 							</p>
 						</div>
-						<Can I="create" a="category">
-							<div className="flex space-x-2">
-								<CategoryCreate parentId={createParentId} onOpenChange={handleCreateOpenChange} />
-								<CategoryBulkCreate />
-							</div>
-						</Can>
+						{/* Language switcher + actions */}
+						<div className="flex items-center gap-2">
+							<button
+								onClick={() => setLanguage('vi')}
+								className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${language === 'vi' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+							>
+								Tiếng Việt
+							</button>
+							<button
+								onClick={() => setLanguage('en')}
+								className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${language === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+							>
+								English
+							</button>
+							<Can I="create" a="category">
+								<div className="flex space-x-2 ml-2">
+									<CategoryCreate parentId={createParentId} language={language} onOpenChange={handleCreateOpenChange} />
+									<CategoryBulkCreate language={language} />
+								</div>
+							</Can>
+						</div>
 					</div>
 
 					{/* Edit flow handled by per-row component */}
 					{editing && (
-						<CategoryEdit category={editing} onDone={cancelEdit} />
+						<CategoryEdit category={editing} language={language} onDone={cancelEdit} />
 					)}
 
 					{/* Category Stats */}
@@ -166,7 +187,7 @@ const Page: React.FC = () => {
 						onEdit={startEdit}
 						onAddChild={handleAddChild}
 						onDelete={doDelete}
-						onRefresh={() => queryClient.invalidateQueries({ queryKey: getGetApiV10CategoryQueryKey() })}
+						onRefresh={() => queryClient.invalidateQueries({ queryKey: getGetApiV10CategoryQueryKey({ language }) })}
 					/>
 				</div>
 			</main>
@@ -175,4 +196,3 @@ const Page: React.FC = () => {
 }
 
 export default Page
-

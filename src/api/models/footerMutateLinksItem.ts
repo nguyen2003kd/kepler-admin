@@ -1,6 +1,3 @@
 /* eslint-disable */
 
-export interface FooterMutateLinksItem {
-  link: string;
-  title: string;
-}
+export type FooterMutateLinksItem = { [key: string]: unknown };

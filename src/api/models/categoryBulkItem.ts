@@ -1,4 +1,5 @@
 /* eslint-disable */
+import type { CategoryBulkItemLanguage } from './categoryBulkItemLanguage';
 
 export interface CategoryBulkItem {
   /**
@@ -13,6 +14,8 @@ export interface CategoryBulkItem {
    * @maxLength 100
    */
   code: string;
+  /** Language of the category */
+  language: CategoryBulkItemLanguage;
   /**
    * Display position/order
    * @nullable

@@ -14,8 +14,12 @@ import { Edit, Save, X, MapPin, Phone, Mail, Plus, Trash2 } from "lucide-react";
 import {
   useGetApiV10PageConfig,
   usePutApiV10PageConfigId,
+  usePostApiV10PageConfig,
 } from "@/api/endpoints/page-config";
 import { toast } from "sonner";
+
+const CONTACT_CONFIG_KEY_VI = "CONTACT";
+const CONTACT_CONFIG_KEY_EN = "CONTACT_EN";
 
 interface LocationData {
   id: string;
@@ -62,82 +66,101 @@ export function ContactConfig({
   const canManage = canCreate || canUpdate || canDelete;
   const [isEditing, setIsEditing] = useState(false);
   const [newLocationIds, setNewLocationIds] = useState<Set<string>>(new Set());
-  const [pageContactConfig, setPageContactConfig] = useState<PageContactConfig>(
-    initialPageContactConfig,
-  );
-  const [editPageContactConfig, setEditPageContactConfig] =
-    useState<PageContactConfig>(initialPageContactConfig);
-  const [configId, setConfigId] = useState<string>("");
+  const [lang, setLang] = useState<"vi" | "en">("vi");
 
-  // Fetch pageConfig with CONTACT key filter
-  const {
-    data: pageConfigData,
-    isLoading,
-    refetch,
-  } = useGetApiV10PageConfig({
-    filters: "key@=CONTACT",
-  });
+  // VI state
+  const [viPageContactConfig, setViPageContactConfig] = useState<PageContactConfig>(initialPageContactConfig);
+  const [viEditPageContactConfig, setViEditPageContactConfig] = useState<PageContactConfig>(initialPageContactConfig);
+  const [viConfigId, setViConfigId] = useState<string>("");
+
+  // EN state
+  const [enPageContactConfig, setEnPageContactConfig] = useState<PageContactConfig>(initialPageContactConfig);
+  const [enEditPageContactConfig, setEnEditPageContactConfig] = useState<PageContactConfig>(initialPageContactConfig);
+  const [enConfigId, setEnConfigId] = useState<string>("");
+
+  // Fetch both configs
+  const { data: viData, isLoading: viLoading, refetch: refetchVi } = useGetApiV10PageConfig({ filters: `key==${CONTACT_CONFIG_KEY_VI}` });
+  const { data: enData, isLoading: enLoading, refetch: refetchEn } = useGetApiV10PageConfig({ filters: `key==${CONTACT_CONFIG_KEY_EN}` });
 
   const updateMutation = usePutApiV10PageConfigId();
+  const createMutation = usePostApiV10PageConfig();
 
-  // Parse and set contact data when API data is loaded
+  const isLoading = viLoading || enLoading;
+
+  // Derive active language state
+  const pageContactConfig = lang === "vi" ? viPageContactConfig : enPageContactConfig;
+  const editPageContactConfig = lang === "vi" ? viEditPageContactConfig : enEditPageContactConfig;
+  const setEditPageContactConfig = lang === "vi" ? setViEditPageContactConfig : setEnEditPageContactConfig;
+  const configId = lang === "vi" ? viConfigId : enConfigId;
+  const configKey = lang === "vi" ? CONTACT_CONFIG_KEY_VI : CONTACT_CONFIG_KEY_EN;
+
+  // Parse VI data
   useEffect(() => {
-    if (
-      pageConfigData?.responseData?.rows &&
-      pageConfigData.responseData.rows.length > 0
-    ) {
-      const contactConfig = pageConfigData.responseData.rows[0] as {
-        id?: string;
-        value?: string | null;
-      };
-
-      if (contactConfig.id) {
-        setConfigId(contactConfig.id);
-      }
-
+    const rows = viData?.responseData?.rows;
+    if (rows && rows.length > 0) {
+      const contactConfig = rows[0] as { id?: string; value?: string | null };
+      if (contactConfig.id) setViConfigId(contactConfig.id);
       if (contactConfig.value) {
         try {
           const parsedData = JSON.parse(contactConfig.value);
-
-          // Check if it's the new format (has locations array)
           if (parsedData.locations && Array.isArray(parsedData.locations)) {
-            setPageContactConfig(parsedData as PageContactConfig);
-            setEditPageContactConfig(parsedData as PageContactConfig);
+            setViPageContactConfig(parsedData as PageContactConfig);
+            setViEditPageContactConfig(parsedData as PageContactConfig);
           } else {
-            // Old format - convert to new format
             const convertedData: PageContactConfig = {
-              locations: [
-                {
-                  id: generateId(),
-                  name: parsedData.title || "Trụ sở chính",
-                  address: parsedData.address || "",
-                  phone: parsedData.phone || "",
-                  hotline: parsedData.hotline || "",
-                  email: parsedData.email || "",
-                },
-              ],
+              locations: [{ id: generateId(), name: parsedData.title || "Trụ sở chính", address: parsedData.address || "", phone: parsedData.phone || "", hotline: parsedData.hotline || "", email: parsedData.email || "" }],
             };
-            setPageContactConfig(convertedData);
-            setEditPageContactConfig(convertedData);
+            setViPageContactConfig(convertedData);
+            setViEditPageContactConfig(convertedData);
           }
         } catch (error) {
-          console.error("Error parsing contact data:", error);
-          toast.error("Lỗi khi tải dữ liệu liên hệ");
-          // Initialize with default structure on error
-          setPageContactConfig(initialPageContactConfig);
-          setEditPageContactConfig(initialPageContactConfig);
+          console.error("Error parsing VI contact data:", error);
+          setViPageContactConfig(initialPageContactConfig);
+          setViEditPageContactConfig(initialPageContactConfig);
         }
       } else {
-        // If value is null or empty, initialize with default structure
-        setPageContactConfig(initialPageContactConfig);
-        setEditPageContactConfig(initialPageContactConfig);
+        setViPageContactConfig(initialPageContactConfig);
+        setViEditPageContactConfig(initialPageContactConfig);
       }
     } else {
-      // If no config found, initialize with default structure
-      setPageContactConfig(initialPageContactConfig);
-      setEditPageContactConfig(initialPageContactConfig);
+      setViPageContactConfig(initialPageContactConfig);
+      setViEditPageContactConfig(initialPageContactConfig);
     }
-  }, [pageConfigData]);
+  }, [viData]);
+
+  // Parse EN data
+  useEffect(() => {
+    const rows = enData?.responseData?.rows;
+    if (rows && rows.length > 0) {
+      const contactConfig = rows[0] as { id?: string; value?: string | null };
+      if (contactConfig.id) setEnConfigId(contactConfig.id);
+      if (contactConfig.value) {
+        try {
+          const parsedData = JSON.parse(contactConfig.value);
+          if (parsedData.locations && Array.isArray(parsedData.locations)) {
+            setEnPageContactConfig(parsedData as PageContactConfig);
+            setEnEditPageContactConfig(parsedData as PageContactConfig);
+          } else {
+            const convertedData: PageContactConfig = {
+              locations: [{ id: generateId(), name: parsedData.title || "Headquarters", address: parsedData.address || "", phone: parsedData.phone || "", hotline: parsedData.hotline || "", email: parsedData.email || "" }],
+            };
+            setEnPageContactConfig(convertedData);
+            setEnEditPageContactConfig(convertedData);
+          }
+        } catch (error) {
+          console.error("Error parsing EN contact data:", error);
+          setEnPageContactConfig(initialPageContactConfig);
+          setEnEditPageContactConfig(initialPageContactConfig);
+        }
+      } else {
+        setEnPageContactConfig(initialPageContactConfig);
+        setEnEditPageContactConfig(initialPageContactConfig);
+      }
+    } else {
+      setEnPageContactConfig(initialPageContactConfig);
+      setEnEditPageContactConfig(initialPageContactConfig);
+    }
+  }, [enData]);
 
   const handleEdit = () => {
     if (!canManage) {
@@ -149,7 +172,8 @@ export function ContactConfig({
   };
 
   const handleCancel = () => {
-    setEditPageContactConfig(pageContactConfig);
+    if (lang === "vi") setViEditPageContactConfig(viPageContactConfig);
+    else setEnEditPageContactConfig(enPageContactConfig);
     setNewLocationIds(new Set());
     setIsEditing(false);
   };
@@ -160,26 +184,38 @@ export function ContactConfig({
       return;
     }
 
-    if (!configId) {
-      toast.error("Không tìm thấy cấu hình liên hệ");
-      return;
-    }
-
     try {
-      await updateMutation.mutateAsync({
-        id: configId,
-        data: {
-          key: "CONTACT",
-          value: JSON.stringify(editPageContactConfig),
-          is_active: true,
-        },
-      });
+      if (configId) {
+        await updateMutation.mutateAsync({
+          id: configId,
+          data: {
+            key: configKey,
+            value: JSON.stringify(editPageContactConfig),
+            is_active: true,
+          },
+        });
+      } else {
+        const created = await createMutation.mutateAsync({
+          data: {
+            key: configKey,
+            value: JSON.stringify(editPageContactConfig),
+            is_active: true,
+          },
+        });
+        const newId = (created as any)?.responseData?.id;
+        if (newId) {
+          if (lang === "vi") setViConfigId(newId);
+          else setEnConfigId(newId);
+        }
+      }
 
-        setPageContactConfig(editPageContactConfig);
-        setNewLocationIds(new Set());
+      if (lang === "vi") setViPageContactConfig(viEditPageContactConfig);
+      else setEnPageContactConfig(enEditPageContactConfig);
+      setNewLocationIds(new Set());
       setIsEditing(false);
       toast.success("Cập nhật thông tin liên hệ thành công");
-      refetch();
+      if (lang === "vi") refetchVi();
+      else refetchEn();
     } catch (error) {
       console.error("Error updating contact data:", error);
       toast.error("Có lỗi xảy ra khi cập nhật thông tin liên hệ");
@@ -209,6 +245,7 @@ export function ContactConfig({
     }
 
     const newLocationId = generateId();
+    const defaultName = lang === "vi" ? `Địa điểm mới ${editPageContactConfig.locations.length + 1}` : `New location ${editPageContactConfig.locations.length + 1}`;
 
     setEditPageContactConfig((prev) => ({
       ...prev,
@@ -217,7 +254,7 @@ export function ContactConfig({
         {
           ...defaultLocation,
           id: newLocationId,
-          name: `Địa điểm mới ${prev.locations.length + 1}`,
+          name: defaultName,
         },
       ],
     }));
@@ -260,33 +297,50 @@ export function ContactConfig({
               Quản lý thông tin địa chỉ và liên hệ của công ty
             </CardDescription>
           </div>
-          {!isEditing ? (
-            canManage && (
-              <Button onClick={handleEdit} className="gap-2">
-                <Edit className="h-4 w-4" />
-                Chỉnh sửa
-              </Button>
-            )
-          ) : (
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={handleCancel}
-                className="gap-2"
+          <div className="flex items-center gap-2">
+            {/* Language toggle */}
+            <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => { if (isEditing) { toast.error("Vui lòng lưu hoặc hủy trước khi chuyển ngôn ngữ"); return; } setLang("vi"); }}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${lang === "vi" ? "bg-blue-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
               >
-                <X className="h-4 w-4" />
-                Hủy
-              </Button>
-              <Button
-                onClick={handleSave}
-                className="gap-2"
-                disabled={updateMutation.isPending || !canManage}
+                VI
+              </button>
+              <button
+                onClick={() => { if (isEditing) { toast.error("Vui lòng lưu hoặc hủy trước khi chuyển ngôn ngữ"); return; } setLang("en"); }}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${lang === "en" ? "bg-blue-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
               >
-                <Save className="h-4 w-4" />
-                {updateMutation.isPending ? "Đang lưu..." : "Lưu"}
-              </Button>
+                EN
+              </button>
             </div>
-          )}
+            {!isEditing ? (
+              canManage && (
+                <Button onClick={handleEdit} className="gap-2">
+                  <Edit className="h-4 w-4" />
+                  Chỉnh sửa
+                </Button>
+              )
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Hủy
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  className="gap-2"
+                  disabled={updateMutation.isPending || createMutation.isPending || !canManage}
+                >
+                  <Save className="h-4 w-4" />
+                  {updateMutation.isPending || createMutation.isPending ? "Đang lưu..." : "Lưu"}
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent>

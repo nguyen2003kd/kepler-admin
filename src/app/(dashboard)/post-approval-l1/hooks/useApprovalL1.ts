@@ -105,6 +105,7 @@ export function useApprovalL1(): UseApprovalL1Return {
           page: pageParam,
           pageSize: PAGE_SIZE,
           sortOrder: 'desc',
+          sortField: 'created_at',
           filters,
           filterBy: 'ADMIN',
         },

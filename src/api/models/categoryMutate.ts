@@ -1,4 +1,5 @@
 /* eslint-disable */
+import type { CategoryMutateLanguage } from './categoryMutateLanguage';
 
 export interface CategoryMutate {
   /**
@@ -13,6 +14,8 @@ export interface CategoryMutate {
    * @maxLength 100
    */
   code: string;
+  /** Language of the category */
+  language: CategoryMutateLanguage;
   /**
    * Display position/order of the category
    * @nullable

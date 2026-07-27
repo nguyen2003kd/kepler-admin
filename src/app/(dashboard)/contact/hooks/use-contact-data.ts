@@ -15,6 +15,8 @@ export function useContactData(searchTerm: string) {
   const { data: contactsResponse, isLoading, refetch } = useGetApiV10Contact({
     pageSize: 100,
     filters: searchTerm ? `name~${searchTerm}` : undefined,
+    sortField: "created_at",
+    sortOrder: "desc",
   });
 
   const contacts = React.useMemo(() => {

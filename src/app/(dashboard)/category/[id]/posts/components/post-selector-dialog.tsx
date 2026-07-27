@@ -213,8 +213,11 @@ export function PostManagerPanel({
   const handleAddPost = async (post: News) => {
     setAddingIds(new Set([post.id]));
     try {
-      const maxPosition = Math.max(...localPosts.map((p) => p.position), 0);
-      const newPosition = maxPosition + 1;
+      const minPosition =
+        localPosts.length > 0
+          ? Math.min(...localPosts.map((p) => p.position))
+          : 1;
+      const newPosition = localPosts.length > 0 ? minPosition - 1 : 1;
 
       const data: {
         post_id: string;
@@ -261,7 +264,10 @@ export function PostManagerPanel({
     setAddingIds(new Set(selectedPosts.map((p) => p.id)));
 
     try {
-      const maxPosition = Math.max(...localPosts.map((p) => p.position), 0);
+      const minPosition =
+        localPosts.length > 0
+          ? Math.min(...localPosts.map((p) => p.position))
+          : 1;
 
       await Promise.all(
         selectedPosts.map((post, i) => {
@@ -273,7 +279,7 @@ export function PostManagerPanel({
           } = {
             post_id: post.id,
             category_id: categoryId,
-            position: maxPosition + i + 1,
+            position: minPosition - (i + 1),
           };
 
           if (pageId) {

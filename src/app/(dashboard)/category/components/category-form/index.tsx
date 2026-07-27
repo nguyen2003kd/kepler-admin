@@ -81,6 +81,20 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
               required
             />
           </div>
+          {/* Language */}
+          <div>
+            <label className="text-sm font-medium block mb-1">Ngôn ngữ</label>
+            <select
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={values.language}
+              onChange={(e) =>
+                onValuesChange((prev) => ({ ...prev, language: e.target.value as "vi" | "en" }))
+              }
+            >
+              <option value="vi">Tiếng Việt</option>
+              <option value="en">English</option>
+            </select>
+          </div>
           {/* Icon URL */}
           <div>
             <label className="text-sm font-medium block mb-1">Icon</label>

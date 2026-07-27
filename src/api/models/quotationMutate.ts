@@ -53,9 +53,4 @@ export interface QuotationMutate {
    * @nullable
    */
   service_id?: string | null;
-  /**
-   * Requested service type (hardcoded text value)
-   * @nullable
-   */
-  contact_person?: string | null;
 }
