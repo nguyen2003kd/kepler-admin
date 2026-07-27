@@ -35,7 +35,7 @@ export function useNewsData(searchQuery: string) {
         : statusFilter;
 
       const res = await getApiV10Post(
-        { page: pageParam, pageSize, sortOrder: "desc", filters,
+        { page: pageParam, pageSize, sortField: "created_at", sortOrder: "desc", filters,
           filterBy: "ADMIN"
          },
         signal

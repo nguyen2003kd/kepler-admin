@@ -15,10 +15,8 @@ export interface WorkSchedule {
    * @nullable
    */
   tasks?: string | null;
-  /** Host name (free-text) */
-  host?: string | null;
-  /** Participants (free-text list) */
-  participants?: string | null;
+  /** Host user ID */
+  host_id?: string;
   /** Work schedule date-time */
   schedule_time?: string;
   /**

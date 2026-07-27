@@ -45,7 +45,8 @@ export function useCategoryPostsWithQuery(
         {
           page: pageParam,
           pageSize,
-          sortOrder: "desc",
+          sortField: "position",
+          sortOrder: "asc",
           filters,
         },
         signal

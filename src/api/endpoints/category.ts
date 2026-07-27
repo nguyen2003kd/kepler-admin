@@ -24,6 +24,7 @@ import type {
   DeleteApiV10CategoryId200,
   GetApiV10Category200,
   GetApiV10CategoryId200,
+  GetApiV10CategoryParams,
   PostApiV10Category200,
   PostApiV10CategoryBulk200,
   PutApiV10CategoryId200
@@ -324,17 +325,18 @@ export const usePostApiV10CategoryBulk = <TError = void,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * Retrieve all root categories (parent_category_id is null) with all nested children recursively. Each category contains a "categories" array with its child categories. And order by position.
+ * Retrieve all root categories (parent_category_id is null) with all nested children recursively. Each category contains a "categories" array with its child categories. And order by position. Optionally filter by language query parameter.
  * @summary Get all root categories with nested children
  */
 export const getApiV10Category = (
-    
+    params?: GetApiV10CategoryParams,
  signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiV10Category200>(
-      {url: `/api/v1.0/category`, method: 'GET', signal
+      {url: `/api/v1.0/category`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -342,23 +344,23 @@ export const getApiV10Category = (
 
 
 
-export const getGetApiV10CategoryQueryKey = () => {
+export const getGetApiV10CategoryQueryKey = (params?: GetApiV10CategoryParams,) => {
     return [
-    `/api/v1.0/category`
+    `/api/v1.0/category`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiV10CategoryQueryOptions = <TData = Awaited<ReturnType<typeof getApiV10Category>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>>, }
+export const getGetApiV10CategoryQueryOptions = <TData = Awaited<ReturnType<typeof getApiV10Category>>, TError = void>(params?: GetApiV10CategoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV10CategoryQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV10CategoryQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10Category>>> = ({ signal }) => getApiV10Category(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10Category>>> = ({ signal }) => getApiV10Category(params, signal);
 
       
 
@@ -372,7 +374,7 @@ export type GetApiV10CategoryQueryError = void
 
 
 export function useGetApiV10Category<TData = Awaited<ReturnType<typeof getApiV10Category>>, TError = void>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>> & Pick<
+ params: undefined |  GetApiV10CategoryParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV10Category>>,
           TError,
@@ -382,7 +384,7 @@ export function useGetApiV10Category<TData = Awaited<ReturnType<typeof getApiV10
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV10Category<TData = Awaited<ReturnType<typeof getApiV10Category>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>> & Pick<
+ params?: GetApiV10CategoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV10Category>>,
           TError,
@@ -392,7 +394,7 @@ export function useGetApiV10Category<TData = Awaited<ReturnType<typeof getApiV10
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV10Category<TData = Awaited<ReturnType<typeof getApiV10Category>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>>, }
+ params?: GetApiV10CategoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -400,11 +402,11 @@ export function useGetApiV10Category<TData = Awaited<ReturnType<typeof getApiV10
  */
 
 export function useGetApiV10Category<TData = Awaited<ReturnType<typeof getApiV10Category>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>>, }
+ params?: GetApiV10CategoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10Category>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV10CategoryQueryOptions(options)
+  const queryOptions = getGetApiV10CategoryQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -1,4 +1,5 @@
 /* eslint-disable */
+import type { CategoryLanguage } from './categoryLanguage';
 
 export interface Category {
   /** Unique identifier of the category */
@@ -7,6 +8,8 @@ export interface Category {
   name?: string;
   /** Unique code of the category */
   code?: string;
+  /** Language of the category */
+  language?: CategoryLanguage;
   /**
    * Display position/order of the category
    * @nullable

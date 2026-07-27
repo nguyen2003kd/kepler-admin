@@ -11,33 +11,33 @@ interface SeoProps {
 
 export function constructMetadata({
   title,
-  description = "High-performance Next.js admin dashboard for Kepler Property management",
+  description = "High-performance Next.js admin dashboard for case-smeq quality testing management",
   image = "/images/default-og-image.jpg",
   url = "",
   type = 'website',
   noIndex = false,
 }: SeoProps): Metadata {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://kepler-admin.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://case-smeq-admin.vercel.app';
   const fullImageUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
   const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
 
   return {
     title: {
       default: title,
-      template: `%s | Kepler Property Admin`,
+      template: `%s | CASE SMEQ Admin`,
     },
     description,
     keywords: [
-      'bất động sản',
-      'real estate',
-      'quản lý bất động sản',
-      'Kepler Property',
+      'quality testing',
+      'kiểm định chất lượng', 
+      'thử nghiệm',
+      'CASE SMEQ',
       'admin dashboard'
     ],
-    authors: [{ name: 'Kepler Property Team' }],
-    creator: 'Kepler Property',
-    publisher: 'Kepler Property',
-
+    authors: [{ name: 'CASE SMEQ Team' }],
+    creator: 'CASE SMEQ',
+    publisher: 'CASE SMEQ',
+    
     robots: {
       index: !noIndex,
       follow: !noIndex,
@@ -49,13 +49,13 @@ export function constructMetadata({
         'max-snippet': -1,
       },
     },
-
+    
     openGraph: {
       type,
       title,
       description,
       url: fullUrl,
-      siteName: 'Kepler Property Admin',
+      siteName: 'CASE SMEQ Admin',
       images: [{
         url: fullImageUrl,
         width: 1200,
@@ -64,19 +64,19 @@ export function constructMetadata({
       }],
       locale: 'vi_VN',
     },
-
+    
     twitter: {
       card: 'summary_large_image',
       title,
       description,
       images: [fullImageUrl],
-      creator: '@kepler_property',
+      creator: '@case_smeq',
     },
-
+    
     alternates: {
       canonical: fullUrl,
     },
-
+    
     metadataBase: new URL(baseUrl),
   };
 }

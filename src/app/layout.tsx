@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import baseConfig from "@configs/base";
+import Thumnail from "@/assets/images/case-smeg-thumb.png"
+import Facion from "@/assets/images/logo-facion.ico"
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -16,29 +18,33 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   icons: {
-    icon: "/icon.png",
-    shortcut: "/icon.png",
+    icon: `${Facion.src}`,
+    shortcut: `${Facion.src}`,
   },
 
   title: {
-    default: 'Kepler Property | Mua bán, Cho thuê & Dự án Bất động sản',
-    template: '%s | Kepler Property',
+    default:
+      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
+    template:
+      '%s | Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
   },
 
-  description: 'Kepler Property cập nhật thông tin mua bán, cho thuê căn hộ, nhà phố, đất nền và các dự án bất động sản. Hỗ trợ tư vấn pháp lý, tài chính và đầu tư.',
+  description:
+    'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh là đơn vị sự nghiệp công lập trực thuộc Sở Khoa học và Công nghệ, thực hiện kiểm định, hiệu chuẩn, thử nghiệm, tư vấn và chứng nhận tiêu chuẩn, đo lường, chất lượng phục vụ quản lý nhà nước và doanh nghiệp.',
 
   keywords: [
-    'Kepler Property',
-    'bất động sản',
-    'mua bán nhà đất',
-    'cho thuê bất động sản',
-    'căn hộ',
-    'nhà phố',
-    'đất nền',
-    'biệt thự',
-    'dự án bất động sản',
-    'tư vấn đầu tư',
-    'tư vấn pháp lý',
+    'tiêu chuẩn đo lường chất lượng',
+    'kiểm định',
+    'hiệu chuẩn',
+    'thử nghiệm',
+    'chuẩn đo lường',
+    'kiểm định thiết bị y tế',
+    'đo lường',
+    'chất lượng sản phẩm',
+    'quy chuẩn kỹ thuật',
+    'dịch vụ khoa học công nghệ',
+    'Sở Khoa học và Công nghệ TP.HCM',
+    'kiểm định an toàn thiết bị y tế',
   ],
 
   robots: {
@@ -52,16 +58,20 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: 'Kepler Property | Mua bán, Cho thuê & Dự án Bất động sản',
-    description: 'Kepler Property cập nhật thông tin mua bán, cho thuê căn hộ, nhà phố, đất nền và các dự án bất động sản. Hỗ trợ tư vấn pháp lý, tài chính và đầu tư.',
+    title:
+      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
+    description:
+      'Đơn vị sự nghiệp công lập trực thuộc Sở Khoa học và Công nghệ TP.HCM, cung cấp dịch vụ kiểm định, hiệu chuẩn, thử nghiệm, chứng nhận và tư vấn về tiêu chuẩn, đo lường, chất lượng.',
     url: baseConfig.frontendDomain,
-    siteName: 'Kepler Property',
+    siteName:
+      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
     images: [
       {
-        url: `${baseConfig.frontendDomain}/seo.png`,
+        url: `${baseConfig.frontendDomain}/${Thumnail.src}`,
         width: 1200,
         height: 630,
-        alt: 'Kepler Property',
+        alt:
+          'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
       },
     ],
     locale: 'vi_VN',
@@ -70,9 +80,11 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: 'Kepler Property | Mua bán, Cho thuê & Dự án Bất động sản',
-    description: 'Kepler Property cập nhật thông tin mua bán, cho thuê căn hộ, nhà phố, đất nền và các dự án bất động sản. Hỗ trợ tư vấn pháp lý, tài chính và đầu tư.',
-    images: [`${baseConfig.frontendDomain}/seo.png`],
+    title:
+      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
+    description:
+      'Kiểm định – Hiệu chuẩn – Thử nghiệm – Tư vấn tiêu chuẩn đo lường chất lượng tại TP. Hồ Chí Minh.',
+    images: [`${baseConfig.frontendDomain}/${Thumnail.src}`],
   },
 }
 
@@ -82,7 +94,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
