@@ -207,7 +207,11 @@ export function useWorkSchedule(): UseWorkScheduleReturn {
     return rows
       .map((ws) => mapWorkScheduleToWorkEvent(ws))
       .filter((e) => !!e.id)
-  }, [schedulesQuery.data])
+      .map((e) => ({
+        ...e,
+        host: e.host_id ? (userMap[e.host_id] ?? e.host_id) : '',
+      }))
+  }, [schedulesQuery.data, userMap])
 
   // ------------------------------------------------------------------
   // Participants for dialog

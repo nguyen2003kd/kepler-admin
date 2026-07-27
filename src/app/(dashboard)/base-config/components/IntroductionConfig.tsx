@@ -672,7 +672,7 @@ export function IntroductionConfig({
         await updateMutation.mutateAsync({ id: configId, data: { key: configKey, value: JSON.stringify(blocks), is_active: true } });
       } else {
         const created = await createMutation.mutateAsync({ data: { key: configKey, value: JSON.stringify(blocks), is_active: true } });
-        const newId = (created as any)?.responseData?.id;
+        const newId = created?.responseData?.id;
         if (newId) { if (lang === "vi") setViConfigId(newId); else setEnConfigId(newId); }
       }
       setHasChanges(false); toast.success("Đã lưu trang giới thiệu");

@@ -4,7 +4,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { WorkEvent, WorkPeriod, formatTimeFromISO } from '../types';
-import { MapPin, Clock, User, Calendar as CalendarIcon, FileText, Users, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { MapPin, Clock, User, Calendar as CalendarIcon, FileText, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -139,16 +139,6 @@ export function DailyAgenda({
                   <span>
                     Chủ trì:{' '}
                     <span className="font-semibold text-slate-900 dark:text-zinc-200">{event.host}</span>
-                  </span>
-                </div>
-              )}
-
-              {event.participants && (
-                <div className="flex items-start gap-1.5 bg-slate-50 dark:bg-zinc-800/50 px-2.5 py-1 rounded-md">
-                  <Users className="h-4 w-4 shrink-0 text-slate-400 mt-0.5" />
-                  <span className="break-words">
-                    Người tham gia:{' '}
-                    <span className="text-blue-600 dark:text-blue-400">{event.participants}</span>
                   </span>
                 </div>
               )}
