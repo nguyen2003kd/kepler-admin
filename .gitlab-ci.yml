@@ -32,7 +32,7 @@ deploy_job:
     - bash cicd/healthcheck.sh
     - bash cicd/clean.sh
   after_script:
-    - ssh -S /tmp/ssh-mux/master -O exit $SERVER_USER@$SERVER_HOST
+    - ssh -S /tmp/ssh-mux/master -O exit $SERVER_USER@$SERVER_HOST 2>/dev/null || true
   tags:
     - runner-vpd-que
   only:
