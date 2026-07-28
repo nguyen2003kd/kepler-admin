@@ -1,11 +1,28 @@
 stages:
   - test
+  - build
   - deploy
 
 test_job:
   stage: test
   script:
     - echo "Skip, chưa có unit test"
+  tags:
+    - runner-vpd-que
+  only:
+    - release/staging
+
+build_job:
+  stage: build
+  before_script:
+    - check=$(echo "$CI_COMMIT_MESSAGE" | sed -nE 's/^.*(\[tag\]staging).*$/\1/p')
+    - |
+      if [ "$check" != "[tag]staging" ]; then
+        echo "Commit message does not contain [tag]staging → skip pipeline"
+        exit 0
+      fi
+  script:
+    - bash cicd/build.sh
   tags:
     - runner-vpd-que
   only:
@@ -37,4 +54,3 @@ deploy_job:
     - runner-vpd-que
   only:
     - release/staging
-#SBien
