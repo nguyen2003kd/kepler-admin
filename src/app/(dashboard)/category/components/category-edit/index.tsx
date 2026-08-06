@@ -103,7 +103,15 @@ export const CategoryEdit: React.FC<{ category: Category; language?: CategoryLan
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose() }} >
-      <DialogContent className='max-w-5xl'>
+      <DialogContent
+        className='max-w-5xl'
+        onInteractOutside={(e) => {
+          // Ngăn Dialog đóng khi đang tương tác với Popover (IconPicker) đã portal ra ngoài
+          if (document.querySelector('[data-radix-popper-content-wrapper]')) {
+            e.preventDefault()
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Chỉnh sửa danh mục</DialogTitle>
         </DialogHeader>
