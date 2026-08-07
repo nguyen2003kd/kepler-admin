@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import * as LucideIcons from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -420,7 +421,6 @@ export function DynamicIcon({ name, className }: { name?: string; className?: st
 export function IconPicker({ value, onChange, className }: IconPickerProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
-  const wrapperRef = useRef<HTMLDivElement>(null)
 
   const iconList = useMemo<IconItem[]>(() => {
     return Object.keys(LucideIcons)
@@ -447,17 +447,9 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
     return results.map(({ icon }) => icon)
   }, [iconList, search])
 
+  // Reset search when popover closes
   useEffect(() => {
-    if (!open) return
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!wrapperRef.current?.contains(event.target as Node)) {
-        setOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    if (!open) setSearch('')
   }, [open])
 
   const SelectedIcon = getIconComponent(value)
@@ -465,69 +457,70 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
   const handleSelect = (iconName: string) => {
     onChange(iconName)
     setOpen(false)
-    setSearch('')
   }
 
   return (
-    <div ref={wrapperRef} className={cn('relative w-full', className)}>
-      <Button
-        type='button'
-        variant='outline'
-        role='combobox'
-        aria-expanded={open}
-        onClick={() => setOpen((prev) => !prev)}
-        className='h-10 w-full justify-between bg-white'
-      >
-        <div className='flex min-w-0 items-center gap-2'>
-          <SelectedIcon className='h-5 w-5 shrink-0' />
-          <span className='truncate'>{value || 'Chọn icon'}</span>
-        </div>
-        <LucideIcons.ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-      </Button>
-
-      {open && (
-        <div className='absolute left-0 top-full z-50 mt-1 w-[400px] rounded-md border bg-popover text-popover-foreground shadow-md'>
-          <div className='border-b p-3'>
-            <Input
-              autoFocus
-              placeholder='Tìm kiếm icon... (VD: system, setting, phone, message)'
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className='h-9'
-            />
-            <p className='mt-2 text-xs text-gray-500'>
-              Tìm thấy {filteredIcons.length} / {iconList.length} icons
-            </p>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          type='button'
+          variant='outline'
+          role='combobox'
+          aria-expanded={open}
+          className={cn('h-10 w-full justify-between bg-white', className)}
+        >
+          <div className='flex min-w-0 items-center gap-2'>
+            <SelectedIcon className='h-5 w-5 shrink-0' />
+            <span className='truncate'>{value || 'Chọn icon'}</span>
           </div>
-          <ScrollArea className='h-[300px]'>
-            {filteredIcons.length > 0 ? (
-              <div className='grid grid-cols-6 gap-2 p-3'>
-                {filteredIcons.map((icon) => {
-                  const IconComponent = getIconComponent(icon.kebabName)
-
-                  return (
-                    <button
-                      key={icon.kebabName}
-                      type='button'
-                      onClick={() => handleSelect(icon.kebabName)}
-                      className={cn(
-                        'flex h-12 w-full items-center justify-center rounded-md border border-gray-200 transition-colors hover:bg-gray-100',
-                        value === icon.kebabName && 'border-primary bg-primary/10'
-                      )}
-                      title={icon.kebabName}
-                    >
-                      <IconComponent className='h-5 w-5' />
-                    </button>
-                  )
-                })}
-              </div>
-            ) : (
-              <div className='py-6 text-center text-sm text-gray-500'>Không tìm thấy icon &quot;{search}&quot;</div>
-            )}
-          </ScrollArea>
+          <LucideIcons.ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align='start'
+        sideOffset={4}
+        className='w-[min(400px,calc(100vw-2rem))] p-0'
+      >
+        <div className='border-b p-3'>
+          <Input
+            autoFocus
+            placeholder='Tìm kiếm icon... (VD: system, setting, phone, message)'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className='h-9'
+          />
+          <p className='mt-2 text-xs text-gray-500'>
+            Tìm thấy {filteredIcons.length} / {iconList.length} icons
+          </p>
         </div>
-      )}
-    </div>
+        <ScrollArea className='h-[300px]'>
+          {filteredIcons.length > 0 ? (
+            <div className='grid grid-cols-6 gap-2 p-3'>
+              {filteredIcons.map((icon) => {
+                const IconComponent = getIconComponent(icon.kebabName)
+
+                return (
+                  <button
+                    key={icon.kebabName}
+                    type='button'
+                    onClick={() => handleSelect(icon.kebabName)}
+                    className={cn(
+                      'flex h-12 w-full items-center justify-center rounded-md border border-gray-200 transition-colors hover:bg-gray-100',
+                      value === icon.kebabName && 'border-primary bg-primary/10'
+                    )}
+                    title={icon.kebabName}
+                  >
+                    <IconComponent className='h-5 w-5' />
+                  </button>
+                )
+              })}
+            </div>
+          ) : (
+            <div className='py-6 text-center text-sm text-gray-500'>Không tìm thấy icon &quot;{search}&quot;</div>
+          )}
+        </ScrollArea>
+      </PopoverContent>
+    </Popover>
   )
 }
 
