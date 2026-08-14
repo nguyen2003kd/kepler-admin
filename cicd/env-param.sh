@@ -1,0 +1,6 @@
+export PROJECT_NAME="kepler-frontend-admin"
+export IMAGE_NAME="registry.gitlab.com/meu-solutions/kepler-frontend-admin"
+export ENVIRONMENT_NAME="staging"
+export PORT_APP="8001"
+export ENV_FILE="/home/gitlab-runner/env/kepler-frontend-admin/.env"
+export IMAGE_REF="${IMAGE_NAME}:${ENVIRONMENT_NAME}"

@@ -1,17 +1,18 @@
-version: '3.5'
-
 services:
-  app:
-    container_name: ENVIRONMENT-NAME-PROJECT-NAME
-    image: IMAGE-NAME:IMAGE-TAG
-    ports:
-      - 'P-MAPPING'
+   app:
+    container_name: ${ENVIRONMENT_NAME}-${PROJECT_NAME}
+    image: ${APP_IMAGE}
     restart: unless-stopped
-    pull_policy: always
+    env_file:
+      - ${ENV_FILE}
+    environment:
+      - NODE_ENV=staging
+    ports:
+      - "${PORT_APP}:3000"
     networks:
-      meu-solutions-product-alpha-net:
-        ipv4_address: 192.167.12.23
+      - meu-solutions-staging
+
 networks:
-  meu-solutions-product-alpha-net:
+  meu-solutions-staging:
     external: true
-    name: meu-solutions-product-alpha-net
+    name: meu-solutions-staging
