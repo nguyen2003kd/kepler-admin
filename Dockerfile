@@ -3,15 +3,16 @@
 # Stage 1: Base
 FROM node:20-alpine AS base
 WORKDIR /usr/src/app
+RUN npm install -g pnpm
 FROM base AS deps
 # Add libc6-compat for compatibility
 RUN apk add --no-cache libc6-compat
 
 # Copy package files
-COPY package*.json ./
+COPY ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "./"]
 
 # Install dependencies
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Stage 2: Builder
 FROM base AS builder
@@ -28,7 +29,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Stage 3: Development
 FROM base AS development
@@ -38,8 +39,8 @@ WORKDIR /usr/src/app
 RUN apk add --no-cache curl
 
 # Copy package files and install all dependencies (including dev)
-COPY package*.json ./
-RUN npm install
+COPY ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "./"]
+RUN pnpm install
 
 # Copy source code
 COPY . .
@@ -47,7 +48,7 @@ ENV NODE_ENV=development
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Start development server
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "run", "dev"]
 
 # Stage 4: Production Runner
 FROM base AS production
@@ -58,7 +59,7 @@ RUN apk add --no-cache curl
 
 # Copy package files and production dependencies
 COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY package*.json ./
+COPY ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "./"]
 
 # Copy built application
 COPY --from=builder /usr/src/app/.next ./.next
@@ -71,4 +72,4 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Start production server
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "run", "start"]
