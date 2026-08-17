@@ -3,10 +3,6 @@ services:
     container_name: ${ENVIRONMENT_NAME}-${PROJECT_NAME}
     image: ${APP_IMAGE}
     restart: unless-stopped
-    env_file:
-      - ${ENV_FILE}
-    environment:
-      - NODE_ENV=staging
     ports:
       - "${PORT_APP}:3000"
     networks:

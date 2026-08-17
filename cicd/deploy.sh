@@ -4,8 +4,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 . "$SCRIPT_DIR/env-param.sh"
 
-cp "$ENV_FILE" .env
-
 export APP_IMAGE="${IMAGE_REF}"
 
 echo "=== Deploying ${IMAGE_REF} to ${ENVIRONMENT_NAME} ==="

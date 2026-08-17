@@ -6,6 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
+echo "=== Copying .env for build-time ==="
+cp "$ENV_FILE" .env
+
 echo "=== Logging in to GitLab Container Registry ==="
 docker logout registry.gitlab.com
 echo "$CI_PERMISSION" | docker login registry.gitlab.com \
