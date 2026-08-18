@@ -98,7 +98,15 @@ export const CategoryCreate: React.FC<{ parentId?: string; language?: CategoryLa
           <Plus className="mr-2 h-4 w-4" /> Thêm danh mục
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="max-w-2xl max-h-[90vh] overflow-y-auto"
+        onInteractOutside={(e) => {
+          // Ngăn Dialog đóng khi đang tương tác với Popover (IconPicker) đã portal ra ngoài
+          if (document.querySelector('[data-radix-popper-content-wrapper]')) {
+            e.preventDefault()
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Thêm danh mục mới</DialogTitle>
           <DialogDescription>
