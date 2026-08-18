@@ -1,5 +1,5 @@
 "use client";
-import Logo from "@/assets/images/logo-smeq.jpg";
+import Logo from "@/assets/images/logo-kepler.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSidebarStore } from "@/hooks/use-sidebar";
@@ -109,17 +109,18 @@ export function Sidebar() {
       >
         <div className="flex h-full flex-col">
           {/* Logo & Header */}
-          <div className="flex h-20 items-center justify-between px-4 bg-white">
+          <div className="flex h-20 items-center px-4 bg-white">
             {isOpen && (
-              <Link href="/dashboard" className="flex items-center space-x-1">
+              <Link href="/dashboard" className="flex flex-1 items-center justify-center space-x-3">
                 <Image
                   src={Logo}
-                  alt="SMEQ Logo"
-                  width={120}
-                  height={120}
-                  className="rounded-xl object-cover"
+                  alt="Kepler Logo"
+                  width={40}
+                  height={40}
+                  className="object-contain"
                   priority
                 />
+                <span className="text-xl font-bold text-[#19426D]">Kepler</span>
               </Link>
             )}
             <Button

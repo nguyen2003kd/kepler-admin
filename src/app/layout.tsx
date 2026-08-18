@@ -3,8 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import baseConfig from "@configs/base";
-import Thumnail from "@/assets/images/case-smeg-thumb.png"
 import Facion from "@/assets/images/logo-facion.ico"
+import Logo from "@/assets/images/logo.png"
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
       'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
     images: [
       {
-        url: `${baseConfig.frontendDomain}/${Thumnail.src}`,
+        url: `${baseConfig.frontendDomain}/${Logo.src}`,
         width: 1200,
         height: 630,
         alt:
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
       'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
     description:
       'Kiểm định – Hiệu chuẩn – Thử nghiệm – Tư vấn tiêu chuẩn đo lường chất lượng tại TP. Hồ Chí Minh.',
-    images: [`${baseConfig.frontendDomain}/${Thumnail.src}`],
+    images: [`${baseConfig.frontendDomain}/${Logo.src}`],
   },
 }
 

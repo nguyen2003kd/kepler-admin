@@ -1,5 +1,7 @@
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import LogoKepler from '@/assets/images/logo-kepler.png'
 
 const CaseSmqProSpinner: React.FC<{ size?: number }> = ({ size = 700 }) => {
   const colors = {
@@ -36,10 +38,11 @@ const CaseSmqProSpinner: React.FC<{ size?: number }> = ({ size = 700 }) => {
           </linearGradient>
         </defs>
 
-        <text x="200" y="115" dominantBaseline="middle" textAnchor="middle" fill={colors.text}
-          style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 900, fontSize: 20, letterSpacing: '-0.5px', userSelect: 'none' }}>
-          CASE-SMQ
-        </text>
+        <foreignObject x="160" y="85" width="80" height="50">
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+            <Image src={LogoKepler} alt="Kepler Logo" width={60} height={60} style={{ objectFit: 'contain' }} />
+          </div>
+        </foreignObject>
 
         <circle className="ring-smooth-reverse" cx="200" cy="110" r="115" fill="none" stroke={colors.swooshStart} strokeWidth="1" strokeDasharray="10 20" opacity="0.2" />
 
