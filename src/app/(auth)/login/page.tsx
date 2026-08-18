@@ -78,7 +78,7 @@ export default function LoginPage() {
         {/* Right form */}
         <div className="p-10 md:p-16">
           <h3 className="text-2xl font-semibold text-gray-800 mb-1">
-            Case-smeq xin chào
+           Kepler xin chào
           </h3>
           <p className="text-sm text-gray-500 mb-6">
             Đăng nhập để quản trị hệ thống
