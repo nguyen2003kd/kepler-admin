@@ -26,7 +26,6 @@ import {
 // Custom popup styles removed Dialog dependency
 import { toast } from "sonner";
 import { ImagePicker, ImagePickerFile } from "@/components/shared/image-picker";
-import baseConfig from "@/configs/base";
 // import { HomeGalleryConfig } from "./components";
 
 // API imports
@@ -48,6 +47,7 @@ import { Header } from "@/components/layout/header";
 import { ContactConfig } from "./components/ContactConfig";
 import { VideoConfig } from "./components/VideoConfig";
 import { CustomersPartnersConfig } from "./components/CustomersPartnersConfig";
+import { HeroConfig } from "./components/HeroConfig";
 import { useAbility } from "@/hooks/use-ability";
 
 export default function BaseConfigPage() {
@@ -155,10 +155,10 @@ export default function BaseConfigPage() {
       imagePath = String(file?.path || "");
     }
 
-    // Add domain if path doesn't start with http
+    // Return relative path if not absolute URL — Next.js rewrite will proxy to backend
     return imagePath.startsWith("http")
       ? imagePath
-      : `${baseConfig.imgEndpointDomain}${imagePath}`;
+      : imagePath;
   };
 
   // Get URL for selected image file
@@ -692,6 +692,9 @@ export default function BaseConfigPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Hero Banner Config */}
+        <HeroConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
 
         {/* Customers/Partners Config */}
         <CustomersPartnersConfig canUpdate={ability.can("update_banner", "settings")} />

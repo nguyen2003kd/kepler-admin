@@ -6,6 +6,10 @@ import type { FooterMutateTotalViews } from './footerMutateTotalViews';
 
 export interface FooterMutate {
   /**
+   * Footer language (vi or en)
+   */
+  language?: 'vi' | 'en';
+  /**
    * Footer description
    * @nullable
    */

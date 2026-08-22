@@ -33,6 +33,15 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/storage/:path*',
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_DOMAIN || 'http://localhost:4100'}/api/storage/:path*`,
+        basePath: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

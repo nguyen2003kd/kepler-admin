@@ -91,6 +91,21 @@ export default function CreateFooterPage() {
 
                 <div className="space-y-4">
                   <div className="space-y-2">
+                    <Label htmlFor="language">Ngôn ngữ *</Label>
+                    <select
+                      id="language"
+                      value={formData.language || "vi"}
+                      onChange={(e) =>
+                        setFormData({ ...formData, language: e.target.value as "vi" | "en" })
+                      }
+                      className="flex h-10 w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="vi">Tiếng Việt</option>
+                      <option value="en">English</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="description">Mô tả *</Label>
                     <Input
                       id="description"

@@ -64,6 +64,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
     if (footerData?.responseData) {
       const footer = footerData.responseData;
       setFormData({
+        language: footer.language || "vi",
         description: footer.description || "",
         sub_description: footer.sub_description || "",
         phone: footer.phone || "",
@@ -129,6 +130,9 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
     const submitData = getSubmitData();
 
     const payload: FooterMutate = {
+      language: canEditBasicInfo
+        ? submitData.language
+        : existingFooter.language,
       description: canEditBasicInfo
         ? submitData.description
         : existingFooter.description,
@@ -238,6 +242,21 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
                 </div>
 
                 <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="language">Ngôn ngữ *</Label>
+                    <select
+                      id="language"
+                      value={formData.language || "vi"}
+                      onChange={(e) =>
+                        setFormData({ ...formData, language: e.target.value as "vi" | "en" })
+                      }
+                      className="flex h-10 w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="vi">Tiếng Việt</option>
+                      <option value="en">English</option>
+                    </select>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="description">Mô tả *</Label>
                     <Input

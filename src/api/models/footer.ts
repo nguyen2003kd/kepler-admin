@@ -7,6 +7,8 @@ import type { FooterTotalViews } from './footerTotalViews';
 export interface Footer {
   /** Unique identifier of the footer */
   id?: string;
+  /** Footer language */
+  language?: 'vi' | 'en';
   /**
    * Footer description
    * @nullable
