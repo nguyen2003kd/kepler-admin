@@ -100,12 +100,12 @@ const BLOCK_LIBRARY: BlockTemplate[] = [
     icon: <Building2 className="w-4 h-4 text-blue-600" />,
     create: (): OrgHeaderBlock => ({
       id: generateId(), type: "org-header",
-      nameVi1: "TRUNG TÂM DỊCH VỤ PHÂN TÍCH THÍ NGHIỆM",
-      nameVi2: "VÀ TIÊU CHUẨN ĐO LƯỜNG CHẤT LƯỢNG THÀNH PHỐ HỒ CHÍ MINH",
-      nameEn: "CENTER OF ANALYTICAL SERVICES, EXPERIMENTATION AND STANDARDS, METROLOGY, QUALITY OF HO CHI MINH CITY",
-      abbreviation: "CASE-SMQ",
-      headquarterAddress: "Số 2 Nguyễn Văn Thủ, Phường Tân Định, Thành phố Hồ Chí Minh",
-      taxCode: "0319238568",
+      nameVi1: "KEPLER GROUP",
+      nameVi2: "Thẩm định giá, Môi giới & Quản lý Bất động sản",
+      nameEn: "KEPLER GROUP — Valuation, Brokerage & Real Estate Management",
+      abbreviation: "KEPLER",
+      headquarterAddress: "TP. Hồ Chí Minh, Việt Nam",
+      taxCode: "",
     }),
   },
   {
