@@ -47,6 +47,8 @@ import { Header } from "@/components/layout/header";
 import { ContactConfig } from "./components/ContactConfig";
 import { VideoConfig } from "./components/VideoConfig";
 import { CustomersPartnersConfig } from "./components/CustomersPartnersConfig";
+import { EcosystemConfig } from "./components/EcosystemConfig";
+import { StatsConfig } from "./components/StatsConfig";
 import { HeroConfig } from "./components/HeroConfig";
 import { useAbility } from "@/hooks/use-ability";
 
@@ -698,6 +700,13 @@ export default function BaseConfigPage() {
 
         {/* Customers/Partners Config */}
         <CustomersPartnersConfig canUpdate={ability.can("update_banner", "settings")} />
+
+        {/* Ecosystem Members Config */}
+        <EcosystemConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Stats Numbers Config */}
+        <StatsConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
         {/* Banner Form Popup */}
         {bannerFormOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
