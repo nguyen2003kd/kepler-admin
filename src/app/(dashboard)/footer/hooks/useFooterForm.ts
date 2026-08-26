@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export function useFooterForm(initialData?: Partial<FooterMutate>) {
   const [formData, setFormData] = useState<FooterMutate>({
+    language: initialData?.language || "vi",
     description: initialData?.description || "",
     sub_description: initialData?.sub_description || "",
     phone: initialData?.phone || "",

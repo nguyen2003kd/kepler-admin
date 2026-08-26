@@ -7,7 +7,6 @@ import { X, Search, Image as ImageIcon, Video, FileText, Loader2 } from "lucide-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import baseConfig from "@configs/base";
 import {
   getGetApiV10FileQueryKey,
   getApiV10File,
@@ -75,16 +74,15 @@ function isCorrectMime(
 }
 
 function getFileSrc(file: ImagePickerFile, type: ImagePickerType): string {
-  const base = baseConfig.imgEndpointDomain;
   if (type === "image") {
     const p =
       file.compress_info?.desktop ||
       file.compress_info?.tablet ||
       file.path ||
       "";
-    return `${base}${p}`;
+    return p;
   }
-  return `${base}${file.path}`;
+  return file.path || "";
 }
 
 
@@ -232,7 +230,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
   // ── Video thumbnail generation ────────────────────────────────────────────
   const generateThumbnail = useCallback(
     async (file: ImagePickerFile) => {
-      const fullUrl = `${baseConfig.imgEndpointDomain}${file.path}`;
+      const fullUrl = `${file.path}`;
       setGeneratingIds((prev) => new Set(prev).add(file.id));
       try {
         const thumb = await extractVideoThumbnail(fullUrl, 0.8, 0.8);
@@ -405,7 +403,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                               </div>
                             ) : type === "video" && (localThumb || serverThumb) ? (
                               <Image
-                                src={localThumb || `${baseConfig.imgEndpointDomain}${serverThumb}`}
+                                src={localThumb || serverThumb || ""}
                                 alt={file.title || file.name}
                                 fill
                                 className="object-contain"
@@ -417,7 +415,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                               </div>
                             ) : serverThumb ? (
                               <Image
-                                src={`${baseConfig.imgEndpointDomain}${serverThumb}`}
+                                src={serverThumb}
                                 alt={file.title || file.name}
                                 fill
                                 className="object-contain"

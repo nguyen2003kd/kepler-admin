@@ -25,7 +25,22 @@ const nextConfig = {
         port: '3001',
         pathname: '/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '4100',
+        pathname: '/**',
+      },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/storage/:path*',
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_DOMAIN || 'http://localhost:4100'}/api/storage/:path*`,
+        basePath: false,
+      },
+    ];
   },
 };
 

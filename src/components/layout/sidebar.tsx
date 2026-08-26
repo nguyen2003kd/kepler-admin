@@ -181,7 +181,7 @@ export function Sidebar() {
               {isOpen ? (
                 <div className="space-y-1">
                   <div className="font-medium text-black dark:text-gray-300">
-                    SMEQ System
+                    Kepler Group
                   </div>
                   <div className="text-black">© 2025 All rights reserved</div>
                 </div>

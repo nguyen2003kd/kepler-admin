@@ -1,4 +1,3 @@
-import baseConfig from "@/configs/base";
 import { ImagePickerFile } from "@/components/shared/image-picker";
 
 // Helper function to get image URL
@@ -23,10 +22,8 @@ export const getImageUrl = (
     imagePath = String(file?.path || "");
   }
 
-  // Add domain if path doesn't start with http
-  return imagePath.startsWith("http")
-    ? imagePath
-    : `${baseConfig.imgEndpointDomain}${imagePath}`;
+  // Return relative path — Next.js rewrite will proxy to backend
+  return imagePath;
 };
 
 // Convert API file object to ImagePickerFile format

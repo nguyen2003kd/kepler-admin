@@ -4,3 +4,4 @@ export * from "./ContactConfig";
 export { VideoConfig } from "./VideoConfig";
 export { IntroductionConfig } from "./IntroductionConfig";
 export { CustomersPartnersConfig } from "./CustomersPartnersConfig";
+export { EcosystemConfig } from "./EcosystemConfig";
