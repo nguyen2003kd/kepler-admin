@@ -193,6 +193,7 @@ export const VideoUpload: React.FC<{ onSuccess?: () => void }> = ({ onSuccess })
                     <video
                       src={previewUrl}
                       controls
+                      crossOrigin="anonymous"
                       poster={thumbnailUrl || undefined}
                       className="w-full h-full object-contain"
                     />
