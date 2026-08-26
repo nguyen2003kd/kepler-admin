@@ -100,7 +100,6 @@ export function StatsConfig({ canCreate, canUpdate }: StatsConfigProps) {
   const configId = lang === "vi" ? viConfigId : enConfigId;
   const formData = lang === "vi" ? viEdit : enEdit;
   const setFormData = lang === "vi" ? setViEdit : setEnEdit;
-  const defaultConfig = lang === "vi" ? defaultConfigVi : defaultConfigEn;
 
   // Parse VI data
   useEffect(() => {
