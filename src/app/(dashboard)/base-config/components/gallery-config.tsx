@@ -11,7 +11,6 @@ import { usePostApiV10File } from "@/api/endpoints/file";
 import { useGetApiV10PageConfig, usePutApiV10PageConfigId } from "@/api/endpoints/page-config";
 import type { PageConfig } from "@/api/models";
 import { Edit, Save, Loader2 } from "lucide-react";
-import baseConfig from "@/configs/base";
 import { toast } from "@/components/ui/toaster";
 
 interface BannerSlide {
@@ -108,9 +107,7 @@ export function GalleryConfig() {
       imagePath = file.path || "";
     }
 
-    return imagePath.startsWith("http")
-      ? imagePath
-      : `${baseConfig.imgEndpointDomain}${imagePath}`;
+    return imagePath;
   };
 
   const handleImageSelect = (file: ImagePickerFile) => {

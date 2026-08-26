@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Edit,
   Eye,
+  Globe,
   Loader2,
   Mail,
   MapPin,
@@ -48,9 +49,15 @@ export function FooterCard({
                   </span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold">
-                    {footer.description}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold">
+                      {footer.description}
+                    </h3>
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${footer.language === 'en' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                      <Globe className="h-3 w-3" />
+                      {footer.language === 'en' ? 'English' : 'Tiếng Việt'}
+                    </span>
+                  </div>
                   {footer.sub_description && (
                     <p className="text-sm text-muted-foreground mt-1">
                       {footer.sub_description}

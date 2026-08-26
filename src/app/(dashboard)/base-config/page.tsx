@@ -26,7 +26,6 @@ import {
 // Custom popup styles removed Dialog dependency
 import { toast } from "sonner";
 import { ImagePicker, ImagePickerFile } from "@/components/shared/image-picker";
-import baseConfig from "@/configs/base";
 // import { HomeGalleryConfig } from "./components";
 
 // API imports
@@ -48,6 +47,9 @@ import { Header } from "@/components/layout/header";
 import { ContactConfig } from "./components/ContactConfig";
 import { VideoConfig } from "./components/VideoConfig";
 import { CustomersPartnersConfig } from "./components/CustomersPartnersConfig";
+import { EcosystemConfig } from "./components/EcosystemConfig";
+import { StatsConfig } from "./components/StatsConfig";
+import { HeroConfig } from "./components/HeroConfig";
 import { useAbility } from "@/hooks/use-ability";
 
 export default function BaseConfigPage() {
@@ -155,10 +157,10 @@ export default function BaseConfigPage() {
       imagePath = String(file?.path || "");
     }
 
-    // Add domain if path doesn't start with http
+    // Return relative path if not absolute URL — Next.js rewrite will proxy to backend
     return imagePath.startsWith("http")
       ? imagePath
-      : `${baseConfig.imgEndpointDomain}${imagePath}`;
+      : imagePath;
   };
 
   // Get URL for selected image file
@@ -693,8 +695,18 @@ export default function BaseConfigPage() {
           </Card>
         </div>
 
+        {/* Hero Banner Config */}
+        <HeroConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
         {/* Customers/Partners Config */}
         <CustomersPartnersConfig canUpdate={ability.can("update_banner", "settings")} />
+
+        {/* Ecosystem Members Config */}
+        <EcosystemConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Stats Numbers Config */}
+        <StatsConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
         {/* Banner Form Popup */}
         {bannerFormOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">

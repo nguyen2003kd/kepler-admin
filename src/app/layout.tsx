@@ -23,28 +23,21 @@ export const metadata: Metadata = {
   },
 
   title: {
-    default:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
-    template:
-      '%s | Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
+    default: 'Kepler Group Admin',
+    template: '%s | Kepler Group Admin',
   },
 
   description:
-    'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh là đơn vị sự nghiệp công lập trực thuộc Sở Khoa học và Công nghệ, thực hiện kiểm định, hiệu chuẩn, thử nghiệm, tư vấn và chứng nhận tiêu chuẩn, đo lường, chất lượng phục vụ quản lý nhà nước và doanh nghiệp.',
+    'Hệ thống quản trị Kepler Group — Thẩm định giá, Môi giới & Quản lý Bất động sản.',
 
   keywords: [
-    'tiêu chuẩn đo lường chất lượng',
-    'kiểm định',
-    'hiệu chuẩn',
-    'thử nghiệm',
-    'chuẩn đo lường',
-    'kiểm định thiết bị y tế',
-    'đo lường',
-    'chất lượng sản phẩm',
-    'quy chuẩn kỹ thuật',
-    'dịch vụ khoa học công nghệ',
-    'Sở Khoa học và Công nghệ TP.HCM',
-    'kiểm định an toàn thiết bị y tế',
+    'Kepler Group',
+    'thẩm định giá',
+    'môi giới bất động sản',
+    'quản lý bất động sản',
+    'bất động sản',
+    'admin dashboard',
+    'kepler admin',
   ],
 
   robots: {
@@ -58,20 +51,17 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
+    title: 'Kepler Group Admin',
     description:
-      'Đơn vị sự nghiệp công lập trực thuộc Sở Khoa học và Công nghệ TP.HCM, cung cấp dịch vụ kiểm định, hiệu chuẩn, thử nghiệm, chứng nhận và tư vấn về tiêu chuẩn, đo lường, chất lượng.',
+      'Hệ thống quản trị Kepler Group — Thẩm định giá, Môi giới & Quản lý Bất động sản.',
     url: baseConfig.frontendDomain,
-    siteName:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
+    siteName: 'Kepler Group Admin',
     images: [
       {
         url: `${baseConfig.frontendDomain}/${Logo.src}`,
         width: 1200,
         height: 630,
-        alt:
-          'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
+        alt: 'Kepler Group Admin',
       },
     ],
     locale: 'vi_VN',
@@ -80,10 +70,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
+    title: 'Kepler Group Admin',
     description:
-      'Kiểm định – Hiệu chuẩn – Thử nghiệm – Tư vấn tiêu chuẩn đo lường chất lượng tại TP. Hồ Chí Minh.',
+      'Hệ thống quản trị Kepler Group — Thẩm định giá, Môi giới & Quản lý Bất động sản.',
     images: [`${baseConfig.frontendDomain}/${Logo.src}`],
   },
 }

@@ -11,32 +11,31 @@ interface SeoProps {
 
 export function constructMetadata({
   title,
-  description = "High-performance Next.js admin dashboard for case-smeq quality testing management",
+  description = "Hệ thống quản trị Kepler Group — Thẩm định giá, Môi giới & Quản lý Bất động sản",
   image = "/images/default-og-image.jpg",
   url = "",
   type = 'website',
   noIndex = false,
 }: SeoProps): Metadata {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://case-smeq-admin.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://kepler-admin.vercel.app';
   const fullImageUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
   const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
 
   return {
     title: {
       default: title,
-      template: `%s | CASE SMEQ Admin`,
+      template: `%s | Kepler Group Admin`,
     },
     description,
     keywords: [
-      'quality testing',
-      'kiểm định chất lượng', 
-      'thử nghiệm',
-      'CASE SMEQ',
+      'Kepler Group',
+      'thẩm định giá',
+      'môi giới bất động sản',
       'admin dashboard'
     ],
-    authors: [{ name: 'CASE SMEQ Team' }],
-    creator: 'CASE SMEQ',
-    publisher: 'CASE SMEQ',
+    authors: [{ name: 'Kepler Group Team' }],
+    creator: 'Kepler Group',
+    publisher: 'Kepler Group',
     
     robots: {
       index: !noIndex,
@@ -55,7 +54,7 @@ export function constructMetadata({
       title,
       description,
       url: fullUrl,
-      siteName: 'CASE SMEQ Admin',
+      siteName: 'Kepler Group Admin',
       images: [{
         url: fullImageUrl,
         width: 1200,
@@ -70,7 +69,7 @@ export function constructMetadata({
       title,
       description,
       images: [fullImageUrl],
-      creator: '@case_smeq',
+      creator: '@keplergroup',
     },
     
     alternates: {

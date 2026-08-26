@@ -28,7 +28,6 @@ import {
   usePutApiV10PageConfigId,
 } from "@/api/endpoints/page-config";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
-import baseConfig from "@/configs/base";
 import { toast } from "sonner";
 
 const CUSTOMERS_PARTNERS_CONFIG_KEY = "Customers_partners_config";
@@ -116,9 +115,7 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
 
   const getImageUrl = (logo: string | undefined) => {
     if (!logo) return "";
-    return logo.startsWith("http")
-      ? logo
-      : `${baseConfig.imgEndpointDomain}${logo}`;
+    return logo;
   };
 
   const getSelectedImageUrl = () => {
