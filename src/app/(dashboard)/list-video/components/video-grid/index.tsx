@@ -58,6 +58,7 @@ export const VideoGrid: React.FC<{
             <video
               src={getFileUrl(video)}
               controls
+              crossOrigin="anonymous"
               preload="metadata"
               poster={
                 video.compress_info?.preload
