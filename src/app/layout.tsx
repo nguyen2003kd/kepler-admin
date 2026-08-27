@@ -3,8 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import baseConfig from "@configs/base";
-import Facion from "@/assets/images/logo-facion.ico"
-import Logo from "@/assets/images/logo.png"
+
+const siteUrl = baseConfig.frontendDomain || 'https://kepler-dev.meucorp.com';
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -17,9 +18,19 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  applicationName: 'Kepler Group Admin',
+  manifest: '/favicon-for-app/manifest.json',
   icons: {
-    icon: `${Facion.src}`,
-    shortcut: `${Facion.src}`,
+    icon: [
+      { url: '/favicon-for-app/favicon.ico', sizes: 'any' },
+      { url: '/favicon-for-app/icon0.svg', type: 'image/svg+xml' },
+      { url: '/favicon-for-app/icon1.png', sizes: '96x96', type: 'image/png' },
+    ],
+    shortcut: '/favicon-for-app/favicon.ico',
+    apple: [
+      { url: '/favicon-for-app/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 
   title: {
@@ -45,13 +56,23 @@ export const metadata: Metadata = {
     'bất động sản',
   ],
 
+  alternates: {
+    canonical: '/',
+  },
+
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
     nocache: false,
     googleBot: {
-      index: true,
-      follow: true,
+      index: false,
+      follow: false,
     },
   },
 
@@ -59,13 +80,13 @@ export const metadata: Metadata = {
     title: 'Kepler Group | Hệ sinh thái dịch vụ bất động sản toàn diện',
     description:
       'Kepler Group cung cấp hệ sinh thái dịch vụ bất động sản toàn diện: tư vấn đầu tư, thẩm định giá, phát triển dự án, quản lý tài sản, M&A, thiết kế xây dựng và giải pháp số.',
-    url: baseConfig.frontendDomain,
+    url: siteUrl,
     siteName: 'Kepler Group',
     images: [
       {
-        url: `${baseConfig.frontendDomain}/${Logo.src}`,
-        width: 1200,
-        height: 630,
+        url: '/seo.png',
+        width: 1731,
+        height: 909,
         alt: 'Kepler Group | Hệ sinh thái dịch vụ bất động sản toàn diện',
       },
     ],
@@ -78,7 +99,7 @@ export const metadata: Metadata = {
     title: 'Kepler Group | Hệ sinh thái dịch vụ bất động sản toàn diện',
     description:
       'Kepler Group cung cấp hệ sinh thái dịch vụ bất động sản toàn diện: tư vấn đầu tư, thẩm định giá, phát triển dự án, quản lý tài sản, M&A, thiết kế xây dựng và giải pháp số.',
-    images: [`${baseConfig.frontendDomain}/${Logo.src}`],
+    images: ['/seo.png'],
   },
 }
 
@@ -88,7 +109,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
