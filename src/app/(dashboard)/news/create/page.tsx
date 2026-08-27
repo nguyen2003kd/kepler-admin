@@ -26,7 +26,7 @@ import {
   PostContentEditor,
   type PostContentSection,
 } from "@/components/features/news/PostContentEditor";
-// import { HierarchicalCategorySelector } from '@/components/shared/hierarchical-category-selector';
+import { HierarchicalCategorySelector } from '@/components/shared/hierarchical-category-selector';
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import baseConfig from "@configs/base";
 export default function CreateNewsPage() {
@@ -52,8 +52,8 @@ export default function CreateNewsPage() {
   const canApproveL2 = ability.can("approve_post", "post-approval-2");
   const canApproveL1 = ability.can("approve_post", "post-approval-1");
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const categories = categoriesData?.responseData || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const categories = (categoriesData?.responseData || []) as any[];
 
   const handleImageSelect = (file: ImagePickerFile) => {
     setSelectedThumbnail(file);
@@ -71,10 +71,10 @@ export default function CreateNewsPage() {
       return;
     }
 
-    // if (selectedCategories.length === 0) {
-    //   toast.warning({ title: 'Thiếu trường', content: 'Vui lòng chọn ít nhất một danh mục' })
-    //   return;
-    // }
+    if (selectedCategories.length === 0) {
+      toast.warning({ title: 'Thiếu trường', content: 'Vui lòng chọn ít nhất một danh mục' })
+      return;
+    }
 
     try {
       // Convert PostContentSections to API format
@@ -241,6 +241,15 @@ export default function CreateNewsPage() {
                         : "Chọn ảnh đại diện"}
                     </Button>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Danh mục</Label>
+                  <HierarchicalCategorySelector
+                    categories={categories}
+                    selectedCategories={selectedCategories}
+                    onSelectionChange={setSelectedCategories}
+                  />
                 </div>
 
                 <div className="space-y-2">

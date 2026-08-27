@@ -5,3 +5,4 @@ export { VideoConfig } from "./VideoConfig";
 export { IntroductionConfig } from "./IntroductionConfig";
 export { CustomersPartnersConfig } from "./CustomersPartnersConfig";
 export { EcosystemConfig } from "./EcosystemConfig";
+export { WhyChooseUsConfig } from "./WhyChooseUsConfig";

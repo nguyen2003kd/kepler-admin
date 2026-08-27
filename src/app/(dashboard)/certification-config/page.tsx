@@ -29,6 +29,7 @@ import {
 import {
   useGetApiV10PageConfig,
   usePutApiV10PageConfigId,
+  usePostApiV10PageConfig,
 } from "@/api/endpoints/page-config";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
 import baseConfig from "@/configs/base";
@@ -37,6 +38,7 @@ import { RichTextEditor } from "@/components/shared/rich-text-editor";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 const PAGE_CONFIG_KEY = "certification-config";
+const LICENSE_CONFIG_KEY = "license-config";
 
 interface CertificationDataItem {
   id: string;
@@ -266,6 +268,7 @@ export default function CertificationConfigPage() {
     pageSize: 1,
   });
   const updateMutation = usePutApiV10PageConfigId();
+  const postMutation = usePostApiV10PageConfig();
 
   // Load from API
   useEffect(() => {
@@ -284,6 +287,107 @@ export default function CertificationConfigPage() {
       }
     }
   }, [fetchedData]);
+
+  // ─── License state ──────────────────────────────────────────────────────────
+  const [licenseConfigId, setLicenseConfigId] = useState("");
+  const [licenseData, setLicenseData] = useState<CertificationDataItem[]>([]);
+  const [licenseSaving, setLicenseSaving] = useState(false);
+  const [licenseChanges, setLicenseChanges] = useState(false);
+  const [licensePickerOpen, setLicensePickerOpen] = useState(false);
+  const [licensePickerItemId, setLicensePickerItemId] = useState<string | null>(null);
+  const licenseItemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const { data: licenseFetched, refetch: refetchLicense } = useGetApiV10PageConfig({
+    filters: `key==${LICENSE_CONFIG_KEY}`,
+    pageSize: 1,
+  });
+
+  useEffect(() => {
+    if (licenseFetched?.responseData?.rows && licenseFetched.responseData.rows.length > 0) {
+      const row = licenseFetched.responseData.rows[0] as unknown as Record<string, unknown>;
+      setLicenseConfigId(String(row.id || ""));
+      try {
+        const parsed = JSON.parse(String(row.value || "{}")) as CertificationConfig;
+        setLicenseData(parsed.data ?? []);
+      } catch {
+        setLicenseData([]);
+      }
+    }
+  }, [licenseFetched]);
+
+  const markLicenseChanged = useCallback(() => setLicenseChanges(true), []);
+
+  const addLicenseItem = () => {
+    const newItem = defaultItem();
+    setLicenseData((prev) => [...prev, newItem]);
+    markLicenseChanged();
+    setTimeout(() => {
+      const el = licenseItemRefs.current[newItem.id];
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
+  };
+
+  const removeLicenseItem = (id: string) => {
+    setLicenseData((prev) => prev.filter((item) => item.id !== id));
+    markLicenseChanged();
+  };
+
+  const updateLicenseItem = (id: string, field: keyof CertificationDataItem, value: string) => {
+    setLicenseData((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+    markLicenseChanged();
+  };
+
+  const moveLicenseItem = (idx: number, dir: -1 | 1) => {
+    setLicenseData((prev) => {
+      const next = [...prev];
+      const target = idx + dir;
+      if (target < 0 || target >= next.length) return prev;
+      [next[idx], next[target]] = [next[target], next[idx]];
+      return next;
+    });
+    markLicenseChanged();
+  };
+
+  const openLicensePicker = (itemId: string) => {
+    setLicensePickerItemId(itemId);
+    setLicensePickerOpen(true);
+  };
+
+  const handleLicenseImageSelect = (file: ImagePickerFile) => {
+    const bestPath = file.path;
+    if (licensePickerItemId) {
+      updateLicenseItem(licensePickerItemId, "img", bestPath);
+    }
+    setLicensePickerOpen(false);
+    setLicensePickerItemId(null);
+  };
+
+  const handleLicenseSave = async () => {
+    setLicenseSaving(true);
+    try {
+      const payload: CertificationConfig = { title: "", describe: "", data: licenseData };
+      if (licenseConfigId) {
+        await updateMutation.mutateAsync({
+          id: licenseConfigId,
+          data: { key: LICENSE_CONFIG_KEY, value: JSON.stringify(payload), is_active: true },
+        });
+      } else {
+        await postMutation.mutateAsync({
+          data: { key: LICENSE_CONFIG_KEY, value: JSON.stringify(payload), is_active: true, language: "vi" },
+        });
+      }
+      setLicenseChanges(false);
+      toast.success("Đã lưu cấu hình giấy phép");
+      refetchLicense();
+    } catch (err) {
+      console.error(err);
+      toast.error("Lỗi khi lưu cấu hình giấy phép");
+    } finally {
+      setLicenseSaving(false);
+    }
+  };
 
   const markChanged = useCallback(() => setHasChanges(true), []);
 
@@ -494,6 +598,76 @@ export default function CertificationConfigPage() {
           </CardContent>
         </Card>
 
+        {/* ── License Items Card ── */}
+        <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="space-y-1">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <span>Danh sách giấy phép</span>
+                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-sm font-medium">
+                  {licenseData.length}
+                </span>
+              </h3>
+              <p className="text-sm text-gray-500">
+                Quản lý giấy phép hoạt động hiển thị trên trang giới thiệu
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={addLicenseItem}
+                className="gap-1 bg-blue-600 hover:bg-blue-700"
+              >
+                <Plus className="w-4 h-4" />
+                Thêm giấy phép
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleLicenseSave}
+                disabled={licenseSaving || !licenseChanges}
+                className="gap-1 bg-green-600 hover:bg-green-700"
+              >
+                {licenseSaving ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                Lưu giấy phép
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent>
+          {licenseData.length === 0 ? (
+            <div className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-16 text-gray-400">
+              <Award className="w-12 h-12 mb-3 opacity-50" />
+              <p className="text-base font-medium mb-1">Chưa có giấy phép nào</p>
+              <p className="text-sm">Nhấn &quot;Thêm giấy phép&quot; để bắt đầu</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {licenseData.map((item, idx) => (
+                <CertificationItemCard
+                  key={item.id}
+                  ref={(el) => { licenseItemRefs.current[item.id] = el; }}
+                  item={item}
+                  index={idx}
+                  onUpdate={(field, value) => updateLicenseItem(item.id, field, value)}
+                  onRemove={() => removeLicenseItem(item.id)}
+                  onMoveUp={() => moveLicenseItem(idx, -1)}
+                  onMoveDown={() => moveLicenseItem(idx, 1)}
+                  onOpenPicker={() => openLicensePicker(item.id)}
+                  canMoveUp={idx > 0}
+                  canMoveDown={idx < licenseData.length - 1}
+                />
+              ))}
+            </div>
+          )}
+        </CardContent>
+        </Card>
+
       </div>
 
 
@@ -505,6 +679,15 @@ export default function CertificationConfigPage() {
           setPickerItemId(null);
         }}
         onSelect={handleImageSelect}
+        type="image"
+      />
+      <ImagePicker
+        isOpen={licensePickerOpen}
+        onClose={() => {
+          setLicensePickerOpen(false);
+          setLicensePickerItemId(null);
+        }}
+        onSelect={handleLicenseImageSelect}
         type="image"
       />
     </>
