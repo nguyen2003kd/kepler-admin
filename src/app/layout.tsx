@@ -23,21 +23,26 @@ export const metadata: Metadata = {
   },
 
   title: {
-    default: 'Kepler Group Admin',
-    template: '%s | Kepler Group Admin',
+    default: 'Kepler Group | Hệ sinh thái dịch vụ bất động sản toàn diện',
+    template: '%s | Kepler Group',
   },
 
   description:
-    'Hệ thống quản trị Kepler Group — Thẩm định giá, Môi giới & Quản lý Bất động sản.',
+    'Kepler Group cung cấp hệ sinh thái dịch vụ bất động sản toàn diện: tư vấn đầu tư, thẩm định giá, phát triển dự án, quản lý tài sản, M&A, thiết kế xây dựng và giải pháp số.',
 
   keywords: [
     'Kepler Group',
+    'Kepler Property',
+    'dịch vụ bất động sản',
+    'tư vấn đầu tư bất động sản',
     'thẩm định giá',
     'môi giới bất động sản',
     'quản lý bất động sản',
+    'phát triển dự án bất động sản',
+    'tư vấn M&A',
+    'thiết kế xây dựng',
+    'giải pháp số bất động sản',
     'bất động sản',
-    'admin dashboard',
-    'kepler admin',
   ],
 
   robots: {
@@ -51,17 +56,17 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: 'Kepler Group Admin',
+    title: 'Kepler Group | Hệ sinh thái dịch vụ bất động sản toàn diện',
     description:
-      'Hệ thống quản trị Kepler Group — Thẩm định giá, Môi giới & Quản lý Bất động sản.',
+      'Kepler Group cung cấp hệ sinh thái dịch vụ bất động sản toàn diện: tư vấn đầu tư, thẩm định giá, phát triển dự án, quản lý tài sản, M&A, thiết kế xây dựng và giải pháp số.',
     url: baseConfig.frontendDomain,
-    siteName: 'Kepler Group Admin',
+    siteName: 'Kepler Group',
     images: [
       {
         url: `${baseConfig.frontendDomain}/${Logo.src}`,
         width: 1200,
         height: 630,
-        alt: 'Kepler Group Admin',
+        alt: 'Kepler Group | Hệ sinh thái dịch vụ bất động sản toàn diện',
       },
     ],
     locale: 'vi_VN',
@@ -70,9 +75,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: 'Kepler Group Admin',
+    title: 'Kepler Group | Hệ sinh thái dịch vụ bất động sản toàn diện',
     description:
-      'Hệ thống quản trị Kepler Group — Thẩm định giá, Môi giới & Quản lý Bất động sản.',
+      'Kepler Group cung cấp hệ sinh thái dịch vụ bất động sản toàn diện: tư vấn đầu tư, thẩm định giá, phát triển dự án, quản lý tài sản, M&A, thiết kế xây dựng và giải pháp số.',
     images: [`${baseConfig.frontendDomain}/${Logo.src}`],
   },
 }
