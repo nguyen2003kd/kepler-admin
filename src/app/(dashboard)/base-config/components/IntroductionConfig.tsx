@@ -160,7 +160,7 @@ const BLOCK_LIBRARY: BlockTemplate[] = [
     type: "badge", group: "atomic",
     label: "Nhãn (Badge)", description: "Text nổi bật có màu",
     icon: <Tag className="w-4 h-4 text-yellow-600" />,
-    create: (): BadgeBlock => ({ id: generateId(), type: "badge", text: "CASE-SMQ", color: "cyan" }),
+    create: (): BadgeBlock => ({ id: generateId(), type: "badge", text: "KEPLER", color: "cyan" }),
   },
   // ── Layout ──
   {
