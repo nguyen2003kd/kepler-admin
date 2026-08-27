@@ -50,6 +50,11 @@ import { CustomersPartnersConfig } from "./components/CustomersPartnersConfig";
 import { EcosystemConfig } from "./components/EcosystemConfig";
 import { StatsConfig } from "./components/StatsConfig";
 import { HeroConfig } from "./components/HeroConfig";
+import { WhyChooseUsConfig } from "./components/WhyChooseUsConfig";
+import { CapabilityProfileConfig } from "./components/CapabilityProfileConfig";
+import { VisionMissionContentConfig } from "./components/VisionMissionContentConfig";
+import { VisionMissionHeroConfig } from "./components/VisionMissionHeroConfig";
+import { CoreValuesConfig } from "./components/CoreValuesConfig";
 import { useAbility } from "@/hooks/use-ability";
 
 export default function BaseConfigPage() {
@@ -706,6 +711,21 @@ export default function BaseConfigPage() {
 
         {/* Stats Numbers Config */}
         <StatsConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Why Choose Us Config */}
+        <WhyChooseUsConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Capability Profile Config */}
+        <CapabilityProfileConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Vision Mission Hero Config */}
+        <VisionMissionHeroConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Vision Mission Content Config */}
+        <VisionMissionContentConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Core Values Config */}
+        <CoreValuesConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
 
         {/* Banner Form Popup */}
         {bannerFormOpen && (

@@ -138,11 +138,11 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['introduction'] },
     sidebar: { label: 'Trang giới thiệu', icon: 'info' },
   },
-  // {
-  //   path: '/certification-config',
-  //   access: { resources: ['settings'] },
-  //   sidebar: { label: 'Cấu hình chứng nhận', icon: 'shieldCheck' },
-  // },
+  {
+    path: '/certification-config',
+    access: { resources: ['settings'] },
+    sidebar: { label: 'Cấu hình chứng nhận', icon: 'shieldCheck' },
+  },
     {
     path: '/recruitment',
     access: { resources: ['recruitment'] },

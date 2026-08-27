@@ -28,7 +28,7 @@ import {
   PostContentEditor,
   type PostContentSection,
 } from "@/components/features/news/PostContentEditor";
-// import { HierarchicalCategorySelector } from "@/components/shared/hierarchical-category-selector";
+import { HierarchicalCategorySelector } from "@/components/shared/hierarchical-category-selector";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import baseConfig from "@configs/base";
 export default function EditNewsPage() {
@@ -53,8 +53,8 @@ export default function EditNewsPage() {
     { query: { enabled: !!news?.thumbnail_file_id } }
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const categories = categoriesData?.responseData || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const categories = (categoriesData?.responseData || []) as any[];
 
   const [title, setTitle] = useState("");
   const [code, setCode] = useState("");
@@ -182,10 +182,10 @@ export default function EditNewsPage() {
       return;
     }
 
-    // if (selectedCategories.length === 0) {
-    //   toast.warning({ title: 'Thiếu trường', content: 'Vui lòng chọn ít nhất một danh mục' })
-    //   return;
-    // }
+    if (selectedCategories.length === 0) {
+      toast.warning({ title: 'Thiếu trường', content: 'Vui lòng chọn ít nhất một danh mục' })
+      return;
+    }
 
     try {
       const postData: PostMutate = {
@@ -406,7 +406,14 @@ export default function EditNewsPage() {
                   </div>
                 </div>
 
-
+                <div className="space-y-2">
+                  <Label>Danh mục</Label>
+                  <HierarchicalCategorySelector
+                    categories={categories}
+                    selectedCategories={selectedCategories}
+                    onSelectionChange={setSelectedCategories}
+                  />
+                </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="summary">Tóm tắt</Label>

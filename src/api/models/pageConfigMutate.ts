@@ -22,4 +22,5 @@ export interface PageConfigMutate {
    * @nullable
    */
   is_active?: boolean | null;
+  language?: string;
 }

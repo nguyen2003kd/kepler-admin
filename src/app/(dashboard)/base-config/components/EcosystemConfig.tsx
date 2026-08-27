@@ -502,7 +502,7 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Ảnh đại diện</Label>
+                    <Label className="text-xs text-muted-foreground">Banner</Label>
                     <div className="flex items-center gap-3">
                       <div className="w-20 h-20 rounded-lg border border-gray-200 overflow-hidden bg-white flex items-center justify-center flex-shrink-0 relative">
                         {member.image ? (
