@@ -5,4 +5,5 @@ export interface ContactMutate {
   email?: string;
   phone_number?: string;
   content?: string;
+  type?: string;
 }
