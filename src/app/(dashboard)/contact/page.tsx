@@ -11,6 +11,13 @@ import {
 import { Header } from "@/components/layout/header";
 import { DataTable } from "@/components/shared/data-table";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   useContactColumns,
   ContactEditDialog,
   ContactViewDialog,
@@ -18,8 +25,21 @@ import {
 import { useContactData, useContactDetail, useContactMutations } from "./hooks";
 import type { Contact } from "@/types";
 
+const TYPE_OPTIONS = [
+  { value: "all", label: "Tất cả loại" },
+  { value: "lien-he-kepler", label: "Liên hệ Kepler" },
+  { value: "lien-he-hop-tac", label: "Liên hệ hợp tác" },
+  { value: "yeu-cau-ban-cho-thue", label: "Bán/cho thuê BĐS" },
+  { value: "yeu-cau-tham-dinh-gia", label: "Thẩm định giá" },
+  { value: "yeu-cau-dich-vu", label: "Yêu cầu dịch vụ" },
+  { value: "tu-van-thuong-vu-ma", label: "Tư vấn M&A" },
+  { value: "dat-lich-hen-chuyen-gia", label: "Đặt lịch chuyên gia" },
+  { value: "general", label: "Chung" },
+];
+
 export default function ContactPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [selectedType, setSelectedType] = React.useState("all");
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = React.useState(false);
   const [selectedContact, setSelectedContact] = React.useState<Contact | null>(
@@ -35,7 +55,7 @@ export default function ContactPage() {
     hasNextPage,
     isFetchingNextPage,
     refetch,
-  } = useContactData(searchTerm);
+  } = useContactData(searchTerm, selectedType === "all" ? undefined : selectedType);
 
   const contactDetail = useContactDetail(selectedContact?.id);
 
@@ -118,6 +138,22 @@ export default function ContactPage() {
                 hasNextPage={hasNextPage}
                 isFetchingNextPage={isFetchingNextPage}
                 onSearch={setSearchTerm}
+                extraFilters={
+                  <div className="w-48">
+                    <Select value={selectedType} onValueChange={setSelectedType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Lọc theo loại" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TYPE_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                }
               />
             </CardContent>
           </Card>

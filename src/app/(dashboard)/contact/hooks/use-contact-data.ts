@@ -11,10 +11,15 @@ import {
 import { ContactMutate } from "@/api/models";
 import type { Contact } from "@/types";
 
-export function useContactData(searchTerm: string) {
+export function useContactData(searchTerm: string, typeFilter?: string) {
+  const filterParts = [
+    searchTerm ? `name~${searchTerm}` : null,
+    typeFilter ? `type==${typeFilter}` : null,
+  ].filter(Boolean);
+
   const { data: contactsResponse, isLoading, refetch } = useGetApiV10Contact({
     pageSize: 100,
-    filters: searchTerm ? `name~${searchTerm}` : undefined,
+    filters: filterParts.length > 0 ? filterParts.join(" , ") : undefined,
     sortField: "created_at",
     sortOrder: "desc",
   });
