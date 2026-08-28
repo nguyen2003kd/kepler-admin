@@ -48,6 +48,7 @@ import { ContactConfig } from "./components/ContactConfig";
 import { VideoConfig } from "./components/VideoConfig";
 import { CustomersPartnersConfig } from "./components/CustomersPartnersConfig";
 import { EcosystemConfig } from "./components/EcosystemConfig";
+import { ContactFormTypesConfig } from "./components/ContactFormTypesConfig";
 import { StatsConfig } from "./components/StatsConfig";
 import { HeroConfig } from "./components/HeroConfig";
 import { WhyChooseUsConfig } from "./components/WhyChooseUsConfig";
@@ -708,6 +709,9 @@ export default function BaseConfigPage() {
 
         {/* Ecosystem Members Config */}
         <EcosystemConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
+
+        {/* Contact Form Types Config */}
+        <ContactFormTypesConfig canCreate={canCreateContact} canUpdate={canUpdateContact} />
 
         {/* Stats Numbers Config */}
         <StatsConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />

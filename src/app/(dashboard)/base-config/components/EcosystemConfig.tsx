@@ -18,7 +18,6 @@ import {
   Image as ImageIcon,
   Plus,
   Trash2,
-  Building2,
   X,
   AlertCircle,
 } from "lucide-react";
@@ -141,6 +140,72 @@ const defaultMembers: EcosystemMember[] = [
     industries: ["Môi giới BĐS", "Phân phối dự án", "Sàn giao dịch BĐS", "Tư vấn giao dịch"],
     products: ["Mua bán nhà lẻ", "Cho thuê BĐS", "Phân phối dự án", "Kêu gọi đầu tư"],
     clients: "Khách hàng cá nhân, chủ đầu tư, nhà đầu tư BĐS.",
+  },
+  {
+    slug: "realhub",
+    name: "RealHub Platform",
+    eyebrow: "Nền tảng dữ liệu & công nghệ BĐS",
+    description:
+      "Nền tảng công nghệ trong hệ sinh thái Kepler, hướng tới kết nối dữ liệu – tài sản – chuyên gia – dịch vụ – nhà đầu tư – giao dịch bất động sản trên một hệ thống số.",
+    image: "/images/category-banner-investment.png",
+    logo: "",
+    tags: ["Giới thiệu nền tảng", "Đối tượng sử dụng", "Các module dự kiến", "Roadmap"],
+    link: "/realhub",
+    overview:
+      "RealHub là nền tảng hỗ trợ Kepler phát triển mô hình công nghệ bất động sản (PropTech), từng bước số hóa quy trình tư vấn, quản lý tài sản, giao dịch và khai thác dữ liệu. RealHub kết nối dữ liệu – tài sản – chuyên gia – dịch vụ – nhà đầu tư – giao dịch bất động sản trên một hệ thống số.",
+    industries: [
+      "Sàn giao dịch bất động sản",
+      "Cơ sở dữ liệu bất động sản",
+      "Mạng lưới chuyên gia",
+      "Quản lý quan hệ khách hàng (CRM)",
+      "Quản lý giao dịch",
+      "Bảng điều khiển tài sản",
+      "Phân tích bất động sản",
+      "Định giá bằng trí tuệ nhân tạo",
+      "Thẩm định chi tiết số hóa",
+      "Dịch vụ bất động sản số",
+    ],
+    products: [
+      "Sàn giao dịch bất động sản",
+      "Nền tảng dữ liệu bất động sản",
+      "Bảng điều khiển nhà đầu tư",
+      "Bảng điều khiển tài sản",
+      "Phòng giao dịch số",
+      "Phân tích bất động sản bằng AI",
+      "Kết nối chuyên gia",
+    ],
+    clients:
+      "Nhà đầu tư, chủ sở hữu tài sản, chủ đầu tư, môi giới, chuyên gia, doanh nghiệp và các đối tác dịch vụ bất động sản.",
+  },
+  {
+    slug: "bizoffice",
+    name: "Biz Space",
+    eyebrow: "Văn phòng linh hoạt & Hệ sinh thái doanh nghiệp",
+    description:
+      "Thương hiệu phát triển mô hình không gian làm việc linh hoạt và hệ sinh thái dịch vụ doanh nghiệp, cung cấp văn phòng, coworking, phòng họp, đào tạo và các dịch vụ hỗ trợ doanh nghiệp.",
+    image: "/images/banner-3.jpg",
+    logo: "",
+    tags: ["Văn phòng chia sẻ", "Văn phòng ảo", "Phòng họp & sự kiện", "Dịch vụ hỗ trợ"],
+    link: "/he-sinh-thai/bizoffice",
+    overview:
+      "Biz Space hướng tới xây dựng môi trường làm việc – kết nối – giao thương – phát triển doanh nghiệp trong hệ sinh thái Kepler. Biz Space cung cấp giải pháp không gian làm việc linh hoạt và hệ sinh thái dịch vụ doanh nghiệp.",
+    industries: [
+      "Tư vấn và khai thác vận hành hệ thống văn phòng cho thuê, mặt bằng thương mại",
+      "Tư vấn setup và vận hành các tiện ích văn phòng và tiện ích doanh nghiệp",
+      "Xúc tiến thương mại và kết nối",
+    ],
+    products: [
+      "Văn phòng riêng",
+      "Không gian làm việc chung",
+      "Văn phòng ảo",
+      "Phòng họp",
+      "Phòng đào tạo",
+      "Không gian sự kiện",
+      "Phòng chờ doanh nghiệp",
+      "Coworking Space",
+    ],
+    clients:
+      "Startup, doanh nghiệp vừa và nhỏ, chuyên gia, doanh nghiệp nước ngoài, nhà đầu tư, nhóm dự án và các doanh nghiệp cần không gian làm việc linh hoạt.",
   },
 ];
 
@@ -374,16 +439,11 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-              <Building2 className="h-5 w-5 text-indigo-600" />
-            </div>
-            <div>
-              <CardTitle>Thành viên hệ sinh thái</CardTitle>
-              <CardDescription>
-                Cấu hình danh sách công ty thành viên hiển thị trên trang chủ và trang hệ sinh thái
-              </CardDescription>
-            </div>
+          <div>
+            <CardTitle>Thành viên hệ sinh thái</CardTitle>
+            <CardDescription>
+              Cấu hình danh sách công ty thành viên hiển thị trên trang chủ và trang hệ sinh thái
+            </CardDescription>
           </div>
           {canEdit && !editing && (
             <Button variant="outline" size="sm" onClick={() => setEditing(true)}>

@@ -6,5 +6,6 @@ export interface Contact {
   email?: string;
   phone_number?: string;
   content?: string;
+  type?: string;
   created_at?: string;
 }

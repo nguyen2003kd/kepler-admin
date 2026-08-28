@@ -67,6 +67,30 @@ export function useContactColumns({
           ),
       },
       {
+        accessorKey: "type",
+        header: "Loại",
+        cell: ({ row }) => {
+          const typeLabels: Record<string, string> = {
+            "lien-he-kepler": "Liên hệ Kepler",
+            "lien-he-hop-tac": "Liên hệ hợp tác",
+            "yeu-cau-ban-cho-thue": "Bán/cho thuê BĐS",
+            "yeu-cau-tham-dinh-gia": "Thẩm định giá",
+            "yeu-cau-dich-vu": "Yêu cầu dịch vụ",
+            "tu-van-thuong-vu-ma": "Tư vấn M&A",
+            "dat-lich-hen-chuyen-gia": "Đặt lịch chuyên gia",
+            general: "Chung",
+          };
+          const type = row.original.type;
+          return type ? (
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+              {typeLabels[type] || type}
+            </span>
+          ) : (
+            <span className="text-muted-foreground">--</span>
+          );
+        },
+      },
+      {
         accessorKey: "content",
         header: "Nội dung",
         cell: ({ row }) => (
