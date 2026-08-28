@@ -53,6 +53,7 @@ interface DataTableProps<TData, TValue> {
   searchColumns?: string[];
   onSearch?: (q: string) => void;
   debounceMs?: number;
+  extraFilters?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -66,6 +67,7 @@ export function DataTable<TData, TValue>({
   isFetchingNextPage,
   onSearch,
   debounceMs = 300,
+  extraFilters,
 }: DataTableProps<TData, TValue>) {
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -190,6 +192,7 @@ export function DataTable<TData, TValue>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          {extraFilters}
         </div>
       </div>
 
