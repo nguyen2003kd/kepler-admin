@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toaster";
 import { extractErrorMessage } from "@/utils/error";
-import { Building2, Globe, Link2, Loader2, MapPin, Plus, Trash2 } from "lucide-react";
+import { Building2, Globe, Link2, Loader2, MapPin, Plus, Trash2, Network, Navigation } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFooterForm, useFooterMutations } from "../hooks";
@@ -24,12 +24,20 @@ export default function CreateFooterPage() {
     socialLinks,
     setSocialLinks,
     links,
+    internalLinks,
+    memberBrands,
     handleAddAddress,
     handleRemoveAddress,
     handleAddressChange,
     handleAddLink,
     handleRemoveLink,
     handleLinkChange,
+    handleAddInternalLink,
+    handleRemoveInternalLink,
+    handleInternalLinkChange,
+    handleAddMemberBrand,
+    handleRemoveMemberBrand,
+    handleMemberBrandChange,
     getSubmitData,
   } = useFooterForm();
 
@@ -386,6 +394,51 @@ export default function CreateFooterPage() {
                         className="bg-gray-50"
                       />
                     </div>
+
+                    <div className="space-y-2">
+                      <Label>Youtube</Label>
+                      <Input
+                        value={socialLinks.youtube}
+                        onChange={(e) =>
+                          setSocialLinks({
+                            ...socialLinks,
+                            youtube: e.target.value,
+                          })
+                        }
+                        placeholder="https://youtube.com/..."
+                        className="bg-gray-50"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>WhatsApp</Label>
+                      <Input
+                        value={socialLinks.whatsapp}
+                        onChange={(e) =>
+                          setSocialLinks({
+                            ...socialLinks,
+                            whatsapp: e.target.value,
+                          })
+                        }
+                        placeholder="https://wa.me/..."
+                        className="bg-gray-50"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Zalo</Label>
+                      <Input
+                        value={socialLinks.zalo}
+                        onChange={(e) =>
+                          setSocialLinks({
+                            ...socialLinks,
+                            zalo: e.target.value,
+                          })
+                        }
+                        placeholder="https://zalo.me/..."
+                        className="bg-gray-50"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -478,6 +531,222 @@ export default function CreateFooterPage() {
                                   )
                                 }
                                 placeholder="https://example.com"
+                                className="bg-gray-50"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-8">
+                {/* Internal Links Section */}
+                <div>
+                  <div className="flex items-center justify-between mb-6 pb-3 border-b">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                        <Navigation className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">Liên kết nội bộ</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {'Menu "Về Kepler Property" (link nội bộ trong site)'}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddInternalLink}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm liên kết
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {internalLinks.map((item, index) => (
+                      <div
+                        key={index}
+                        className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between pb-3 border-b">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-md bg-emerald-50 flex items-center justify-center">
+                                <Navigation className="h-4 w-4 text-emerald-600" />
+                              </div>
+                              <h4 className="font-semibold text-sm">
+                                Liên kết {index + 1}
+                              </h4>
+                            </div>
+                            {internalLinks.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveInternalLink(index)}
+                                className="h-8 w-8 p-0 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4 text-red-600" />
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Tiêu đề
+                              </Label>
+                              <Input
+                                value={item.title}
+                                onChange={(e) =>
+                                  handleInternalLinkChange(
+                                    index,
+                                    "title",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="Giới thiệu"
+                                className="bg-gray-50"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Đường dẫn (URL nội bộ)
+                              </Label>
+                              <Input
+                                value={item.link}
+                                onChange={(e) =>
+                                  handleInternalLinkChange(
+                                    index,
+                                    "link",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="/about"
+                                className="bg-gray-50"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-8">
+                {/* Member Brands Section */}
+                <div>
+                  <div className="flex items-center justify-between mb-6 pb-3 border-b">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-amber-50 flex items-center justify-center">
+                        <Network className="h-5 w-5 text-amber-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">Thương hiệu thành viên</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Danh sách các thương hiệu thành viên (link và logo không bắt buộc)
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddMemberBrand}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm thương hiệu
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {memberBrands.map((brand, index) => (
+                      <div
+                        key={index}
+                        className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between pb-3 border-b">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-md bg-amber-50 flex items-center justify-center">
+                                <Network className="h-4 w-4 text-amber-600" />
+                              </div>
+                              <h4 className="font-semibold text-sm">
+                                Thương hiệu {index + 1}
+                              </h4>
+                            </div>
+                            {memberBrands.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveMemberBrand(index)}
+                                className="h-8 w-8 p-0 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4 text-red-600" />
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Tên thương hiệu *
+                              </Label>
+                              <Input
+                                value={brand.name}
+                                onChange={(e) =>
+                                  handleMemberBrandChange(
+                                    index,
+                                    "name",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="Kepler Property – KMC"
+                                className="bg-gray-50"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Đường dẫn (URL)
+                              </Label>
+                              <Input
+                                value={brand.link}
+                                onChange={(e) =>
+                                  handleMemberBrandChange(
+                                    index,
+                                    "link",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="https://keplerproperty.com"
+                                className="bg-gray-50"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Logo (URL ảnh)
+                              </Label>
+                              <Input
+                                value={brand.logo}
+                                onChange={(e) =>
+                                  handleMemberBrandChange(
+                                    index,
+                                    "logo",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="https://cdn.example.com/logo.png"
                                 className="bg-gray-50"
                               />
                             </div>
