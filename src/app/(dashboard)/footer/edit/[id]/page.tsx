@@ -17,6 +17,8 @@ import {
   Link2,
   Loader2,
   MapPin,
+  Network,
+  Navigation,
   Plus,
   Trash2,
 } from "lucide-react";
@@ -51,12 +53,22 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
     setSocialLinks,
     links,
     setLinks,
+    internalLinks,
+    setInternalLinks,
+    memberBrands,
+    setMemberBrands,
     handleAddAddress,
     handleRemoveAddress,
     handleAddressChange,
     handleAddLink,
     handleRemoveLink,
     handleLinkChange,
+    handleAddInternalLink,
+    handleRemoveInternalLink,
+    handleInternalLinkChange,
+    handleAddMemberBrand,
+    handleRemoveMemberBrand,
+    handleMemberBrandChange,
     getSubmitData,
   } = useFooterForm();
 
@@ -93,6 +105,9 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
           twitter: linksData.twitter || "",
           linkedin: linksData.linkedin || "",
           instagram: linksData.instagram || "",
+          youtube: linksData.youtube || "",
+          whatsapp: linksData.whatsapp || "",
+          zalo: linksData.zalo || "",
         });
       }
 
@@ -104,8 +119,27 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
           })),
         );
       }
+
+      if (footer.internal_links && footer.internal_links.length > 0) {
+        setInternalLinks(
+          footer.internal_links.map((l) => ({
+            title: l.title || "",
+            link: l.link || "",
+          })),
+        );
+      }
+
+      if (footer.member_brands && footer.member_brands.length > 0) {
+        setMemberBrands(
+          footer.member_brands.map((b) => ({
+            name: b.name || "",
+            link: b.link || "",
+            logo: b.logo || "",
+          })),
+        );
+      }
     }
-  }, [footerData, setFormData, setAddresses, setSocialLinks, setLinks]);
+  }, [footerData, setFormData, setAddresses, setSocialLinks, setLinks, setInternalLinks, setMemberBrands]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,6 +187,8 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
         ? submitData.social_links
         : existingFooter.social_links,
       links: canUpdateLinks ? submitData.links as FooterMutateLinksItem[] : existingFooter.links as FooterMutateLinksItem[],
+      internal_links: canUpdateLinks ? submitData.internal_links : existingFooter.internal_links,
+      member_brands: canUpdateLinks ? submitData.member_brands : existingFooter.member_brands,
     };
 
     try {
@@ -542,6 +578,51 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
                         className="bg-gray-50"
                       />
                     </div>
+
+                    <div className="space-y-2">
+                      <Label>Youtube</Label>
+                      <Input
+                        value={socialLinks.youtube}
+                        onChange={(e) =>
+                          setSocialLinks({
+                            ...socialLinks,
+                            youtube: e.target.value,
+                          })
+                        }
+                        placeholder="https://youtube.com/..."
+                        className="bg-gray-50"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>WhatsApp</Label>
+                      <Input
+                        value={socialLinks.whatsapp}
+                        onChange={(e) =>
+                          setSocialLinks({
+                            ...socialLinks,
+                            whatsapp: e.target.value,
+                          })
+                        }
+                        placeholder="https://wa.me/..."
+                        className="bg-gray-50"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Zalo</Label>
+                      <Input
+                        value={socialLinks.zalo}
+                        onChange={(e) =>
+                          setSocialLinks({
+                            ...socialLinks,
+                            zalo: e.target.value,
+                          })
+                        }
+                        placeholder="https://zalo.me/..."
+                        className="bg-gray-50"
+                      />
+                    </div>
                   </div>
                 </div>
                 </div>
@@ -636,6 +717,226 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
                                   )
                                 }
                                 placeholder="https://example.com"
+                                className="bg-gray-50"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                </div>
+              )}
+
+              {canUpdateLinks && (
+                <div className="border-t pt-8">
+                {/* Internal Links Section */}
+                <div>
+                  <div className="flex items-center justify-between mb-6 pb-3 border-b">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                        <Navigation className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">Liên kết nội bộ</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {'Menu "Về Kepler Property" (link nội bộ trong site)'}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddInternalLink}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm liên kết
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {internalLinks.map((item, index) => (
+                      <div
+                        key={index}
+                        className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between pb-3 border-b">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-md bg-emerald-50 flex items-center justify-center">
+                                <Navigation className="h-4 w-4 text-emerald-600" />
+                              </div>
+                              <h4 className="font-semibold text-sm">
+                                Liên kết {index + 1}
+                              </h4>
+                            </div>
+                            {internalLinks.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveInternalLink(index)}
+                                className="h-8 w-8 p-0 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4 text-red-600" />
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Tiêu đề
+                              </Label>
+                              <Input
+                                value={item.title}
+                                onChange={(e) =>
+                                  handleInternalLinkChange(
+                                    index,
+                                    "title",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="Giới thiệu"
+                                className="bg-gray-50"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Đường dẫn (URL nội bộ)
+                              </Label>
+                              <Input
+                                value={item.link}
+                                onChange={(e) =>
+                                  handleInternalLinkChange(
+                                    index,
+                                    "link",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="/about"
+                                className="bg-gray-50"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                </div>
+              )}
+
+              {canUpdateLinks && (
+                <div className="border-t pt-8">
+                {/* Member Brands Section */}
+                <div>
+                  <div className="flex items-center justify-between mb-6 pb-3 border-b">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-amber-50 flex items-center justify-center">
+                        <Network className="h-5 w-5 text-amber-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">Thương hiệu thành viên</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Danh sách các thương hiệu thành viên (link và logo không bắt buộc)
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddMemberBrand}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm thương hiệu
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {memberBrands.map((brand, index) => (
+                      <div
+                        key={index}
+                        className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between pb-3 border-b">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-md bg-amber-50 flex items-center justify-center">
+                                <Network className="h-4 w-4 text-amber-600" />
+                              </div>
+                              <h4 className="font-semibold text-sm">
+                                Thương hiệu {index + 1}
+                              </h4>
+                            </div>
+                            {memberBrands.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveMemberBrand(index)}
+                                className="h-8 w-8 p-0 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4 text-red-600" />
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Tên thương hiệu *
+                              </Label>
+                              <Input
+                                value={brand.name}
+                                onChange={(e) =>
+                                  handleMemberBrandChange(
+                                    index,
+                                    "name",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="Kepler Property – KMC"
+                                className="bg-gray-50"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Đường dẫn (URL)
+                              </Label>
+                              <Input
+                                value={brand.link}
+                                onChange={(e) =>
+                                  handleMemberBrandChange(
+                                    index,
+                                    "link",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="https://keplerproperty.com"
+                                className="bg-gray-50"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">
+                                Logo (URL ảnh)
+                              </Label>
+                              <Input
+                                value={brand.logo}
+                                onChange={(e) =>
+                                  handleMemberBrandChange(
+                                    index,
+                                    "logo",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="https://cdn.example.com/logo.png"
                                 className="bg-gray-50"
                               />
                             </div>

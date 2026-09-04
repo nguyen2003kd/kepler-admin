@@ -45,6 +45,16 @@ export interface Footer {
    */
   links?: FooterLinksItem[] | null;
   /**
+   * Internal navigation links (e.g. About, News, Contact) for the footer menu
+   * @nullable
+   */
+  internal_links?: Array<{ title?: string | null; link?: string | null }> | null;
+  /**
+   * Member brand entries for the "Thương hiệu thành viên" column (link and logo are optional)
+   * @nullable
+   */
+  member_brands?: Array<{ name?: string | null; link?: string | null; logo?: string | null }> | null;
+  /**
    * Current number of online visitors
    * @nullable
    */

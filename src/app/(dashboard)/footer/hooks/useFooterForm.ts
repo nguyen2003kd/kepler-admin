@@ -1,6 +1,17 @@
 import type { FooterMutate, FooterMutateAddressItem, FooterMutateLinksItem } from "@/api/models";
 import { useState } from "react";
 
+export interface InternalLinkItem {
+  title: string;
+  link: string;
+}
+
+export interface MemberBrandItem {
+  name: string;
+  link: string;
+  logo: string;
+}
+
 export function useFooterForm(initialData?: Partial<FooterMutate>) {
   const [formData, setFormData] = useState<FooterMutate>({
     language: initialData?.language || "vi",
@@ -22,10 +33,21 @@ export function useFooterForm(initialData?: Partial<FooterMutate>) {
     twitter: "",
     linkedin: "",
     instagram: "",
+    youtube: "",
+    whatsapp: "",
+    zalo: "",
   });
 
   const [links, setLinks] = useState<FooterMutateLinksItem[]>([
     { link: "", title: "" },
+  ]);
+
+  const [internalLinks, setInternalLinks] = useState<InternalLinkItem[]>([
+    { title: "", link: "" },
+  ]);
+
+  const [memberBrands, setMemberBrands] = useState<MemberBrandItem[]>([
+    { name: "", link: "", logo: "" },
   ]);
 
   const handleAddAddress = () => {
@@ -64,9 +86,45 @@ export function useFooterForm(initialData?: Partial<FooterMutate>) {
     setLinks(newLinks);
   };
 
+  const handleAddInternalLink = () => {
+    setInternalLinks([...internalLinks, { title: "", link: "" }]);
+  };
+
+  const handleRemoveInternalLink = (index: number) => {
+    setInternalLinks(internalLinks.filter((_, i) => i !== index));
+  };
+
+  const handleInternalLinkChange = (
+    index: number,
+    field: keyof InternalLinkItem,
+    value: string,
+  ) => {
+    const newInternalLinks = [...internalLinks];
+    newInternalLinks[index][field] = value;
+    setInternalLinks(newInternalLinks);
+  };
+
+  const handleAddMemberBrand = () => {
+    setMemberBrands([...memberBrands, { name: "", link: "", logo: "" }]);
+  };
+
+  const handleRemoveMemberBrand = (index: number) => {
+    setMemberBrands(memberBrands.filter((_, i) => i !== index));
+  };
+
+  const handleMemberBrandChange = (
+    index: number,
+    field: keyof MemberBrandItem,
+    value: string,
+  ) => {
+    const newMemberBrands = [...memberBrands];
+    newMemberBrands[index][field] = value;
+    setMemberBrands(newMemberBrands);
+  };
+
   const getSubmitData = (): FooterMutate => {
     const filteredAddresses = addresses.filter(
-      (addr) => addr.title?.trim() && addr.location?.trim(),
+      (addr) => addr.title?.trim() || addr.location?.trim(),
     );
 
     const filteredSocialLinks = Object.fromEntries(
@@ -77,11 +135,21 @@ export function useFooterForm(initialData?: Partial<FooterMutate>) {
       (link) => (link.title as string)?.trim() && (link.link as string)?.trim(),
     );
 
+    const filteredInternalLinks = internalLinks.filter(
+      (item) => item.title?.trim(),
+    );
+
+    const filteredMemberBrands = memberBrands.filter(
+      (item) => item.name?.trim(),
+    );
+
     return {
       ...formData,
       address: filteredAddresses,
       social_links: filteredSocialLinks,
       links: filteredLinks,
+      internal_links: filteredInternalLinks as unknown as FooterMutate["internal_links"],
+      member_brands: filteredMemberBrands as unknown as FooterMutate["member_brands"],
     };
   };
 
@@ -94,12 +162,22 @@ export function useFooterForm(initialData?: Partial<FooterMutate>) {
     setSocialLinks,
     links,
     setLinks,
+    internalLinks,
+    setInternalLinks,
+    memberBrands,
+    setMemberBrands,
     handleAddAddress,
     handleRemoveAddress,
     handleAddressChange,
     handleAddLink,
     handleRemoveLink,
     handleLinkChange,
+    handleAddInternalLink,
+    handleRemoveInternalLink,
+    handleInternalLinkChange,
+    handleAddMemberBrand,
+    handleRemoveMemberBrand,
+    handleMemberBrandChange,
     getSubmitData,
   };
 }
