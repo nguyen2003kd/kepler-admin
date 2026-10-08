@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -10,7 +14,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
@@ -18,21 +22,53 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@api/*": ["./src/api/*"],
-      "@lib/*": ["./src/lib/*"],
-      "@public/*": ["./public/*"],
-      "@stores/*": ["./src/stores/*"],
-      "@links/*": ["./src/links/*"],
-      "@app/*": ["./src/app/*"],
-      "@constants/*": ["./src/constants/*"],
-      "@configs/*": ["./src/configs/*"],
-      "@utils/*": ["./src/utils/*"]
-      
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@api/*": [
+        "./src/api/*"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "@public/*": [
+        "./public/*"
+      ],
+      "@stores/*": [
+        "./src/stores/*"
+      ],
+      "@links/*": [
+        "./src/links/*"
+      ],
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
+      "@configs/*": [
+        "./src/configs/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ]
+    },
+    "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
