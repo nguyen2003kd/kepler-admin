@@ -46,7 +46,11 @@ import { LogoMutate } from "@/api/models/logoMutate";
 import { Header } from "@/components/layout/header";
 import { ContactConfig } from "./components/ContactConfig";
 import { VideoConfig } from "./components/VideoConfig";
-import { CustomersPartnersConfig } from "./components/CustomersPartnersConfig";
+import {
+  CustomersPartnersConfig,
+  CUSTOMERS_CONFIG_KEY,
+  PARTNERS_CONFIG_KEY,
+} from "./components/CustomersPartnersConfig";
 import { EcosystemConfig } from "./components/EcosystemConfig";
 import { ContactFormTypesConfig } from "./components/ContactFormTypesConfig";
 import { StatsConfig } from "./components/StatsConfig";
@@ -676,11 +680,10 @@ export default function BaseConfigPage() {
                       (banner: Record<string, unknown>, index) => (
                         <div
                           key={String(banner.id)}
-                          className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer ${
-                            index === currentSlide
-                              ? "border-green-400"
-                              : "border-gray-200"
-                          }`}
+                          className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer ${index === currentSlide
+                            ? "border-green-400"
+                            : "border-gray-200"
+                            }`}
                           onClick={() => setCurrentSlide(index)}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -704,8 +707,23 @@ export default function BaseConfigPage() {
         {/* Hero Banner Config */}
         <HeroConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
 
-        {/* Customers/Partners Config */}
-        <CustomersPartnersConfig canUpdate={ability.can("update_banner", "settings")} />
+        {/* Customers Config */}
+        <CustomersPartnersConfig
+          canUpdate={ability.can("update_banner", "settings")}
+          configKey={CUSTOMERS_CONFIG_KEY}
+          title="Quản lý Khách hàng"
+          description="Quản lý logo và thông tin khách hàng hiển thị trên website"
+          itemLabel="Khách hàng"
+        />
+
+        {/* Partners Config */}
+        <CustomersPartnersConfig
+          canUpdate={ability.can("update_banner", "settings")}
+          configKey={PARTNERS_CONFIG_KEY}
+          title="Quản lý Đối tác"
+          description="Quản lý logo và thông tin đối tác hiển thị trên website"
+          itemLabel="Đối tác"
+        />
 
         {/* Ecosystem Members Config */}
         <EcosystemConfig canCreate={canCreateBanner} canUpdate={canUpdateBanner} />
