@@ -1,8 +1,11 @@
 import axios from 'axios'
 import { defineConfig } from 'orval'
-import baseConfig from './src/configs/base'
+import { config as loadEnv } from 'dotenv'
+
+loadEnv()
 
 const orvalConfig = async () => {
+  const { default: baseConfig } = await import('./src/configs/base')
   const { backendDomain, frontendDomain } = baseConfig
 
   const [caseSmeqBESwagger] = await Promise.all([
@@ -12,7 +15,7 @@ const orvalConfig = async () => {
   ])
 
   return defineConfig({
-    'case-smeq-be': {
+    'kepler': {
       output: {
         mode: 'tags',
         target: 'src/api/endpoints',
@@ -20,28 +23,14 @@ const orvalConfig = async () => {
         client: 'react-query',
         override: {
           query: {
+            version: 5,
             useQuery: true,
-            useInfinite: false 
+            useInfinite: true
           },
           mutator: {
             path: 'src/api/mutator/custom-instance.ts',
             name: 'mainInstance'
           },
-          header: () => '/* eslint-disable */\r\n',
-          operations: {
-            getPosts: {
-              query: {
-                useInfinite: true,
-                useInfiniteQueryParam: 'page'
-              }
-            },
-            postSystemBackup: {
-              mutator: {
-                path: 'src/api/mutator/fetch-instance.ts',
-                name: 'fetchInstance'
-              }
-            }
-          }
         }
       },
       input: {
