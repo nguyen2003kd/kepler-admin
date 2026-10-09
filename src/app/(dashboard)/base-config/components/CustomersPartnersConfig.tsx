@@ -25,12 +25,14 @@ import {
 } from "lucide-react";
 import {
   useGetApiV10PageConfig,
+  usePostApiV10PageConfig,
   usePutApiV10PageConfigId,
 } from "@/api/endpoints/page-config";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
 import { toast } from "sonner";
 
-const CUSTOMERS_PARTNERS_CONFIG_KEY = "Customers_partners_config";
+export const CUSTOMERS_CONFIG_KEY = "Customers_config";
+export const PARTNERS_CONFIG_KEY = "Partners_config";
 
 interface Partner {
   id: string;
@@ -48,7 +50,25 @@ interface PageConfigRow {
 
 const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
 
-export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: boolean }) {
+export interface CustomersPartnersConfigProps {
+  canUpdate?: boolean;
+  /** Key pageConfig riêng của từng loại */
+  configKey: string;
+  /** Tiêu đề section */
+  title: string;
+  /** Mô tả section */
+  description: string;
+  /** Nhãn item (đối tác / khách hàng) */
+  itemLabel: string;
+}
+
+export function CustomersPartnersConfig({
+  canUpdate = true,
+  configKey,
+  title,
+  description,
+  itemLabel,
+}: CustomersPartnersConfigProps) {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [configId, setConfigId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -69,10 +89,11 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
   const [, setSelectedImageFile] = useState<ImagePickerFile | null>(null);
 
   const { data, refetch } = useGetApiV10PageConfig({
-    filters: `key==${CUSTOMERS_PARTNERS_CONFIG_KEY}`,
+    filters: `key==${configKey}`,
     pageSize: 1,
   });
   const updateMutation = usePutApiV10PageConfigId();
+  const createMutation = usePostApiV10PageConfig();
 
   useEffect(() => {
     if (data?.responseData?.rows && data.responseData.rows.length > 0) {
@@ -130,7 +151,7 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
 
   const handleSubmit = () => {
     if (!formData.name.trim()) {
-      toast.error("Vui lòng nhập tên đối tác");
+      toast.error(`Vui lòng nhập tên ${itemLabel.toLowerCase()}`);
       return;
     }
 
@@ -159,32 +180,41 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
 
   const handleDelete = (id: string) => {
     if (!canUpdate) {
-      toast.error("Bạn không có quyền xóa đối tác");
+      toast.error(`Bạn không có quyền xóa ${itemLabel.toLowerCase()}`);
       return;
     }
-    if (!confirm("Bạn có chắc chắn muốn xóa đối tác này?")) return;
+    if (!confirm(`Bạn có chắc chắn muốn xóa ${itemLabel.toLowerCase()} này?`)) return;
     setPartners((p) => p.filter((partner) => partner.id !== id));
     setHasChanges(true);
   };
 
   const handleSave = async () => {
-    if (!configId) {
-      toast.error("Không tìm thấy cấu hình Customers Partners");
-      return;
-    }
-
     setIsSaving(true);
     try {
-      await updateMutation.mutateAsync({
-        id: configId,
-        data: {
-          key: CUSTOMERS_PARTNERS_CONFIG_KEY,
-          value: JSON.stringify(partners),
-          is_active: true,
-        },
-      });
+      if (configId) {
+        // Đã tồn tại cấu hình -> cập nhật
+        await updateMutation.mutateAsync({
+          id: configId,
+          data: {
+            key: configKey,
+            value: JSON.stringify(partners),
+            is_active: true,
+            language: "vi",
+          },
+        });
+      } else {
+        // Chưa tồn tại cấu hình -> tạo mới
+        await createMutation.mutateAsync({
+          data: {
+            key: configKey,
+            value: JSON.stringify(partners),
+            is_active: true,
+            language: "vi",
+          },
+        });
+      }
       setHasChanges(false);
-      toast.success("Đã lưu cấu hình Customers/Partners");
+      toast.success(`Đã lưu cấu hình ${title}`);
       refetch();
     } catch (err) {
       console.error(err);
@@ -209,19 +239,15 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
       <Card>
         <CardHeader>
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold">
-              Quản lý Customers / Partners
-            </CardTitle>
-            <CardDescription className="text-base">
-              Quản lý hình ảnh và thông tin đối tác / khách hàng hiển thị trên website
-            </CardDescription>
+            <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+            <CardDescription className="text-base">{description}</CardDescription>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Customers / Partners</h3>
+              <h3 className="text-lg font-semibold">{title}</h3>
               <div className="flex items-center gap-4">
                 {canUpdate && (
                   <Button
@@ -233,7 +259,7 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                     }}
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    Thêm đối tác
+                    Thêm {itemLabel.toLowerCase()}
                   </Button>
                 )}
                 {filteredPartners.length > 0 && (
@@ -293,7 +319,7 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                 <div className="w-48 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
                   <div className="text-center text-sm">
                     <Users className="mx-auto h-8 w-8 mb-2 opacity-50" />
-                    <p>Chưa có đối tác</p>
+                    <p>Chưa có {itemLabel.toLowerCase()}</p>
                   </div>
                 </div>
               ) : (
@@ -301,13 +327,11 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                   (partner: Partner, index: number) => (
                     <div
                       key={partner.id}
-                      className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer flex items-center justify-center transition-all ${
-                        index === currentSlide
-                          ? "border-green-400"
-                          : "border-gray-200"
-                      } ${
-                        partner.is_active ? "" : "opacity-50"
-                      }`}
+                      className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer flex items-center justify-center transition-all ${index === currentSlide
+                        ? "border-green-400"
+                        : "border-gray-200"
+                        } ${partner.is_active ? "" : "opacity-50"
+                        }`}
                       onClick={() => setCurrentSlide(index)}
                     >
                       {partner.logo ? (
@@ -353,11 +377,10 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                   </div>
                   <div className="flex items-center gap-2">
                     <span
-                      className={`text-xs px-2 py-1 rounded ${
-                        filteredPartners[currentSlide]?.is_active
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-200 text-gray-600"
-                      }`}
+                      className={`text-xs px-2 py-1 rounded ${filteredPartners[currentSlide]?.is_active
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-200 text-gray-600"
+                        }`}
                     >
                       {filteredPartners[currentSlide]?.is_active
                         ? "Hiển thị"
@@ -399,10 +422,10 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
             <div className="p-6">
               <div className="border-b pb-4 mb-4">
                 <h2 className="text-lg font-semibold">
-                  {editingPartner ? "Chỉnh sửa đối tác" : "Thêm đối tác mới"}
+                  {editingPartner ? `Chỉnh sửa ${itemLabel.toLowerCase()}` : `Thêm ${itemLabel.toLowerCase()} mới`}
                 </h2>
                 <p className="text-sm text-gray-600 mt-1">
-                  Điền thông tin đối tác / khách hàng
+                  Điền thông tin {itemLabel.toLowerCase()}
                 </p>
               </div>
 
@@ -410,10 +433,10 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                 {/* Name field */}
                 <div>
                   <Label>
-                    Tên đối tác <span className="text-red-500">*</span>
+                    Tên {itemLabel.toLowerCase()} <span className="text-red-500">*</span>
                   </Label>
                   <Input
-                    placeholder="Nhập tên đối tác"
+                    placeholder={`Nhập tên ${itemLabel.toLowerCase()}`}
                     value={formData.name}
                     onChange={(e) =>
                       setFormData((prev) => ({

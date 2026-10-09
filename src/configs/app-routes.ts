@@ -61,14 +61,14 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['news'], requiredActions: ['create_post_info'] },
   },
   {
-  path: '/news/[id]',
-  access: { 
-    resources: ['news'],
-    requiredActions: ['view_detail'],
-    extraViewerResources: ['post-approval-1', 'post-approval-2'],
-    extraViewerActions: ['view_post']
+    path: '/news/[id]',
+    access: {
+      resources: ['news'],
+      requiredActions: ['view_detail'],
+      extraViewerResources: ['post-approval-1', 'post-approval-2'],
+      extraViewerActions: ['view_post']
+    },
   },
-},
   {
     path: '/news/[id]/edit',
     access: { resources: ['news'], requiredActions: ['update'] },
@@ -88,16 +88,16 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['category'] },
     sidebar: { label: 'Danh mục', icon: 'category' },
   },
-    {
-      path: '/question',
-      sidebar: {
-        label: 'Câu Hỏi Tuyển Dụng',
-        icon: 'quotation',
-      },
-      access: {
-        resources: ['settings'],
-      },
+  {
+    path: '/question',
+    sidebar: {
+      label: 'Câu Hỏi Tuyển Dụng',
+      icon: 'quotation',
     },
+    access: {
+      resources: ['settings'],
+    },
+  },
   {
     path: '/list-img',
     access: { resources: ['gallery'] },
@@ -143,16 +143,16 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['settings'] },
     sidebar: { label: 'Cấu hình chứng nhận', icon: 'shieldCheck' },
   },
-    {
+  {
     path: '/recruitment',
     access: { resources: ['recruitment'] },
     sidebar: { label: 'Tin Tuyển Dụng', icon: 'recruitment' },
   },
-    {
-      path: '/candidate',
-      access: { resources: ['candidate'] },
-      sidebar: { label: 'Ứng viên', icon: 'users' },
-    },
+  {
+    path: '/candidate',
+    access: { resources: ['candidate'] },
+    sidebar: { label: 'Ứng viên', icon: 'users' },
+  },
   {
     path: '/contact',
     access: { resources: ['contact'] },
@@ -203,6 +203,11 @@ export const APP_ROUTES: AppRouteConfig[] = [
     path: '/department',
     access: { resources: ['department'] },
     sidebar: { label: 'Phòng ban / Khối', icon: 'organizational-chart' },
+  },
+  {
+    path: '/property',
+    access: { resources: ['property'] },
+    sidebar: { label: 'Bất động sản', icon: 'info' },
   },
 
   // {

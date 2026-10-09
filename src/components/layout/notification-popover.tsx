@@ -11,6 +11,7 @@ import {
   usePutApiV10NotificationsMarkAsReadId,
 } from "@/api/endpoints/notification";
 import type { Notification } from "@/api/models/notification";
+import type { GetApiV10Notifications200 } from "@/api/models/getApiV10Notifications200";
 
 type FilterTab = "all" | "read" | "unread";
 
@@ -104,6 +105,15 @@ export function NotificationPopover() {
     query: {
       enabled: open,
       staleTime: 30_000,
+      getNextPageParam: (lastPage: GetApiV10Notifications200) => {
+        const rd = lastPage?.responseData;
+        if (!rd) return undefined;
+        const page = rd.page ?? 1;
+        const pageSize = rd.pageSize ?? 20;
+        const count = rd.count ?? 0;
+        const totalPages = Math.ceil(count / pageSize);
+        return page < totalPages ? page + 1 : undefined;
+      },
     },
   });
 
@@ -116,6 +126,15 @@ export function NotificationPopover() {
       query: {
         staleTime: 30_000,
         refetchInterval: 60_000,
+        getNextPageParam: (lastPage: GetApiV10Notifications200) => {
+          const rd = lastPage?.responseData;
+          if (!rd) return undefined;
+          const page = rd.page ?? 1;
+          const pageSize = rd.pageSize ?? 50;
+          const count = rd.count ?? 0;
+          const totalPages = Math.ceil(count / pageSize);
+          return page < totalPages ? page + 1 : undefined;
+        },
       },
     },
   );
@@ -130,6 +149,15 @@ export function NotificationPopover() {
       query: {
         staleTime: 30_000,
         refetchInterval: 60_000,
+        getNextPageParam: (lastPage: GetApiV10Notifications200) => {
+          const rd = lastPage?.responseData;
+          if (!rd) return undefined;
+          const page = rd.page ?? 1;
+          const pageSize = rd.pageSize ?? 50;
+          const count = rd.count ?? 0;
+          const totalPages = Math.ceil(count / pageSize);
+          return page < totalPages ? page + 1 : undefined;
+        },
       },
     },
   );
