@@ -721,6 +721,9 @@ export const postApiV10Quotation = (
 ) => {
       
       const formData = new FormData();
+if(postApiV10QuotationBody.contact_person !== undefined && postApiV10QuotationBody.contact_person !== null) {
+ formData.append(`contact_person`, postApiV10QuotationBody.contact_person)
+ }
 formData.append(`name`, postApiV10QuotationBody.name)
 formData.append(`post_id`, postApiV10QuotationBody.post_id)
 formData.append(`phone_number`, postApiV10QuotationBody.phone_number)
@@ -814,6 +817,9 @@ export const postApiV10QuotationPublic = (
 ) => {
       
       const formData = new FormData();
+if(postApiV10QuotationPublicBody.contact_person !== undefined && postApiV10QuotationPublicBody.contact_person !== null) {
+ formData.append(`contact_person`, postApiV10QuotationPublicBody.contact_person)
+ }
 formData.append(`name`, postApiV10QuotationPublicBody.name)
 formData.append(`post_id`, postApiV10QuotationPublicBody.post_id)
 formData.append(`phone_number`, postApiV10QuotationPublicBody.phone_number)

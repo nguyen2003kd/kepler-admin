@@ -30,13 +30,16 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ApiResponse,
   DeleteApiV10PropertyId200,
   GetApiV10PropertyId200,
+  GetApiV10PropertyIdParams,
   GetApiV10PropertyParams,
   PostApiV10Property200,
+  PropertyInquiry,
+  PropertyList,
   PropertyMutate,
-  PutApiV10PropertyId200,
-  ResponseGetAllData
+  PutApiV10PropertyId200
 } from '../models';
 
 import { mainInstance } from '../mutator/custom-instance';
@@ -51,12 +54,14 @@ import { mainInstance } from '../mutator/custom-instance';
  */
 export const getApiV10PropertyId = (
     id: string,
+    params?: GetApiV10PropertyIdParams,
  signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiV10PropertyId200>(
-      {url: `/api/v1.0/property/${id}`, method: 'GET', signal
+      {url: `/api/v1.0/property/${id}`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -64,29 +69,32 @@ export const getApiV10PropertyId = (
 
 
 
-export const getGetApiV10PropertyIdInfiniteQueryKey = (id?: string,) => {
+export const getGetApiV10PropertyIdInfiniteQueryKey = (id?: string,
+    params?: GetApiV10PropertyIdParams,) => {
     return [
-    'infinite', `/api/v1.0/property/${id}`
+    'infinite', `/api/v1.0/property/${id}`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiV10PropertyIdQueryKey = (id?: string,) => {
+export const getGetApiV10PropertyIdQueryKey = (id?: string,
+    params?: GetApiV10PropertyIdParams,) => {
     return [
-    `/api/v1.0/property/${id}`
+    `/api/v1.0/property/${id}`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiV10PropertyIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PropertyId>>>, TError = void>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
+export const getGetApiV10PropertyIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PropertyId>>>, TError = void>(id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV10PropertyIdInfiniteQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV10PropertyIdInfiniteQueryKey(id,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10PropertyId>>> = ({ signal }) => getApiV10PropertyId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10PropertyId>>> = ({ signal }) => getApiV10PropertyId(id,params, signal);
 
       
 
@@ -100,7 +108,8 @@ export type GetApiV10PropertyIdInfiniteQueryError = void
 
 
 export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PropertyId>>>, TError = void>(
- id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
+ id: string,
+    params: undefined |  GetApiV10PropertyIdParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV10PropertyId>>,
           TError,
@@ -110,7 +119,8 @@ export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<Retu
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PropertyId>>>, TError = void>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
+ id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV10PropertyId>>,
           TError,
@@ -120,7 +130,8 @@ export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<Retu
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PropertyId>>>, TError = void>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
+ id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -128,11 +139,12 @@ export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<Retu
  */
 
 export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PropertyId>>>, TError = void>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
+ id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV10PropertyIdInfiniteQueryOptions(id,options)
+  const queryOptions = getGetApiV10PropertyIdInfiniteQueryOptions(id,params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -144,16 +156,17 @@ export function useGetApiV10PropertyIdInfinite<TData = InfiniteData<Awaited<Retu
 
 
 
-export const getGetApiV10PropertyIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiV10PropertyId>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
+export const getGetApiV10PropertyIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiV10PropertyId>>, TError = void>(id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV10PropertyIdQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV10PropertyIdQueryKey(id,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10PropertyId>>> = ({ signal }) => getApiV10PropertyId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10PropertyId>>> = ({ signal }) => getApiV10PropertyId(id,params, signal);
 
       
 
@@ -167,7 +180,8 @@ export type GetApiV10PropertyIdQueryError = void
 
 
 export function useGetApiV10PropertyId<TData = Awaited<ReturnType<typeof getApiV10PropertyId>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
+ id: string,
+    params: undefined |  GetApiV10PropertyIdParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV10PropertyId>>,
           TError,
@@ -177,7 +191,8 @@ export function useGetApiV10PropertyId<TData = Awaited<ReturnType<typeof getApiV
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV10PropertyId<TData = Awaited<ReturnType<typeof getApiV10PropertyId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
+ id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV10PropertyId>>,
           TError,
@@ -187,7 +202,8 @@ export function useGetApiV10PropertyId<TData = Awaited<ReturnType<typeof getApiV
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV10PropertyId<TData = Awaited<ReturnType<typeof getApiV10PropertyId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
+ id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -195,11 +211,12 @@ export function useGetApiV10PropertyId<TData = Awaited<ReturnType<typeof getApiV
  */
 
 export function useGetApiV10PropertyId<TData = Awaited<ReturnType<typeof getApiV10PropertyId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
+ id: string,
+    params?: GetApiV10PropertyIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PropertyId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV10PropertyIdQueryOptions(id,options)
+  const queryOptions = getGetApiV10PropertyIdQueryOptions(id,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -339,6 +356,71 @@ export const useDeleteApiV10PropertyId = <TError = void,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Send an order request or message about a published property
+ */
+export const postApiV10PropertyIdInquiry = (
+    id: string,
+    propertyInquiry: PropertyInquiry,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<ApiResponse>(
+      {url: `/api/v1.0/property/${id}/inquiry`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: propertyInquiry, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiV10PropertyIdInquiryMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiV10PropertyIdInquiry>>, TError,{id: string;data: PropertyInquiry}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiV10PropertyIdInquiry>>, TError,{id: string;data: PropertyInquiry}, TContext> => {
+
+const mutationKey = ['postApiV10PropertyIdInquiry'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiV10PropertyIdInquiry>>, {id: string;data: PropertyInquiry}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiV10PropertyIdInquiry(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiV10PropertyIdInquiryMutationResult = NonNullable<Awaited<ReturnType<typeof postApiV10PropertyIdInquiry>>>
+    export type PostApiV10PropertyIdInquiryMutationBody = PropertyInquiry
+    export type PostApiV10PropertyIdInquiryMutationError = unknown
+
+    /**
+ * @summary Send an order request or message about a published property
+ */
+export const usePostApiV10PropertyIdInquiry = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiV10PropertyIdInquiry>>, TError,{id: string;data: PropertyInquiry}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiV10PropertyIdInquiry>>,
+        TError,
+        {id: string;data: PropertyInquiry},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiV10PropertyIdInquiryMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * Retrieve a list of property with pagination, filtering and sorting
  * @summary Get all property
  */
@@ -348,7 +430,7 @@ export const getApiV10Property = (
 ) => {
       
       
-      return mainInstance<ResponseGetAllData>(
+      return mainInstance<PropertyList>(
       {url: `/api/v1.0/property`, method: 'GET',
         params, signal
     },

@@ -669,9 +669,9 @@ export function IntroductionConfig({
     setIsSaving(true);
     try {
       if (configId) {
-        await updateMutation.mutateAsync({ id: configId, data: { key: configKey, value: JSON.stringify(blocks), is_active: true } });
+        await updateMutation.mutateAsync({ id: configId, data: { key: configKey, language: lang, value: JSON.stringify(blocks), is_active: true } });
       } else {
-        const created = await createMutation.mutateAsync({ data: { key: configKey, value: JSON.stringify(blocks), is_active: true } });
+        const created = await createMutation.mutateAsync({ data: { key: configKey, language: lang, value: JSON.stringify(blocks), is_active: true } });
         const newId = created?.responseData?.id;
         if (newId) { if (lang === "vi") setViConfigId(newId); else setEnConfigId(newId); }
       }

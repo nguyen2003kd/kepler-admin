@@ -5,8 +5,37 @@
  * Generated API documentation
  * OpenAPI spec version: 1.0.0
  */
+import type { PropertyMutateTransactionGroup } from './propertyMutateTransactionGroup';
+import type { PropertyMutatePriceUnit } from './propertyMutatePriceUnit';
+import type { PropertyMutateStatus } from './propertyMutateStatus';
 
 export interface PropertyMutate {
+  /**
+   * Tên sản phẩm
+   * @maxLength 255
+   * @nullable
+   */
+  title?: string | null;
+  /**
+   * Nhóm giao dịch
+   * @nullable
+   */
+  transaction_group?: PropertyMutateTransactionGroup;
+  /**
+   * Vị trí
+   * @maxLength 500
+   * @nullable
+   */
+  location?: string | null;
+  /**
+   * Kiến trúc và tiện ích
+   * @nullable
+   */
+  architecture?: string | null;
+  price_unit?: PropertyMutatePriceUnit;
+  status?: PropertyMutateStatus;
+  /** @maxItems 20 */
+  media_file_ids?: string[];
   /**
    * Mô tả bất động sản
    * @nullable

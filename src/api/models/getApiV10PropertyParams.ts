@@ -5,6 +5,7 @@
  * Generated API documentation
  * OpenAPI spec version: 1.0.0
  */
+import type { GetApiV10PropertyScope } from './getApiV10PropertyScope';
 import type { FiltersParameter } from './filtersParameter';
 import type { SortFieldParameter } from './sortFieldParameter';
 import type { SortOrderParameter } from './sortOrderParameter';
@@ -12,6 +13,7 @@ import type { PageParameter } from './pageParameter';
 import type { PageSizeParameter } from './pageSizeParameter';
 
 export type GetApiV10PropertyParams = {
+scope?: GetApiV10PropertyScope;
 /**
  * filter, visit https://www.npmjs.com/package/sequelize-api-paginate for syntax
  */

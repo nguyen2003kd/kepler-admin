@@ -8,6 +8,11 @@
 
 export interface QuotationMutate {
   /**
+   * Người liên hệ
+   * @nullable
+   */
+  contact_person?: string | null;
+  /**
    * Customer name
    * @minLength 1
    * @maxLength 255

@@ -71,6 +71,8 @@ export function useContactColumns({
         header: "Loại",
         cell: ({ row }) => {
           const typeLabels: Record<string, string> = {
+            property_order: "Đặt hàng sản phẩm",
+            property_message: "Lời nhắn về sản phẩm",
             "lien-he-kepler": "Liên hệ Kepler",
             "lien-he-hop-tac": "Liên hệ hợp tác",
             "yeu-cau-ban-cho-thue": "Bán/cho thuê BĐS",
