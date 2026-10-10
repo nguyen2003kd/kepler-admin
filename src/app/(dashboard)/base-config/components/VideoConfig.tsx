@@ -183,6 +183,7 @@ export function VideoConfig() {
         id: configId,
         data: {
           key: configKey,
+          language: data?.responseData?.rows?.[0]?.language === "en" ? "en" : "vi",
           value,
           description: "Quản lý video",
           is_active: true,

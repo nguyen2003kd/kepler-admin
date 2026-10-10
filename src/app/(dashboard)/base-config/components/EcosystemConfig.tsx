@@ -47,6 +47,7 @@ interface EcosystemMember {
   image: string;
   logo: string;
   tags: string[];
+  service_contents?: Record<string, { link?: string; content?: string }>;
   link: string;
   overview?: string;
   industries?: string[];
@@ -280,6 +281,12 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
       const m = formData.members[i];
       if (!m.name.trim()) return `Thành viên ${i + 1}: Tên công ty không được để trống`;
       if (!m.slug.trim()) return `Thành viên ${i + 1}: Slug không được để trống`;
+      for (const tag of m.tags) {
+        const link = m.service_contents?.[tag]?.link?.trim();
+        if (link && !(/^https?:\/\//i.test(link) || /^\/(?!\/)/.test(link))) {
+          return "Đường dẫn của " + tag + " phải bắt đầu bằng / hoặc https://";
+        }
+      }
     }
     return null;
   };
@@ -436,7 +443,7 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
   }
 
   return (
-    <Card>
+    <Card data-ecosystem-config>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -635,7 +642,7 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground">Tags (dịch vụ nổi bật)</Label>
+                  <Label className="text-xs text-muted-foreground">Các mục dịch vụ trên ảnh giới thiệu</Label>
                   <div className="flex flex-wrap gap-2">
                     {member.tags.map((tag, tagIndex) => (
                       <span
@@ -664,6 +671,29 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
                       }
                     }}
                   />
+                  <p className="text-xs text-muted-foreground">Mỗi mục mở một trang nội dung riêng. Để trống đường dẫn để dùng trang có sẵn; nhập nội dung chi tiết bên dưới khi đã có bài.</p>
+                  {member.tags.map((tag, tagIndex) => {
+                    const details = member.service_contents?.[tag] || {};
+                    const setDetails = (field: "link" | "content", value: string) => updateMember(index, "service_contents", {
+                      ...member.service_contents,
+                      [tag]: { ...details, [field]: value },
+                    });
+                    const serviceSlug = tag.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+                    const defaultLink = "/he-sinh-thai/" + member.slug + "/" + serviceSlug;
+                    return (
+                      <div key={tag + tagIndex} className="space-y-3 border-t py-4" data-service-editor={tag}>
+                        <p className="text-sm font-semibold">{tag}</p>
+                        <div className="space-y-1">
+                          <Label htmlFor={"service-link-" + index + "-" + tagIndex}>Đường dẫn khi bấm {tag}</Label>
+                          <Input id={"service-link-" + index + "-" + tagIndex} value={details.link || ""} placeholder={defaultLink} onChange={e => setDetails("link", e.target.value)} />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor={"service-content-" + index + "-" + tagIndex}>Nội dung chi tiết của {tag}</Label>
+                          <Textarea id={"service-content-" + index + "-" + tagIndex} rows={4} value={details.content || ""} placeholder="Chưa có bài thì để trống; website sẽ báo nội dung chi tiết đang cập nhật." onChange={e => setDetails("content", e.target.value)} />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="space-y-1 border-t pt-4">

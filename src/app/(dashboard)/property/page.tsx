@@ -1,356 +1,517 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import Image from 'next/image'
-import {
-  Building,
-  Plus,
-  Pencil,
-  Trash2,
-  Search,
-  Loader2,
-  Image as ImageIcon,
-} from 'lucide-react'
-import { toast } from 'sonner'
-import { extractErrorMessage } from '@/utils/error'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetApiV10Property,
   usePostApiV10Property,
   usePutApiV10PropertyId,
-  useDeleteApiV10PropertyId,
-  getGetApiV10PropertyQueryKey,
-} from '@/api/endpoints/property'
+} from "@/api/endpoints/property";
+import type { Property } from "@/api/models/property";
+import type { PropertyMutate } from "@/api/models/propertyMutate";
+import { Header } from "@/components/layout/header";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  PropertyFormDialog,
-  type PropertySubmitValues,
-  type PropertyWithFile,
-} from './components/property-form-dialog'
-import baseConfig from '@configs/base'
-import { Header } from '@/components/layout/header'
-import { useAbility } from '@/hooks/use-ability'
+  ImagePicker,
+  type ImagePickerFile,
+} from "@/components/shared/image-picker";
+import { useAbility } from "@/hooks/use-ability";
+import { extractErrorMessage } from "@/utils/error";
 
-const formatPrice = (price?: number | null): string => {
-  if (price === null || price === undefined) return '—'
-  if (price >= 1_000_000_000) return `${(price / 1_000_000_000).toFixed(1).replace(/\.0$/, '')} tỷ`
-  if (price >= 1_000_000) return `${(price / 1_000_000).toFixed(1).replace(/\.0$/, '')} triệu`
-  return price.toLocaleString('vi-VN')
-}
-
+const groups = [
+  ["SALE", "Mua và bán"],
+  ["RENT", "Thuê và cho thuê"],
+  ["DISTRIBUTION", "Dự án phân phối"],
+  ["INVESTMENT", "Dự án kêu gọi đầu tư"],
+  ["MA", "Dự án cần M&A"],
+] as const;
+const units = [
+  ["VND", "đồng"],
+  ["VND_MONTH", "đồng/tháng"],
+  ["VND_M2", "đồng/m²"],
+  ["VND_M2_MONTH", "đồng/m²/tháng"],
+  ["USD", "USD"],
+  ["USD_MONTH", "USD/tháng"],
+  ["USD_M2", "USD/m²"],
+  ["USD_M2_MONTH", "USD/m²/tháng"],
+] as const;
+type Draft = PropertyMutate & { id?: string };
+const blank: Draft = {
+  title: "",
+  transaction_group: "SALE",
+  status: "DRAFT",
+  price_unit: "VND",
+  media_file_ids: [],
+};
+const clientDomain =
+  process.env.NEXT_PUBLIC_CLIENT_DOMAIN ||
+  (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "");
+const mutateFields = [
+  "title",
+  "transaction_group",
+  "location",
+  "architecture",
+  "price_unit",
+  "status",
+  "media_file_ids",
+  "description",
+  "category",
+  "direction",
+  "floors",
+  "toilets",
+  "street_frontage",
+  "living_rooms",
+  "bedrooms",
+  "legal",
+  "file_id",
+  "analysis",
+  "price",
+  "phone_sale",
+] as const;
 export default function PropertyPage() {
-  const ability = useAbility()
-  const queryClient = useQueryClient()
-
-  const canCreateProperty = ability.can('create', 'property')
-  const canEditProperty = ability.can('update', 'property')
-  const canDeleteProperty = ability.can('delete', 'property')
-
-  const [search, setSearch] = useState('')
-  const [editingProperty, setEditingProperty] = useState<PropertyWithFile | null>(null)
-  const [isFormOpen, setIsFormOpen] = useState(false)
-  const [deletingProperty, setDeletingProperty] = useState<PropertyWithFile | null>(null)
-
-  // Fetch properties
-  const { data: propertyData, isLoading } = useGetApiV10Property(
-    { pageSize: 100 },
-    undefined,
-  )
-
-  // Mutations
-  const createMutation = usePostApiV10Property()
-  const updateMutation = usePutApiV10PropertyId()
-  const deleteMutation = useDeleteApiV10PropertyId()
-
-  // Normalize
-  const properties: PropertyWithFile[] = React.useMemo(() => {
-    if (!propertyData) return []
-    const rows = (propertyData as { responseData?: { rows?: PropertyWithFile[] } })?.responseData
-      ?.rows
-    return Array.isArray(rows) ? rows : []
-  }, [propertyData])
-
-  const filtered = React.useMemo(() => {
-    if (!search.trim()) return properties
-    const q = search.toLowerCase()
-    return properties.filter(
-      (p) =>
-        p.category?.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q) ||
-        p.legal?.toLowerCase().includes(q) ||
-        p.direction?.toLowerCase().includes(q) ||
-        p.street_frontage?.toLowerCase().includes(q),
-    )
-  }, [properties, search])
-
-  const isMutating = createMutation.isPending || updateMutation.isPending
-
-  // Handlers
-  const handleOpenCreate = () => {
-    setEditingProperty(null)
-    setIsFormOpen(true)
+  const ability = useAbility();
+  const canCreate =
+    ability.can("create", "property") ||
+    ability.can("create_post_info", "news");
+  const canUpdate =
+    ability.can("update", "property") || ability.can("update", "news");
+  const [page, setPage] = useState(1);
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [picker, setPicker] = useState<"cover" | "image" | "video" | null>(
+    null,
+  );
+  const [media, setMedia] = useState<ImagePickerFile[]>([]);
+  const cache = useQueryClient();
+  const list = useGetApiV10Property({ scope: "ADMIN", page, pageSize: 12 });
+  const create = usePostApiV10Property();
+  const update = usePutApiV10PropertyId();
+  const busy = create.isPending || update.isPending;
+  const rows = list.data?.responseData?.rows || [];
+  const count = list.data?.responseData?.count || 0;
+  function open(property?: Property) {
+    setDraft(
+      property
+        ? { ...property, media_file_ids: property.media_file_ids || [] }
+        : { ...blank },
+    );
+    setMedia(
+      (property?.media || []).map((f) => ({
+        id: f.id!,
+        path: f.path || "",
+        name: f.name || "",
+        mime: f.mime || "",
+        size: String(f.size || 0),
+      })),
+    );
+    setError("");
+    setNotice("");
   }
-
-  const handleOpenEdit = (property: PropertyWithFile) => {
-    setEditingProperty(property)
-    setIsFormOpen(true)
-  }
-
-  const handleFormSubmit = async (values: PropertySubmitValues) => {
+  const change = (key: keyof PropertyMutate, value: unknown) =>
+    setDraft((d) => (d ? { ...d, [key]: value } : d));
+  async function save(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!draft) return;
+    setError("");
+    setNotice("");
+    if (draft.status === "PUBLISHED" && !draft.title?.trim()) {
+      setError("Điền tên sản phẩm trước khi hiển thị.");
+      return;
+    }
+    const { id } = draft;
+    const data = Object.fromEntries(
+      mutateFields
+        .filter((key) => draft[key] !== undefined)
+        .map((key) => [key, draft[key]]),
+    ) as PropertyMutate;
     try {
-      if (editingProperty?.id) {
-        await updateMutation.mutateAsync({
-          id: editingProperty.id,
-          data: values,
-        })
-        toast.success('Cập nhật bất động sản thành công')
-      } else {
-        await createMutation.mutateAsync({
-          data: values,
-        })
-        toast.success('Tạo bất động sản thành công')
-      }
-      await queryClient.invalidateQueries({ queryKey: getGetApiV10PropertyQueryKey() })
-    } catch (error) {
-      toast.error(extractErrorMessage(error))
+      if (id) await update.mutateAsync({ id, data });
+      else await create.mutateAsync({ data });
+      await cache.invalidateQueries({ queryKey: ["/api/v1.0/property"] });
+      setDraft(null);
+      setNotice("Đã lưu sản phẩm. Bản nháp chỉ hiển thị trong admin.");
+    } catch (e) {
+      setError(extractErrorMessage(e));
     }
   }
-
-  const handleDelete = async () => {
-    if (!deletingProperty?.id) return
-    try {
-      await deleteMutation.mutateAsync({ id: deletingProperty.id })
-      toast.success('Xóa bất động sản thành công')
-      setDeletingProperty(null)
-      await queryClient.invalidateQueries({ queryKey: getGetApiV10PropertyQueryKey() })
-    } catch (error) {
-      toast.error(extractErrorMessage(error))
+  function selectFile(file: ImagePickerFile) {
+    if (!draft) return;
+    if (
+      picker !== "cover" &&
+      !draft.media_file_ids?.includes(file.id) &&
+      (draft.media_file_ids?.length || 0) >= 20
+    ) {
+      setError("Chỉ chọn tối đa 20 ảnh/video. Bỏ bớt một mục trước khi thêm.");
+      setPicker(null);
+      return;
     }
+    if (picker === "cover") change("file_id", file.id);
+    else
+      change("media_file_ids", [
+        ...new Set([...(draft.media_file_ids || []), file.id]),
+      ]);
+    setMedia((existing) => [
+      ...existing.filter((item) => item.id !== file.id),
+      file,
+    ]);
+    setPicker(null);
   }
-
+  const fields = (
+    items: Array<[keyof PropertyMutate, string, "text" | "number" | "tel"]>,
+  ) =>
+    items.map(([key, label, type]) => (
+      <label key={key} className="block space-y-2 text-sm font-medium">
+        {label}
+        <Input
+          name={key}
+          type={type}
+          min={type === "number" ? 0 : undefined}
+          step={key === "price" ? "0.01" : "1"}
+          maxLength={
+            type !== "number"
+              ? key === "location"
+                ? 500
+                : key === "legal"
+                  ? 255
+                  : key === "phone_sale"
+                    ? 20
+                    : 255
+              : undefined
+          }
+          value={String(draft?.[key] ?? "")}
+          onChange={(e) =>
+            change(
+              key,
+              type === "number"
+                ? e.target.value === ""
+                  ? null
+                  : Number(e.target.value)
+                : e.target.value,
+            )
+          }
+          className="min-h-11"
+        />
+      </label>
+    ));
   return (
     <>
-      <Header title="Bất động sản" />
-      <div className="flex h-full min-h-[calc(100vh-theme(spacing.16))] flex-col space-y-6 bg-gray-50/30 p-4 md:p-8 dark:bg-gray-950/30">
-
-        {/* Header */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <Header title="Sản phẩm Sàn giao dịch" />
+      <main className="mx-auto max-w-6xl space-y-6 p-4 md:p-8">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="flex items-center text-2xl md:text-3xl font-black tracking-tight text-gray-900 dark:text-gray-100">
-              <Building className="mr-3 h-7 w-7 text-blue-600 dark:text-blue-500" />
-              Bất động sản
-            </h1>
-            <p className="mt-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
-              Quản lý danh sách bất động sản: thông tin, giá, pháp lý và tiện ích.
+            <h1 className="text-2xl font-bold">Sản phẩm Sàn giao dịch</h1>
+            <p className="mt-2 text-gray-600">
+              Nhập sản phẩm vào đúng nhóm. Lưu nháp khi thông tin chưa sẵn sàng.
             </p>
           </div>
-
-          <Button
-            onClick={handleOpenCreate}
-            disabled={!canCreateProperty}
-            className="flex items-center bg-blue-600 hover:bg-blue-700 text-white shadow-md shrink-0"
+          {canCreate && (
+            <Button onClick={() => open()} className="min-h-11">
+              Thêm sản phẩm
+            </Button>
+          )}
+        </div>
+        {notice && (
+          <p
+            role="status"
+            className="rounded-lg border border-green-200 bg-green-50 p-4 text-green-800"
           >
-            <Plus className="mr-2 h-4 w-4" />
-            Thêm bất động sản
-          </Button>
-        </div>
-
-        {/* Search */}
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input
-              placeholder="Tìm kiếm bất động sản..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-white dark:bg-gray-900"
-            />
-          </div>
-          <div className="text-sm text-gray-500">
-            {filtered.length} / {properties.length} bất động sản
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="flex-1 w-full overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950 shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
-                  <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Ảnh
-                  </th>
-                  <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Thể loại
-                  </th>
-                  <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Hướng
-                  </th>
-                  <th className="whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Giá
-                  </th>
-                  <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    PN / PT / Tầng
-                  </th>
-                  <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Pháp lý
-                  </th>
-                  <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Mô tả
-                  </th>
-                  <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Thao tác
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={8} className="px-4 py-16 text-center">
-                      <div className="flex items-center justify-center gap-2 text-gray-400">
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        Đang tải...
-                      </div>
-                    </td>
-                  </tr>
-                ) : filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} className="px-4 py-16 text-center text-gray-400">
-                      Không tìm thấy bất động sản nào.
-                    </td>
-                  </tr>
-                ) : (
-                  filtered.map((property) => (
-                    <tr
-                      key={property.id}
-                      className="border-b border-gray-50 transition-colors hover:bg-blue-50/30 dark:border-gray-800 dark:hover:bg-gray-900"
-                    >
-                      <td className="px-4 py-3 text-center">
-                        {property.file?.path ? (
-                          <div className="relative mx-auto h-12 w-16 overflow-hidden rounded-md border border-gray-200 dark:border-gray-700">
-                            <Image
-                              src={`${baseConfig.imgEndpointDomain}${
-                                property.file.compress_info?.desktop ||
-                                property.file.compress_info?.tablet ||
-                                property.file.path
-                              }`}
-                              alt={property.file.name || property.category || 'Bất động sản'}
-                              fill
-                              className="object-cover"
-                              sizes="64px"
-                            />
-                          </div>
-                        ) : (
-                          <div className="mx-auto flex h-12 w-16 items-center justify-center rounded-md border border-dashed border-gray-300 dark:border-gray-700">
-                            <ImageIcon className="h-4 w-4 text-gray-400" />
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <Badge variant="outline" className="border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-300">
-                          {property.category || '—'}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                        {property.direction || '—'}
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-gray-100">
-                        {formatPrice(property.price)}
-                      </td>
-                      <td className="px-4 py-3 text-center text-gray-700 dark:text-gray-300">
-                        {property.bedrooms ?? '—'} / {property.toilets ?? '—'} / {property.floors ?? '—'}
-                      </td>
-                      <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                        {property.legal || '—'}
-                      </td>
-                      <td className="px-4 py-3 max-w-xs">
-                        <p className="text-gray-500 dark:text-gray-400 line-clamp-2">
-                          {property.description || '—'}
-                        </p>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-center gap-1">
-                          {/* Edit */}
-                          {canEditProperty && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 w-8 p-0 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-900/30 dark:text-emerald-400"
-                              onClick={() => handleOpenEdit(property)}
-                              title="Chỉnh sửa"
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                          )}
-
-                          {/* Delete */}
-                          {canDeleteProperty && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 w-8 p-0 text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30 dark:text-red-400"
-                              onClick={() => setDeletingProperty(property)}
-                              title="Xóa"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Form Dialog */}
-        <PropertyFormDialog
-          open={isFormOpen}
-          onOpenChange={setIsFormOpen}
-          onSubmit={handleFormSubmit}
-          initialData={editingProperty}
-          isLoading={isMutating}
-        />
-
-        {/* Delete Confirm */}
-        <AlertDialog open={!!deletingProperty} onOpenChange={(open) => !open && setDeletingProperty(null)}>
-          <AlertDialogContent className="bg-white dark:bg-gray-950">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Xóa bất động sản</AlertDialogTitle>
-              <AlertDialogDescription>
-                Bạn có chắc muốn xóa bất động sản{' '}
-                <span className="font-semibold text-gray-900 dark:text-gray-100">
-                  {deletingProperty?.category || 'này'}
-                </span>
-                ? Hành động này không thể hoàn tác.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                className="bg-red-600 text-white hover:bg-red-700"
+            {notice}
+          </p>
+        )}
+        {draft ? (
+          <form
+            onSubmit={save}
+            className="space-y-6 rounded-xl border bg-white p-5 md:p-8"
+          >
+            <h2 className="text-xl font-bold">
+              {draft.id ? "Sửa sản phẩm" : "Thêm sản phẩm"}
+            </h2>
+            {error && (
+              <p
+                role="alert"
+                className="rounded border border-red-200 bg-red-50 p-4 text-red-800"
               >
-                {deleteMutation.isPending ? 'Đang xóa...' : 'Xác nhận xóa'}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+                {error} Kiểm tra thông tin rồi lưu lại.
+              </p>
+            )}
+            <fieldset className="grid gap-5 sm:grid-cols-2">
+              <legend className="mb-4 text-lg font-semibold">
+                Thông tin chung
+              </legend>
+              {fields([["title", "Tên sản phẩm", "text"]])}
+              <label className="space-y-2 text-sm font-medium">
+                Nhóm giao dịch
+                <select
+                  name="transaction_group"
+                  className="block min-h-11 w-full rounded-md border px-3"
+                  value={draft.transaction_group || "SALE"}
+                  onChange={(e) => change("transaction_group", e.target.value)}
+                >
+                  {groups.map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {fields([
+                ["category", "Loại bất động sản (nhà phố, căn hộ…)", "text"],
+                ["location", "Vị trí", "text"],
+              ])}
+            </fieldset>
+            <label className="block space-y-2 font-medium">
+              Mô tả / Vị trí
+              <Textarea
+                name="description"
+                maxLength={20000}
+                rows={5}
+                value={draft.description || ""}
+                onChange={(e) => change("description", e.target.value)}
+              />
+            </label>
+            <fieldset className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <legend className="mb-4 text-lg font-semibold">
+                Kiến trúc và thông số
+              </legend>
+              {fields([
+                ["direction", "Hướng nhà", "text"],
+                ["street_frontage", "Mặt tiền đường", "text"],
+                ["floors", "Số tầng", "number"],
+                ["bedrooms", "Phòng ngủ", "number"],
+                ["living_rooms", "Phòng khách", "number"],
+                ["toilets", "Phòng vệ sinh", "number"],
+              ])}
+            </fieldset>
+            <label className="block space-y-2 font-medium">
+              Kiến trúc / Tiện ích
+              <Textarea
+                name="architecture"
+                maxLength={20000}
+                rows={4}
+                value={draft.architecture || ""}
+                onChange={(e) => change("architecture", e.target.value)}
+              />
+            </label>
+            {fields([
+              [
+                "legal",
+                "Pháp lý — chỉ nhập thông tin đã được cung cấp",
+                "text",
+              ],
+            ])}
+            <fieldset className="space-y-4">
+              <legend className="mb-4 text-lg font-semibold">
+                Hình ảnh / Video
+              </legend>
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setPicker("cover")}
+                >
+                  Chọn ảnh đại diện
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setPicker("image")}
+                >
+                  Thêm ảnh
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setPicker("video")}
+                >
+                  Thêm video
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600">
+                Chọn từ kho đang có; tối đa 20 ảnh/video. Không cần tải lại ảnh
+                đã có.
+              </p>
+              {[draft.file_id, ...(draft.media_file_ids || [])]
+                .filter((id, index, ids) => id && ids.indexOf(id) === index)
+                .map((id) => (
+                  <div
+                    key={id}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded border p-3"
+                  >
+                    <span className="min-w-0 break-all">
+                      {media.find((f) => f.id === id)?.name || id}
+                      {draft.file_id === id ? " — ảnh đại diện" : ""}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (draft.file_id === id) change("file_id", null);
+                        change(
+                          "media_file_ids",
+                          (draft.media_file_ids || []).filter(
+                            (value) => value !== id,
+                          ),
+                        );
+                      }}
+                    >
+                      Bỏ chọn
+                    </Button>
+                  </div>
+                ))}
+            </fieldset>
+            <label className="block space-y-2 font-medium">
+              Phân tích / Xác thực
+              <Textarea
+                name="analysis"
+                maxLength={20000}
+                rows={4}
+                value={draft.analysis || ""}
+                onChange={(e) => change("analysis", e.target.value)}
+              />
+            </label>
+            <fieldset className="grid gap-5 sm:grid-cols-2">
+              <legend className="mb-4 text-lg font-semibold">
+                Giá và người phụ trách
+              </legend>
+              {fields([["price", "Giá (để trống nếu chưa công bố)", "number"]])}
+              <label className="space-y-2 text-sm font-medium">
+                Đơn vị giá
+                <select
+                  name="price_unit"
+                  className="block min-h-11 w-full rounded-md border px-3"
+                  value={draft.price_unit || "VND"}
+                  onChange={(e) => change("price_unit", e.target.value)}
+                >
+                  {units.map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {fields([["phone_sale", "Số điện thoại sale", "tel"]])}
+              <label className="space-y-2 text-sm font-medium">
+                Hiển thị
+                <select
+                  name="status"
+                  className="block min-h-11 w-full rounded-md border px-3"
+                  value={draft.status || "DRAFT"}
+                  onChange={(e) => change("status", e.target.value)}
+                >
+                  <option value="DRAFT">Bản nháp — chỉ admin thấy</option>
+                  <option value="PUBLISHED">Hiển thị trên website</option>
+                </select>
+              </label>
+            </fieldset>
+            <div className="flex gap-3">
+              <Button
+                disabled={busy || !(draft.id ? canUpdate : canCreate)}
+                type="submit"
+                className="min-h-11"
+              >
+                {busy ? "Đang lưu…" : "Lưu sản phẩm"}
+              </Button>
+              <Button
+                disabled={busy}
+                variant="outline"
+                type="button"
+                onClick={() => setDraft(null)}
+              >
+                Hủy
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <>
+            {list.isLoading ? (
+              <p role="status">Đang tải sản phẩm…</p>
+            ) : list.isError ? (
+              <div role="alert" className="rounded border p-4">
+                Không tải được sản phẩm.{" "}
+                <Button variant="outline" onClick={() => list.refetch()}>
+                  Thử lại
+                </Button>
+              </div>
+            ) : rows.length === 0 ? (
+              <p className="rounded-lg border bg-white p-6">
+                Chưa có sản phẩm. Bấm “Thêm sản phẩm” để nhập.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {rows.map((property) => (
+                  <article
+                    key={property.id}
+                    className="flex flex-wrap items-center justify-between gap-4 rounded-lg border bg-white p-5"
+                  >
+                    <div>
+                  <h2 className="break-words font-bold">
+                        {property.title || "Sản phẩm chưa đặt tên"}
+                      </h2>
+                      <p className="mt-2 text-sm text-gray-600">
+                        {groups.find(
+                          ([value]) => value === property.transaction_group,
+                        )?.[1] || "Chưa chọn nhóm"}{" "}
+                        ·{" "}
+                        {property.status === "PUBLISHED"
+                          ? "Đang hiển thị"
+                          : "Bản nháp"}
+                      </p>
+                    </div>
+                    <div className="flex gap-3">
+                      {property.status === "PUBLISHED" && clientDomain && (
+                        <a
+                          className="inline-flex min-h-11 items-center px-3 text-primary underline"
+                          target="_blank"
+                          rel="noreferrer"
+                          href={`${clientDomain.replace(/\/$/, "")}/san-giao-dich/san-pham/${property.id}`}
+                        >
+                          Xem trên web
+                        </a>
+                      )}
+                      {canUpdate && (
+                        <Button
+                          variant="outline"
+                          onClick={() => open(property)}
+                        >
+                          Sửa
+                        </Button>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                disabled={page === 1}
+                onClick={() => setPage((value) => value - 1)}
+              >
+                Trước
+              </Button>
+              <span>
+                Trang {page} · {count} sản phẩm
+              </span>
+              <Button
+                variant="outline"
+                disabled={page * 12 >= count}
+                onClick={() => setPage((value) => value + 1)}
+              >
+                Tiếp
+              </Button>
+            </div>
+          </>
+        )}
+        <ImagePicker
+          isOpen={!!picker}
+          onClose={() => setPicker(null)}
+          onSelect={selectFile}
+          type={picker === "video" ? "video" : "image"}
+        />
+      </main>
     </>
-  )
+  );
 }

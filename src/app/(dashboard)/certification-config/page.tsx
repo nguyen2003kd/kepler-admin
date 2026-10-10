@@ -371,7 +371,7 @@ export default function CertificationConfigPage() {
       if (licenseConfigId) {
         await updateMutation.mutateAsync({
           id: licenseConfigId,
-          data: { key: LICENSE_CONFIG_KEY, value: JSON.stringify(payload), is_active: true },
+          data: { key: LICENSE_CONFIG_KEY, language: licenseFetched?.responseData?.rows?.[0]?.language === "en" ? "en" : "vi", value: JSON.stringify(payload), is_active: true },
         });
       } else {
         await postMutation.mutateAsync({
@@ -455,6 +455,7 @@ export default function CertificationConfigPage() {
         id: configId,
         data: {
           key: configKey,
+          language: fetchedData?.responseData?.rows?.[0]?.language === "en" ? "en" : "vi",
           value: JSON.stringify(payload),
           is_active: true,
         },

@@ -27,6 +27,8 @@ import type { Contact } from "@/types";
 
 const TYPE_OPTIONS = [
   { value: "all", label: "Tất cả loại" },
+  { value: "property_order", label: "Đặt hàng sản phẩm" },
+  { value: "property_message", label: "Lời nhắn về sản phẩm" },
   { value: "lien-he-kepler", label: "Liên hệ Kepler" },
   { value: "lien-he-hop-tac", label: "Liên hệ hợp tác" },
   { value: "yeu-cau-ban-cho-thue", label: "Bán/cho thuê BĐS" },

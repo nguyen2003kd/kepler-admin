@@ -45,6 +45,27 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
   const [currentImageSection, setCurrentImageSection] = useState<string | null>(null)
   const [currentImagePosition, setCurrentImagePosition] = useState<number>(0)
 
+  const profileLabels = ['Giới thiệu chung', 'Kinh nghiệm', 'Thành tích']
+  const addNamedSections = (labels: string[], prefix: string) => {
+    const existingLabels = new Set(sections.flatMap(section =>
+      Array.from((section.content || '').matchAll(/<(h[1-6]|p)\b[^>]*>[\s\S]*?<\/\1>/gi))
+        .map(match => {
+          const label = match[0].replace(/<[^>]*>/g, '').replace(/&nbsp;|&#160;/gi, ' ').normalize('NFC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('vi')
+          return ['giá thuê', 'giá / vốn đầu tư', 'giá chuyển nhượng'].includes(label) ? 'giá bán' : label
+        })
+    ))
+    const missing = labels.filter(label => !existingLabels.has(label.toLocaleLowerCase('vi')))
+    if (!missing.length) return
+    const newSections: PostContentSection[] = missing.map((label, index) => ({
+      id: `${prefix}-${Date.now()}-${index}`,
+      type: 'text',
+      position: sections.length + index + 1,
+      content: `<h2>${label}</h2><p></p>`,
+    }))
+    onSectionsChange([...sections, ...newSections])
+  }
+  const addProfileSections = () => addNamedSections(profileLabels, 'profile')
+
   const addSection = (type: 'text' | 'image') => {
     const newSection: PostContentSection = {
       id: `section-${Date.now()}`,
@@ -166,6 +187,17 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
       <div className="flex items-center justify-between">
         <Label className="text-lg font-medium">Nội dung tin tức</Label>
       </div>
+
+      <Can I="add_text_section" a="news">
+        <div className="rounded-lg border bg-gray-50 p-4">
+          <p className="font-medium">Hồ sơ Ban điều hành / Hội đồng cố vấn</p>
+          <p className="mt-1 text-sm text-gray-600">Tạo sẵn 3 mục rồi nhập nội dung bên dưới từng tiêu đề. Giữ tên Giới thiệu chung, Kinh nghiệm và Thành tích để website đưa nội dung vào đúng tab. Chọn ảnh chân dung ở phần ảnh đại diện của bài.</p>
+          <Button type="button" variant="outline" className="mt-3" onClick={addProfileSections}>
+            <Plus className="mr-2 h-4 w-4" />
+            Thêm 3 mục hồ sơ
+          </Button>
+        </div>
+      </Can>
 
       {sections.length === 0 && (
         <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
