@@ -210,7 +210,7 @@ export const APP_ROUTES: AppRouteConfig[] = [
       resources: ['property', 'news'],
       requiredActions: ['view', 'view_detail', 'create', 'create_post_info', 'update'],
     },
-    sidebar: { label: 'Sản phẩm Sàn giao dịch', icon: 'service' },
+    sidebar: { label: 'Bất động sản', icon: 'service' },
   },
 
   // {

@@ -195,7 +195,6 @@ export * from './getApiV10PropertyIdParams';
 export * from './getApiV10PropertyIdScope';
 export * from './getApiV10PropertyParams';
 export * from './getApiV10PropertyScope';
-
 export * from './getApiV10Province200';
 export * from './getApiV10Province200AllOf';
 export * from './getApiV10Province200AllOfResponseDataItem';
@@ -411,7 +410,6 @@ export * from './propertyMutateTransactionGroup';
 export * from './propertyPriceUnit';
 export * from './propertyStatus';
 export * from './propertyTransactionGroup';
-
 export * from './putApiV10BannerId200';
 export * from './putApiV10BannerId200AllOf';
 export * from './putApiV10CalibrationId200';
