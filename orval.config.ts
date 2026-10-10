@@ -8,7 +8,7 @@ const orvalConfig = async () => {
   const { default: baseConfig } = await import('./src/configs/base')
   const { backendDomain, frontendDomain } = baseConfig
 
-  const [caseSmeqBESwagger] = await Promise.all([
+  const [keplerProperty] = await Promise.all([
     axios.get(`${backendDomain}/swagger-output.json`, {
       headers: { Origin: frontendDomain }
     })
@@ -34,7 +34,7 @@ const orvalConfig = async () => {
         }
       },
       input: {
-        target: caseSmeqBESwagger.data,
+        target: keplerProperty.data,
         filters: {
           tags: ['Authentication', /(((Library)|(Module)) - )?/]
         }
