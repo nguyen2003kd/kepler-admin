@@ -102,7 +102,7 @@ export default function OrganizationalChartPage() {
     try {
       await updateBgMutation.mutateAsync({
         id: bgConfig.id,
-        data: { key: BG_COLOR_CONFIG_KEY, value: newColor },
+        data: { key: BG_COLOR_CONFIG_KEY, language: bgConfig.language ?? 'vi', value: newColor },
       })
       setBgColor(newColor)
       await queryClient.invalidateQueries({ queryKey: ['page-config', 'color_bg'] })

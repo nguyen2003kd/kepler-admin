@@ -309,7 +309,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                 </Can>
               )}
               <DialogPrimitive.Close asChild>
-                <button className="p-1 hover:bg-gray-100 rounded-lg transition">
+                <button aria-label="Đóng kho" className="p-1 hover:bg-gray-100 rounded-lg transition">
                   <X className="h-5 w-5" />
                 </button>
               </DialogPrimitive.Close>

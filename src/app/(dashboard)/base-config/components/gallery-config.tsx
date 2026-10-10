@@ -202,6 +202,7 @@ export function GalleryConfig() {
               id: slide.configId!,
               data: {
                 key: slide.key,
+                language: pageConfigData?.responseData?.rows?.find((config) => config.id === slide.configId)?.language === "en" ? "en" : "vi",
                 value: result.uploadedUrl,
               },
             });
@@ -215,6 +216,7 @@ export function GalleryConfig() {
           id: contentData.titleId,
           data: {
             key: "title",
+            language: pageConfigData?.responseData?.rows?.find((config) => config.id === contentData.titleId)?.language === "en" ? "en" : "vi",
             value: tempContentData.title.replace(/\n/g, "<br>"),
           },
         });
@@ -225,6 +227,7 @@ export function GalleryConfig() {
           id: contentData.descriptionId,
           data: {
             key: "sub_title",
+            language: pageConfigData?.responseData?.rows?.find((config) => config.id === contentData.descriptionId)?.language === "en" ? "en" : "vi",
             value: tempContentData.description,
           },
         });

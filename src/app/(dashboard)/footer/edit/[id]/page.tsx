@@ -165,8 +165,8 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
 
     const payload: FooterMutate = {
       language: canEditBasicInfo
-        ? submitData.language
-        : existingFooter.language,
+        ? (submitData.language ?? existingFooter.language ?? "vi")
+        : (existingFooter.language ?? "vi"),
       description: canEditBasicInfo
         ? submitData.description
         : existingFooter.description,

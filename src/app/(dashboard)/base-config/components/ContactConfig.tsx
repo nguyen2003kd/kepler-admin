@@ -189,6 +189,7 @@ export function ContactConfig({
           id: configId,
           data: {
             key: configKey,
+            language: lang,
             value: JSON.stringify(editPageContactConfig),
             is_active: true,
           },
@@ -197,6 +198,7 @@ export function ContactConfig({
         const created = await createMutation.mutateAsync({
           data: {
             key: configKey,
+            language: lang,
             value: JSON.stringify(editPageContactConfig),
             is_active: true,
           },
