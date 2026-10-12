@@ -14,11 +14,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Save, Loader2, Plus, Trash2 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
-import { PageConfigMutate } from "@/api/models/pageConfigMutate";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
+import { BaseConfigMutate } from "@/api/models/baseConfigMutate";
 import { toast } from "sonner";
 
 const CONFIG_KEY_VI = "about-vision-mission";
@@ -123,17 +123,17 @@ export function VisionMissionContentConfig({ canCreate, canUpdate }: VisionMissi
   const setFormData = isEn ? setEnData : setViData;
   const defaultData = isEn ? defaultDataEn : defaultDataVi;
 
-  const { data: viResp, isLoading: viLoading, refetch: refetchVi } = useGetApiV10PageConfig({
+  const { data: viResp, isLoading: viLoading, refetch: refetchVi } = useGetApiV10BaseConfig({
     filters: `key==${CONFIG_KEY_VI}`,
     pageSize: 1,
   });
-  const { data: enResp, isLoading: enLoading, refetch: refetchEn } = useGetApiV10PageConfig({
+  const { data: enResp, isLoading: enLoading, refetch: refetchEn } = useGetApiV10BaseConfig({
     filters: `key==${CONFIG_KEY_EN}`,
     pageSize: 1,
   });
 
-  const putMutation = usePutApiV10PageConfigId();
-  const postMutation = usePostApiV10PageConfig();
+  const putMutation = usePutApiV10BaseConfigId();
+  const postMutation = usePostApiV10BaseConfig();
 
   const isLoading = viLoading || enLoading;
   const canEdit = canCreate || canUpdate;
@@ -255,11 +255,11 @@ export function VisionMissionContentConfig({ canCreate, canUpdate }: VisionMissi
       if (configId) {
         await putMutation.mutateAsync({
           id: configId,
-          data: { key: configKey, value, is_active: true } as PageConfigMutate,
+          data: { key: configKey, value, is_active: true } as BaseConfigMutate,
         });
       } else {
         await postMutation.mutateAsync({
-          data: { key: configKey, value, is_active: true, language: lang } as PageConfigMutate,
+          data: { key: configKey, value, is_active: true, language: lang } as BaseConfigMutate,
         });
       }
       setHasChanges(false);

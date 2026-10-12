@@ -22,12 +22,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
 import { ImagePicker, ImagePickerFile } from "@/components/shared/image-picker";
-import { PageConfigMutate } from "@/api/models/pageConfigMutate";
+import { BaseConfigMutate } from "@/api/models/baseConfigMutate";
 import { toast } from "sonner";
 
 const resolveImageUrl = (path: string): string => {
@@ -235,7 +235,7 @@ const slugify = (text: string): string =>
     .replace(/-+/g, "-");
 
 export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) {
-  const { data, isLoading, refetch } = useGetApiV10PageConfig({
+  const { data, isLoading, refetch } = useGetApiV10BaseConfig({
     filters: `key==${ECOSYSTEM_CONFIG_KEY}`,
   });
   const [editing, setEditing] = useState(false);
@@ -273,8 +273,8 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
     }
   }, [data]);
 
-  const putMutation = usePutApiV10PageConfigId();
-  const postMutation = usePostApiV10PageConfig();
+  const putMutation = usePutApiV10BaseConfigId();
+  const postMutation = usePostApiV10BaseConfig();
 
   const validate = (): string | null => {
     for (let i = 0; i < formData.members.length; i++) {
@@ -307,7 +307,7 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
             key: ECOSYSTEM_CONFIG_KEY,
             value,
             is_active: true,
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
       } else {
         await postMutation.mutateAsync({
@@ -316,7 +316,7 @@ export function EcosystemConfig({ canCreate, canUpdate }: EcosystemConfigProps) 
             value,
             is_active: true,
             language: "vi",
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
       }
       toast.success("Đã lưu cấu hình Thành viên hệ sinh thái");

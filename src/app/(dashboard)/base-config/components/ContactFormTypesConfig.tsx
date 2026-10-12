@@ -20,11 +20,11 @@ import {
   AlertCircle,
 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
-import { PageConfigMutate } from "@/api/models/pageConfigMutate";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
+import { BaseConfigMutate } from "@/api/models/baseConfigMutate";
 import { toast } from "sonner";
 
 const CONTACT_FORM_TYPES_KEY = "CONTACT_FORM_TYPES";
@@ -154,12 +154,12 @@ export function ContactFormTypesConfig({
   const [configId, setConfigId] = useState<string>("");
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
 
-  const { data, isLoading, refetch } = useGetApiV10PageConfig({
+  const { data, isLoading, refetch } = useGetApiV10BaseConfig({
     filters: `key==${CONTACT_FORM_TYPES_KEY}`,
   });
 
-  const updateMutation = usePutApiV10PageConfigId();
-  const createMutation = usePostApiV10PageConfig();
+  const updateMutation = usePutApiV10BaseConfigId();
+  const createMutation = usePostApiV10BaseConfig();
 
   useEffect(() => {
     const rows = data?.responseData?.rows;
@@ -196,7 +196,7 @@ export function ContactFormTypesConfig({
             key: CONTACT_FORM_TYPES_KEY,
             value,
             is_active: true,
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
       } else {
         const created = await createMutation.mutateAsync({
@@ -204,7 +204,7 @@ export function ContactFormTypesConfig({
             key: CONTACT_FORM_TYPES_KEY,
             value,
             is_active: true,
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
         const newId = created?.responseData?.id;
         if (newId) setConfigId(newId);

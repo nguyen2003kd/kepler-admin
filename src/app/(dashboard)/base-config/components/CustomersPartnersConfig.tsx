@@ -24,10 +24,10 @@ import {
   ExternalLink,
 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePostApiV10PageConfig,
-  usePutApiV10PageConfigId,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePostApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+} from "@/api/endpoints/base-config";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
 import { toast } from "sonner";
 
@@ -42,7 +42,7 @@ interface Partner {
   is_active: boolean;
 }
 
-interface PageConfigRow {
+interface BaseConfigRow {
   id: string;
   key: string;
   value: string;
@@ -52,7 +52,7 @@ const generateId = () => Date.now().toString(36) + Math.random().toString(36).su
 
 export interface CustomersPartnersConfigProps {
   canUpdate?: boolean;
-  /** Key pageConfig riêng của từng loại */
+  /** Key BaseConfig riêng của từng loại */
   configKey: string;
   /** Tiêu đề section */
   title: string;
@@ -88,16 +88,16 @@ export function CustomersPartnersConfig({
   });
   const [, setSelectedImageFile] = useState<ImagePickerFile | null>(null);
 
-  const { data, refetch } = useGetApiV10PageConfig({
+  const { data, refetch } = useGetApiV10BaseConfig({
     filters: `key==${configKey}`,
     pageSize: 1,
   });
-  const updateMutation = usePutApiV10PageConfigId();
-  const createMutation = usePostApiV10PageConfig();
+  const updateMutation = usePutApiV10BaseConfigId();
+  const createMutation = usePostApiV10BaseConfig();
 
   useEffect(() => {
     if (data?.responseData?.rows && data.responseData.rows.length > 0) {
-      const row = data.responseData.rows[0] as unknown as PageConfigRow;
+      const row = data.responseData.rows[0] as unknown as BaseConfigRow;
       setConfigId(row.id);
       try {
         const parsed = JSON.parse(row.value || "[]");

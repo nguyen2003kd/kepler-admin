@@ -27,17 +27,17 @@ import {
   ChevronRight,
 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
 import baseConfig from "@/configs/base";
 import { toast } from "sonner";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-const PAGE_CONFIG_KEY = "certification-config";
+const BASE_CONFIG_KEY = "certification-config";
 const LICENSE_CONFIG_KEY = "license-config";
 
 interface CertificationDataItem {
@@ -253,7 +253,7 @@ const CertificationItemCard = forwardRef<
 // ─── Main Page Component ─────────────────────────────────────────────────────
 export default function CertificationConfigPage() {
   const [configId, setConfigId] = useState("");
-  const [configKey] = useState(PAGE_CONFIG_KEY);
+  const [configKey] = useState(BASE_CONFIG_KEY);
   const [title, setTitle] = useState("");
   const [describe, setDescribe] = useState("");
   const [data, setData] = useState<CertificationDataItem[]>([]);
@@ -263,12 +263,12 @@ export default function CertificationConfigPage() {
   const [pickerItemId, setPickerItemId] = useState<string | null>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const { data: fetchedData, isLoading, refetch } = useGetApiV10PageConfig({
-    filters: `key==${PAGE_CONFIG_KEY}`,
+  const { data: fetchedData, isLoading, refetch } = useGetApiV10BaseConfig({
+    filters: `key==${BASE_CONFIG_KEY}`,
     pageSize: 1,
   });
-  const updateMutation = usePutApiV10PageConfigId();
-  const postMutation = usePostApiV10PageConfig();
+  const updateMutation = usePutApiV10BaseConfigId();
+  const postMutation = usePostApiV10BaseConfig();
 
   // Load from API
   useEffect(() => {
@@ -297,7 +297,7 @@ export default function CertificationConfigPage() {
   const [licensePickerItemId, setLicensePickerItemId] = useState<string | null>(null);
   const licenseItemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const { data: licenseFetched, refetch: refetchLicense } = useGetApiV10PageConfig({
+  const { data: licenseFetched, refetch: refetchLicense } = useGetApiV10BaseConfig({
     filters: `key==${LICENSE_CONFIG_KEY}`,
     pageSize: 1,
   });

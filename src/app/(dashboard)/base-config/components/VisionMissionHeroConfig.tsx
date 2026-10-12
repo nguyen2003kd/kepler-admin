@@ -14,12 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Save, Loader2, Image as ImageIcon, Compass } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
 import { ImagePicker, ImagePickerFile } from "@/components/shared/image-picker";
-import { PageConfigMutate } from "@/api/models/pageConfigMutate";
+import { BaseConfigMutate } from "@/api/models/baseConfigMutate";
 import { toast } from "sonner";
 
 const CONFIG_KEY_VI = "about-vision-mission-hero";
@@ -74,17 +74,17 @@ export function VisionMissionHeroConfig({ canCreate, canUpdate }: VisionMissionH
   const setFormData = isEn ? setEnEdit : setViEdit;
   const displayData = isEn ? enData : viData;
 
-  const { data: viResp, isLoading: viLoading, refetch: refetchVi } = useGetApiV10PageConfig({
+  const { data: viResp, isLoading: viLoading, refetch: refetchVi } = useGetApiV10BaseConfig({
     filters: `key==${CONFIG_KEY_VI}`,
     pageSize: 1,
   });
-  const { data: enResp, isLoading: enLoading, refetch: refetchEn } = useGetApiV10PageConfig({
+  const { data: enResp, isLoading: enLoading, refetch: refetchEn } = useGetApiV10BaseConfig({
     filters: `key==${CONFIG_KEY_EN}`,
     pageSize: 1,
   });
 
-  const putMutation = usePutApiV10PageConfigId();
-  const postMutation = usePostApiV10PageConfig();
+  const putMutation = usePutApiV10BaseConfigId();
+  const postMutation = usePostApiV10BaseConfig();
 
   const isLoading = viLoading || enLoading;
   const canEdit = canCreate || canUpdate;
@@ -144,11 +144,11 @@ export function VisionMissionHeroConfig({ canCreate, canUpdate }: VisionMissionH
       if (configId) {
         await putMutation.mutateAsync({
           id: configId,
-          data: { key: configKey, value, is_active: true } as PageConfigMutate,
+          data: { key: configKey, value, is_active: true } as BaseConfigMutate,
         });
       } else {
         await postMutation.mutateAsync({
-          data: { key: configKey, value, is_active: true, language: lang } as PageConfigMutate,
+          data: { key: configKey, value, is_active: true, language: lang } as BaseConfigMutate,
         });
       }
       toast.success("Đã lưu cấu hình Hero");
