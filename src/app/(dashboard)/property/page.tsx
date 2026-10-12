@@ -21,13 +21,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAbility } from "@/hooks/use-ability";
 import type { Property } from "@/api/models/property";
-import { GROUP_OPTIONS } from "./constants";
+import { GROUP_OPTIONS, PROJECT_GROUP_VALUES } from "./constants";
 import { PropertyFormDialog, usePropertyColumns } from "./components";
 import { usePropertyData, usePropertyMutations } from "./hooks";
 
 export default function PropertyPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedGroup, setSelectedGroup] = React.useState("all");
+  const [selectedGroup, setSelectedGroup] = React.useState("projects");
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [selectedProperty, setSelectedProperty] = React.useState<Property | null>(
     null,
@@ -37,9 +37,16 @@ export default function PropertyPage() {
   const canCreate =
     ability.can("create", "property") || ability.can("create_post_info", "news");
 
+  const groupFilter =
+    selectedGroup === "projects"
+      ? [...PROJECT_GROUP_VALUES]
+      : selectedGroup === "all"
+        ? undefined
+        : selectedGroup;
+
   const { properties, totalCount, isLoading, refetch } = usePropertyData(
     searchTerm,
-    selectedGroup === "all" ? undefined : selectedGroup,
+    groupFilter,
   );
 
   const { handleCreate, handleUpdate, isSubmitting } = usePropertyMutations(refetch);
@@ -116,6 +123,9 @@ export default function PropertyPage() {
                         <SelectValue placeholder="Lọc theo nhóm" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="projects">
+                          Dự án (đầu tư, phân phối, M&A)
+                        </SelectItem>
                         <SelectItem value="all">Tất cả nhóm</SelectItem>
                         {GROUP_OPTIONS.map((group) => (
                           <SelectItem key={group.value} value={group.value}>

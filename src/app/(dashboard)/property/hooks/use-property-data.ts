@@ -12,10 +12,19 @@ import type { Property } from "@/api/models/property";
 import type { PropertyMutate } from "@/api/models/propertyMutate";
 import { extractErrorMessage } from "@/utils/error";
 
-export function usePropertyData(searchTerm: string, groupFilter?: string) {
+export function usePropertyData(searchTerm: string, groupFilter?: string | string[]) {
+  const groups = Array.isArray(groupFilter)
+    ? groupFilter
+    : groupFilter
+      ? [groupFilter]
+      : [];
   const filterParts = [
     searchTerm ? `title~${searchTerm}` : null,
-    groupFilter ? `transaction_group==${groupFilter}` : null,
+    groups.length === 1
+      ? `transaction_group==${groups[0]}`
+      : groups.length > 1
+        ? `transaction_group==${groups.join("|")}`
+        : null,
   ].filter(Boolean);
 
   const { data, isLoading, refetch } = useGetApiV10Property({
