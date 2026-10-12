@@ -9,7 +9,7 @@ const orvalConfig = async () => {
   const { backendDomain, frontendDomain } = baseConfig
 
   const [keplerProperty] = await Promise.all([
-    axios.get(`${backendDomain}/swagger-output.json`, {
+    axios.get(`${backendDomain}/api/swagger-output.json`, {
       headers: { Origin: frontendDomain }
     })
   ])
