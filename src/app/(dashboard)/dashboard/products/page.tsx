@@ -98,11 +98,11 @@ export default function ProductsPage() {
   return (
     <div>
       <Header title="Products" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Products</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Products</h2>
               <p className="text-muted-foreground">
                 Manage your product inventory and catalog
               </p>
@@ -175,14 +175,13 @@ export default function ProductsPage() {
             </div>
 
             {/* Products Table */}
-            <Card>
-              <CardHeader>
-                <CardTitle>All Products</CardTitle>
-                <CardDescription>
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight">All Products</h2>
+                <p className="text-sm text-muted-foreground">
                   A list of all products in your inventory
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
+              </div>
                 <DataTable
                   columns={productColumns}
                   data={products}
@@ -190,8 +189,7 @@ export default function ProductsPage() {
                   isLoading={isLoading}
                   onRefresh={refetch}
                 />
-              </CardContent>
-            </Card>
+            </div>
           </div>
         </main>
     </div>

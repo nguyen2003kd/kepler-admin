@@ -19,7 +19,7 @@ export default function PermissionsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="flex min-h-screen flex-col">
         <Header title="Quản lý phân quyền" />
         <div className="p-6 flex items-center justify-center">
           <div className="text-center space-y-4">
@@ -33,7 +33,7 @@ export default function PermissionsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="flex min-h-screen flex-col">
         <Header title="Quản lý phân quyền" />
         <div className="p-6 flex items-center justify-center">
           <Card className="max-w-md">
@@ -56,10 +56,10 @@ export default function PermissionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col">
       <Header title="Quản lý phân quyền" />
 
-      <div className="p-6 pb-3">
+      <main className="flex-1 space-y-6 p-6">
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground">
             Thiết lập và quản lý quyền truy cập cho người dùng
@@ -69,11 +69,8 @@ export default function PermissionsPage() {
             Làm mới
           </Button>
         </div>
-      </div>
-
-      <div className="p-6 pt-3">
         <RoleManagement roles={roles} />
-      </div>
+      </main>
     </div>
   );
 }

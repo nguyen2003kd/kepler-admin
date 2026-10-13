@@ -5,13 +5,6 @@ import { Plus } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { DataTable } from "@/components/shared/data-table";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -44,7 +37,7 @@ export default function PropertyPage() {
         ? undefined
         : selectedGroup;
 
-  const { properties, totalCount, isLoading, refetch } = usePropertyData(
+  const { properties, isLoading, refetch } = usePropertyData(
     searchTerm,
     groupFilter,
   );
@@ -79,11 +72,11 @@ export default function PropertyPage() {
   return (
     <div>
       <Header title="Quản lý Bất động sản" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">
+              <h2 className="text-2xl font-bold tracking-tight">
                 Quản lý Bất động sản
               </h2>
               <p className="text-muted-foreground">
@@ -98,15 +91,7 @@ export default function PropertyPage() {
             )}
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Danh sách bất động sản</CardTitle>
-              <CardDescription>
-                Tổng cộng: {totalCount} bất động sản
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <DataTable
+          <DataTable
                 columns={columns}
                 data={properties}
                 searchPlaceholder="Tìm kiếm theo tên bất động sản..."
@@ -136,9 +121,7 @@ export default function PropertyPage() {
                     </Select>
                   </div>
                 }
-              />
-            </CardContent>
-          </Card>
+          />
         </div>
       </main>
 

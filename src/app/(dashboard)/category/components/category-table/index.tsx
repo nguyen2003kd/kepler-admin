@@ -1,7 +1,6 @@
 "use client"
 
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DataTable } from '@/components/shared/data-table'
 import { createCategoryColumns } from '../category-columns'
 import { useAbility } from '@/hooks/use-ability'
@@ -30,15 +29,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
 	})
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Danh sách danh mục</CardTitle>
-				<CardDescription>
-					Danh sách tất cả các danh mục trong hệ thống
-				</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<DataTable
+		<DataTable
 					columns={columns}
 					data={visibleRows}
 					searchPlaceholder="Tìm kiếm danh mục..."
@@ -47,8 +38,6 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
 					onLoadMore={() => {}}
 					hasNextPage={false}
 					isFetchingNextPage={false}
-				/>
-			</CardContent>
-		</Card>
+		/>
 	)
 }

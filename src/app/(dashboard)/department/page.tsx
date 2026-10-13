@@ -142,65 +142,60 @@ export default function DepartmentPage() {
   return (
     <>
     <Header title="Phòng ban / Khối" />
-    <div className="flex h-full min-h-[calc(100vh-theme(spacing.16))] flex-col space-y-6 bg-gray-50/30 p-4 md:p-8 dark:bg-gray-950/30">
+    <main className="flex-1 space-y-6 p-6">
 
       {/* Header */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="flex items-center text-2xl md:text-3xl font-black tracking-tight text-gray-900 dark:text-gray-100">
-            <Building2 className="mr-3 h-7 w-7 text-blue-600 dark:text-blue-500" />
+          <h1 className="text-2xl font-bold tracking-tight">
             Phòng ban / Khối
           </h1>
-          <p className="mt-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground">
             Quản lý danh sách phòng ban, khối trong tổ chức và gắn nhân viên.
           </p>
         </div>
 
-        <Button
-          onClick={handleOpenCreate}
-          disabled={!canCreateDepartment}
-          className="flex items-center bg-blue-600 hover:bg-blue-700 text-white shadow-md shrink-0"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Thêm phòng ban
-        </Button>
+        {canCreateDepartment && (
+          <Button
+            onClick={handleOpenCreate}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Thêm phòng ban
+          </Button>
+        )}
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+      <div className="relative max-w-sm">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Tìm kiếm phòng ban..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-white dark:bg-gray-900"
+            className="pl-9"
           />
-        </div>
-        <div className="text-sm text-gray-500">
-          {filtered.length} / {departments.length} phòng ban
-        </div>
       </div>
 
       {/* Table */}
-      <div className="flex-1 w-full overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950 shadow-sm">
+      <div className="rounded-md border">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <tr className="border-b bg-muted/50">
+                <th className="h-10 whitespace-nowrap px-4 text-left font-medium">
                   Mã
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <th className="h-10 whitespace-nowrap px-4 text-left font-medium">
                   Tên phòng ban
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <th className="h-10 whitespace-nowrap px-4 text-left font-medium">
                   Mô tả
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <th className="h-10 whitespace-nowrap px-4 text-left font-medium">
                   Trạng thái
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <th className="h-10 whitespace-nowrap px-4 text-right font-medium">
                   Thao tác
                 </th>
               </tr>
@@ -208,61 +203,56 @@ export default function DepartmentPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-16 text-center">
-                    <div className="flex items-center justify-center gap-2 text-gray-400">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Đang tải...
-                    </div>
+                  <td colSpan={5} className="h-32 text-center">
+                    <Loader2 className="mx-auto h-6 w-6 animate-spin text-muted-foreground" />
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-16 text-center text-gray-400">
-                    Không tìm thấy phòng ban nào.
+                  <td colSpan={5} className="h-32 text-center text-muted-foreground">
+                    <div className="flex flex-col items-center gap-2">
+                      <Building2 className="h-8 w-8" />
+                      <p>Không có phòng ban nào</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 filtered.map((dept) => (
                   <tr
                     key={dept.id}
-                    className="border-b border-gray-50 transition-colors hover:bg-blue-50/30 dark:border-gray-800 dark:hover:bg-gray-900"
+                    className="border-b transition-colors hover:bg-muted/50"
                   >
                     <td className="px-4 py-3">
-                      <Badge variant="outline" className="font-mono text-xs font-semibold border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-300">
+                      <Badge variant="outline" className="font-mono text-xs">
                         {dept.code || '—'}
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <div>
-                        <p className="font-semibold text-gray-900 dark:text-gray-100">
-                          {dept.name || '—'}
-                        </p>
-                      </div>
+                      <p className="font-medium">{dept.name || '—'}</p>
                     </td>
-                    <td className="px-4 py-3 max-w-xs">
-                      <p className="text-gray-500 dark:text-gray-400 line-clamp-2">
+                    <td className="max-w-[300px] px-4 py-3">
+                      <p className="truncate text-muted-foreground">
                         {dept.description || '—'}
                       </p>
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-3">
                       {dept.status === 'ACTIVE' ? (
-                        <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-400">
+                        <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
                           Hoạt động
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                        <Badge variant="secondary">
                           Không hoạt động
                         </Badge>
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center justify-center gap-1">
+                      <div className="flex items-center justify-end gap-2">
                         {/* Assign Users */}
                         {canAddPersonnelDepartment && (
                           <Button
-                            size="sm"
                             variant="ghost"
-                            className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:text-blue-400"
+                            size="icon"
                             onClick={() => setAssigningDept(dept)}
                             title="Gắn nhân viên"
                           >
@@ -273,9 +263,8 @@ export default function DepartmentPage() {
                         {/* Edit */}
                         {canEditDepartment && (
                           <Button
-                            size="sm"
                             variant="ghost"
-                            className="h-8 w-8 p-0 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-900/30 dark:text-emerald-400"
+                            size="icon"
                             onClick={() => handleOpenEdit(dept)}
                             title="Chỉnh sửa"
                           >
@@ -286,9 +275,9 @@ export default function DepartmentPage() {
                         {/* Delete */}
                         {canDeleteDepartment && (
                           <Button
-                            size="sm"
                             variant="ghost"
-                            className="h-8 w-8 p-0 text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30 dark:text-red-400"
+                            size="icon"
+                            className="text-red-500 hover:text-red-600"
                             onClick={() => setDeletingDept(dept)}
                             title="Xóa"
                           >
@@ -304,6 +293,10 @@ export default function DepartmentPage() {
           </table>
         </div>
       </div>
+
+      <p className="text-xs text-muted-foreground">
+        Hiển thị {filtered.length} / {departments.length} phòng ban
+      </p>
 
       {/* Form Dialog */}
       <DepartmentFormDialog
@@ -348,7 +341,7 @@ export default function DepartmentPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </main>
     </>
   )
 }

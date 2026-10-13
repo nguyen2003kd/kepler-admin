@@ -64,7 +64,7 @@ export const ACTION_LABELS: Record<string, string> = {
   // Organizational Chart
 
   // Work Schedule
-  create_root_nodel:"Tạo nhân sự mới",
+  create_root_nodel: "Tạo nhân sự mới",
   // Diagram
 
   delete_personnel: "xóa nhân sự",
@@ -121,7 +121,7 @@ export const MODULE_DEFINITIONS = [
   {
     id: "category",
     name: "Danh mục",
-    description: "Quản lý danh mục sản phẩm",
+    description: "Quản lý danh mục Header",
   },
   { id: "gallery", name: "Kho ảnh", description: "Quản lý hình ảnh" },
   { id: "gallery_video", name: "Kho video", description: "Quản lý video" },
@@ -167,8 +167,8 @@ export const MODULE_DEFINITIONS = [
   },
   {
     id: "diagram",
-    name: "quản lý sơ đồ tổ chức",
-    description: "quản lý các quyền của sơ đồ tổ chức",
+    name: "Quản lý sơ đồ tổ chức",
+    description: "Quản lý các quyền của sơ đồ tổ chức",
   },
   {
     id: "department",
@@ -257,8 +257,8 @@ export function rolePermissionsToModulePermissions(
     .map(
       (rp) =>
         (rp as Record<string, unknown>)?.permission as
-          | BackendPermission
-          | undefined,
+        | BackendPermission
+        | undefined,
     )
     .filter((p): p is BackendPermission => !!p);
 

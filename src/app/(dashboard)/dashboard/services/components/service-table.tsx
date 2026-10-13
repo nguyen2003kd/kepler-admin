@@ -227,7 +227,7 @@ export default function ServiceTable({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-muted/50 hover:bg-muted/50">
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} style={{ width: header.getSize() }}>
                     {header.isPlaceholder

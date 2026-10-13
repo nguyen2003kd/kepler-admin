@@ -1,16 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Plus, Edit, Trash2, Search, Tag } from "lucide-react";
+import { Plus, Edit, Trash2, Search, Tag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { toast } from "sonner";
 import { Header } from "@/components/layout/header";
 
@@ -124,111 +117,108 @@ export default function CalibrationPage() {
   return (
     <>
       <Header title="Quản lý loại mẫu" />
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                  <Tag className="text-cyan-600" />
-                  Quản lý Tiêu chuẩn
-                </CardTitle>
-                <CardDescription className="text-base">
-                  Quản lý các Tiêu chuẩn trong hệ thống
-                </CardDescription>
-              </div>
-              <Button
-                className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                onClick={openCreateForm}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Thêm mới
-              </Button>
-            </div>
-          </CardHeader>
+      <main className="flex-1 space-y-6 p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Quản lý Tiêu chuẩn</h1>
+            <p className="text-sm text-muted-foreground">
+              Quản lý các Tiêu chuẩn trong hệ thống
+            </p>
+          </div>
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={openCreateForm}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Thêm mới
+          </Button>
+        </div>
 
-          <CardContent className="space-y-4">
+        <div className="space-y-4">
             {/* Search Bar */}
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <div className="relative max-w-sm">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Tìm kiếm theo tên..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-9"
               />
             </div>
 
             {/* Table */}
-            <div className="border rounded-lg overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-16">
+            <div className="rounded-md border">
+              <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="h-10 px-4 text-left font-medium w-16">
                       STT
                     </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                    <th className="h-10 px-4 text-left font-medium">
                       Tên Tiêu chuẩn
                     </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-48">
+                    <th className="h-10 px-4 text-left font-medium w-48">
                       Ngày tạo
                     </th>
-                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 w-32">
+                    <th className="h-10 px-4 text-right font-medium w-32">
                       Hành động
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody>
                   {isLoading ? (
                     <tr>
-                      <td colSpan={4} className="px-4 py-8 text-center">
-                        <div className="flex justify-center">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600" />
-                        </div>
+                      <td colSpan={4} className="h-32 text-center">
+                        <Loader2 className="mx-auto h-6 w-6 animate-spin text-muted-foreground" />
                       </td>
                     </tr>
                   ) : filteredItems.length === 0 ? (
                     <tr>
                       <td
                         colSpan={4}
-                        className="px-4 py-8 text-center text-gray-500"
+                        className="h-32 text-center text-muted-foreground"
                       >
-                        {searchQuery
-                          ? "Không tìm thấy kết quả phù hợp"
-                          : "Chưa có Tiêu chuẩn nào"}
+                        <div className="flex flex-col items-center gap-2">
+                          <Tag className="h-8 w-8" />
+                          <p>
+                            {searchQuery
+                              ? "Không tìm thấy kết quả phù hợp"
+                              : "Chưa có Tiêu chuẩn nào"}
+                          </p>
+                        </div>
                       </td>
                     </tr>
                   ) : (
                     filteredItems.map((item, index) => (
                       <tr
                         key={item.id}
-                        className="hover:bg-gray-50 transition-colors"
+                        className="border-b transition-colors hover:bg-muted/50"
                       >
-                        <td className="px-4 py-3 text-sm text-gray-600">
+                        <td className="px-4 py-3 text-muted-foreground">
                           {index + 1}
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-cyan-100 text-cyan-800">
+                        <td className="px-4 py-3 font-medium">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             {item.name}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">
+                        <td className="px-4 py-3 text-muted-foreground">
                           {formatDate(item.created_at)}
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center justify-end gap-2">
                             <Button
                               variant="ghost"
-                              size="sm"
-                              className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                              size="icon"
                               onClick={() => openEditForm(item)}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button
                               variant="ghost"
-                              size="sm"
-                              className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                              size="icon"
+                              className="text-red-500 hover:text-red-600"
                               onClick={() => item.id && handleDelete(item.id)}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -240,14 +230,14 @@ export default function CalibrationPage() {
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
 
             {/* Stats */}
-            <div className="text-sm text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Hiển thị {filteredItems.length} / {items.length} Tiêu chuẩn
-            </div>
-          </CardContent>
-        </Card>
+            </p>
+        </div>
 
         {/* Form Modal */}
         {formOpen && (
@@ -310,7 +300,7 @@ export default function CalibrationPage() {
             </div>
           </div>
         )}
-      </div>
+      </main>
     </>
   );
 }

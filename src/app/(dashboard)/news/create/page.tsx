@@ -152,7 +152,7 @@ export default function CreateNewsPage() {
   return (
     <div>
       <Header title="Tạo tin tức mới" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="max-w-full mx-auto">
           <div className="mb-6">
             <Link href="/news">

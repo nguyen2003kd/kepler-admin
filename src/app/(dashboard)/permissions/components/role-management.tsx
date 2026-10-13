@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -88,27 +87,26 @@ export function RoleManagement({ roles }: RoleManagementProps) {
 
   return (
     <>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+      <div className="space-y-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle>Danh sách vai trò</CardTitle>
-            <CardDescription className="mt-1.5">
+            <h2 className="text-2xl font-bold tracking-tight">Danh sách vai trò</h2>
+            <p className="text-sm text-muted-foreground">
               Quản lý các vai trò và phân quyền trong hệ thống
-            </CardDescription>
+            </p>
           </div>
           {canCreateRole && (
-            <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
+            <Button onClick={() => setIsCreateOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
               <Plus className="h-4 w-4" />
               Tạo vai trò mới
             </Button>
           )}
-        </CardHeader>
+        </div>
 
-        <CardContent>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
                   <TableHead className="w-[220px]">Tên vai trò</TableHead>
                   <TableHead>Mô tả</TableHead>
                   <TableHead className="text-right w-[200px]">Thao tác</TableHead>
@@ -158,7 +156,7 @@ export function RoleManagement({ roles }: RoleManagementProps) {
                             {canUpdateRole && (
                               <Button
                                 variant="ghost"
-                                size="sm"
+                                size="icon"
                                 title="Chỉnh sửa tên & mô tả"
                                 onClick={() => setEditInfoRole(role)}
                               >
@@ -170,7 +168,7 @@ export function RoleManagement({ roles }: RoleManagementProps) {
                             {canUpdateRolePermission && (
                               <Button
                                 variant="ghost"
-                                size="sm"
+                                size="icon"
                                 title="Chỉnh sửa quyền"
                                 onClick={() => setEditPermsRole(role)}
                               >
@@ -182,7 +180,7 @@ export function RoleManagement({ roles }: RoleManagementProps) {
                             {canAddUserToRole && (
                               <Button
                                 variant="ghost"
-                                size="sm"
+                                size="icon"
                                 title="Thêm người dùng vào vai trò"
                                 onClick={() => setAddUserRole(role)}
                               >
@@ -194,7 +192,7 @@ export function RoleManagement({ roles }: RoleManagementProps) {
                             {canDeleteRole && (
                               <Button
                                 variant="ghost"
-                                size="sm"
+                                size="icon"
                                 title="Xóa vai trò"
                                 onClick={() => setRoleToDelete(role)}
                                 disabled={role.isSystem}
@@ -215,16 +213,11 @@ export function RoleManagement({ roles }: RoleManagementProps) {
 
           {/* Footer stats */}
           {roles.length > 0 && (
-            <div className="mt-4 p-4 bg-muted/30 rounded-lg">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Shield className="h-4 w-4" />
-                <span>Tổng số vai trò:</span>
-                <span className="font-semibold text-foreground">{roles.length}</span>
-              </div>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              Hiển thị {roles.length} vai trò
+            </p>
           )}
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Dialog tạo vai trò mới (full form: name + permissions) */}
       <RoleFormDialog

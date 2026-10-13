@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -57,33 +56,29 @@ export function UserRoleList({ roles, onEditUser }: UserRoleListProps) {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Danh sách người dùng</CardTitle>
-          <CardDescription>Quản lý vai trò của người dùng trong hệ thống</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Danh sách người dùng</h2>
+          <p className="text-sm text-muted-foreground">Quản lý vai trò của người dùng trong hệ thống</p>
+        </div>
           <div className="flex items-center justify-center py-8">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
-        </CardContent>
-      </Card>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Danh sách người dùng</CardTitle>
-          <CardDescription>Quản lý vai trò của người dùng trong hệ thống</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Danh sách người dùng</h2>
+          <p className="text-sm text-muted-foreground">Quản lý vai trò của người dùng trong hệ thống</p>
+        </div>
           <div className="flex items-center justify-center py-8 text-destructive">
             Không thể tải danh sách người dùng
           </div>
-        </CardContent>
-      </Card>
+      </div>
     );
   }
 
@@ -91,18 +86,17 @@ export function UserRoleList({ roles, onEditUser }: UserRoleListProps) {
     <div className="space-y-4">
 
       {/* Danh sách người dùng */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Danh sách người dùng</CardTitle>
-          <CardDescription>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Danh sách người dùng</h2>
+          <p className="text-sm text-muted-foreground">
             Quản lý vai trò của người dùng trong hệ thống
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
                   <TableHead className="w-[250px]">Người dùng</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead className="text-center">Vai trò</TableHead>
@@ -173,7 +167,7 @@ export function UserRoleList({ roles, onEditUser }: UserRoleListProps) {
                           {canAddUserToRole && (
                             <Button
                               variant="ghost"
-                              size="sm"
+                              size="icon"
                               onClick={() => onEditUser(userRole.id)}
                             >
                               <Edit className="h-4 w-4" />
@@ -189,29 +183,26 @@ export function UserRoleList({ roles, onEditUser }: UserRoleListProps) {
           </div>
 
           {/* Chú thích */}
-          <div className="mt-4 p-4 bg-muted/30 rounded-lg space-y-2">
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-green-600 border-green-300">
-                  Chính
-                </Badge>
-                <span className="text-muted-foreground">Vai trò chính của người dùng</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-gray-600 border-gray-300">
-                  Phụ
-                </Badge>
-                <span className="text-muted-foreground">Vai trò phụ</span>
-              </div>
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-green-600 border-green-300">
+                Chính
+              </Badge>
+              <span className="text-muted-foreground">Vai trò chính của người dùng</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-gray-600 border-gray-300">
+                Phụ
+              </Badge>
+              <span className="text-muted-foreground">Vai trò phụ</span>
             </div>
             {userRolesResponse?.responseData?.count && (
-              <div className="text-sm text-muted-foreground">
+              <span className="text-muted-foreground">
                 Tổng số: {userRolesResponse.responseData.count} người dùng
-              </div>
+              </span>
             )}
           </div>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }

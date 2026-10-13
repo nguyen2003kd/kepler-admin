@@ -120,11 +120,11 @@ export default function OrdersPage() {
   return (
     <div>
       <Header title="Orders" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Orders</h2>
               <p className="text-muted-foreground">
                 Manage and track customer orders
                 </p>
@@ -164,14 +164,13 @@ export default function OrdersPage() {
             </div>
 
             {/* Orders Table */}
-            <Card>
-              <CardHeader>
-                <CardTitle>All Orders</CardTitle>
-                <CardDescription>
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight">All Orders</h2>
+                <p className="text-sm text-muted-foreground">
                   A list of all orders in your store
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
+              </div>
                 <DataTable
                   columns={orderColumns}
                   data={orders}
@@ -179,8 +178,7 @@ export default function OrdersPage() {
                   isLoading={isLoading}
                   onRefresh={refetch}
                 />
-              </CardContent>
-            </Card>
+            </div>
           </div>
         </main>
     </div>

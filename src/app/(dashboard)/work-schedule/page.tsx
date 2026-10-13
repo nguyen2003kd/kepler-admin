@@ -54,14 +54,14 @@ export default function WorkSchedulePage() {
   return (
     <>
       <Header title="Lịch Công Tác" />
-      <div className="flex h-full min-h-[calc(100vh-theme(spacing.16))] flex-col space-y-8 bg-slate-50/50 p-6 md:p-8 dark:bg-zinc-950 dark:text-zinc-50">
+      <main className="flex-1 space-y-6 p-6">
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            <h1 className="text-2xl font-bold tracking-tight">
               Lịch Công Tác
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Quản lý và theo dõi lịch trình làm việc, sự kiện và cuộc họp.
             </p>
           </div>
@@ -139,7 +139,7 @@ export default function WorkSchedulePage() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </div>
+      </main>
     </>
   )
 }
