@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  useDeleteApiV10PostCategoryId,
-  usePostApiV10PostCategory,
-  usePutApiV10PostCategoryId,
-} from "@/api/endpoints/post-category";
+  useDeleteApiV10PagePostId,
+  useGetApiV10PagePostId,
+  usePostApiV10PagePost,
+} from "@/api/endpoints/page-post";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -89,7 +89,6 @@ export function PostManagerPanel({
   const [selectedCategoryPostIds, setSelectedCategoryPostIds] = useState<
     Set<string>
   >(new Set());
-  const [isUpdatingPosition, setIsUpdatingPosition] = useState(false);
   const [filterType, setFilterType] = useState<"all" | "news" | "service">(
     "all",
   );
@@ -105,9 +104,8 @@ export function PostManagerPanel({
     setLocalPosts(sortedPosts);
   }, [postsInCategory]);
 
-  const createPostCategory = usePostApiV10PostCategory();
-  const updatePostCategory = usePutApiV10PostCategoryId();
-  const deletePostCategory = useDeleteApiV10PostCategoryId();
+  const createPagePost = usePostApiV10PagePost();
+  const deletePagePost = useDeleteApiV10PagePostId();
 
   const {
     data: allPosts = [],
@@ -179,36 +177,6 @@ export function PostManagerPanel({
     [filteredLocalPosts, activeId],
   );
 
-  // Update all positions at once
-  const updateAllPositions = useCallback(
-    async (items: Array<{ postCategoryId: string; position: number }>) => {
-      setIsUpdatingPosition(true);
-      try {
-        await Promise.all(
-          items.map((item) =>
-            updatePostCategory.mutateAsync({
-              id: item.postCategoryId,
-              data: { position: item.position },
-            }),
-          ),
-        );
-        toast.success({
-          title: "Thành công",
-          content: "Đã cập nhật vị trí tất cả bài viết",
-        });
-        onRefresh();
-      } catch (error) {
-        console.error("Error updating positions:", error);
-        const msg = extractErrorMessage(error);
-        toast.error({ title: "Cập nhật vị trí thất bại", content: msg });
-        onRefresh();
-      } finally {
-        setIsUpdatingPosition(false);
-      }
-    },
-    [updatePostCategory, onRefresh],
-  );
-
   // Add post to category
   const handleAddPost = async (post: News) => {
     setAddingIds(new Set([post.id]));
@@ -234,7 +202,12 @@ export function PostManagerPanel({
         data.page_id = pageId;
       }
 
-      await createPostCategory.mutateAsync({ data });
+      await createPagePost.mutateAsync({
+        data: {
+          page_id: pageId || categoryId,
+          post_id: post.id,
+        },
+      });
 
       toast.success({
         title: "Thành công",
@@ -264,30 +237,15 @@ export function PostManagerPanel({
     setAddingIds(new Set(selectedPosts.map((p) => p.id)));
 
     try {
-      const minPosition =
-        localPosts.length > 0
-          ? Math.min(...localPosts.map((p) => p.position))
-          : 1;
-
       await Promise.all(
-        selectedPosts.map((post, i) => {
-          const data: {
-            post_id: string;
-            category_id: string;
-            page_id?: string;
-            position: number;
-          } = {
-            post_id: post.id,
-            category_id: categoryId,
-            position: minPosition - (i + 1),
-          };
-
-          if (pageId) {
-            data.page_id = pageId;
-          }
-
-          return createPostCategory.mutateAsync({ data });
-        }),
+        selectedPosts.map((post) =>
+          createPagePost.mutateAsync({
+            data: {
+              page_id: pageId || categoryId,
+              post_id: post.id,
+            },
+          }),
+        ),
       );
 
       toast.success({
@@ -313,7 +271,8 @@ export function PostManagerPanel({
   const handleRemovePost = async (postCategoryId: string, title: string) => {
     setRemovingId(postCategoryId);
     try {
-      await deletePostCategory.mutateAsync({ id: postCategoryId });
+      const [pageIdPart, postIdPart] = postCategoryId.split("|");
+      await deletePagePost.mutateAsync({ id: pageIdPart + "_" + postIdPart });
       toast.success({
         title: "Đã xóa",
         content: `Đã xóa "${title}" khỏi danh mục`,
@@ -344,7 +303,9 @@ export function PostManagerPanel({
     try {
       await Promise.all(
         selectedPosts.map((post) =>
-          deletePostCategory.mutateAsync({ id: post.postCategoryId }),
+          deletePagePost.mutateAsync({
+            id: post.postCategoryId.replace("|", "_"),
+          }),
         ),
       );
 
@@ -409,20 +370,10 @@ export function PostManagerPanel({
           position: index + 1,
         }));
 
-        // Call API async without blocking UI
-        setTimeout(() => {
-          updateAllPositions(
-            updatedItems.map((item) => ({
-              postCategoryId: item.postCategoryId,
-              position: item.position,
-            })),
-          );
-        }, 0);
-
         return updatedItems;
       });
     },
-    [updateAllPositions],
+    [],
   );
 
   const handleScroll = useCallback(
@@ -730,12 +681,6 @@ export function PostManagerPanel({
                   Xóa đã chọn ({selectedCategoryPostIds.size})
                 </Button>
               )}
-              {isUpdatingPosition && (
-                <div className="flex items-center gap-2 text-sm font-medium text-blue-600 bg-blue-50 px-3 py-2 rounded-lg">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Đang cập nhật...</span>
-                </div>
-              )}
               <div className="flex items-center gap-2 bg-blue-100 text-blue-600 px-3 py-1.5 rounded-full shadow-sm">
                 <ClipboardList className="h-4 w-4" />
                 <span className="text-sm font-semibold whitespace-nowrap">
@@ -806,16 +751,6 @@ export function PostManagerPanel({
                   strategy={verticalListSortingStrategy}
                 >
                   <div className="space-y-2">
-                    {isUpdatingPosition && (
-                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl">
-                        <div className="flex items-center gap-3 bg-blue-500 text-white px-6 py-3 rounded-xl shadow-2xl">
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          <span className="font-semibold">
-                            Đang cập nhật vị trí...
-                          </span>
-                        </div>
-                      </div>
-                    )}
                     {filteredLocalPosts.map((post, index) => (
                       <SortablePostItem
                         key={post.postCategoryId}

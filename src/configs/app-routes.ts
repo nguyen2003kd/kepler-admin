@@ -19,6 +19,7 @@ export type SidebarIconKey =
   | 'recruitment'
   | 'shieldCheck'
   | 'info'
+  | 'page'
 
 export type AppRouteAccessRule = {
   resources: string[]
@@ -203,6 +204,11 @@ export const APP_ROUTES: AppRouteConfig[] = [
     path: '/department',
     access: { resources: ['department'] },
     sidebar: { label: 'Phòng ban / Khối', icon: 'organizational-chart' },
+  },
+  {
+    path: '/page-management',
+    access: { resources: ['page'] },
+    sidebar: { label: 'Quản lý trang', icon: 'page' },
   },
   {
     path: '/property',

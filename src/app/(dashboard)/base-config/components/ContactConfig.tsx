@@ -12,10 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Edit, Save, X, MapPin, Phone, Mail, Plus, Trash2 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
 import { toast } from "sonner";
 
 const CONTACT_CONFIG_KEY_VI = "CONTACT";
@@ -79,11 +79,11 @@ export function ContactConfig({
   const [enConfigId, setEnConfigId] = useState<string>("");
 
   // Fetch both configs
-  const { data: viData, isLoading: viLoading, refetch: refetchVi } = useGetApiV10PageConfig({ filters: `key==${CONTACT_CONFIG_KEY_VI}` });
-  const { data: enData, isLoading: enLoading, refetch: refetchEn } = useGetApiV10PageConfig({ filters: `key==${CONTACT_CONFIG_KEY_EN}` });
+  const { data: viData, isLoading: viLoading, refetch: refetchVi } = useGetApiV10BaseConfig({ filters: `key==${CONTACT_CONFIG_KEY_VI}` });
+  const { data: enData, isLoading: enLoading, refetch: refetchEn } = useGetApiV10BaseConfig({ filters: `key==${CONTACT_CONFIG_KEY_EN}` });
 
-  const updateMutation = usePutApiV10PageConfigId();
-  const createMutation = usePostApiV10PageConfig();
+  const updateMutation = usePutApiV10BaseConfigId();
+  const createMutation = usePostApiV10BaseConfig();
 
   const isLoading = viLoading || enLoading;
 

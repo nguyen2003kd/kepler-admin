@@ -1,50 +1,38 @@
-"use client";
+'use client';
 
-import { getApiV10PostCategory } from "@/api/endpoints/post-category";
-import { useQuery } from "@tanstack/react-query";
+import { getApiV10Post } from '@/api/endpoints/post';
+import { useQuery } from '@tanstack/react-query';
 
+/**
+ * Post IDs linked to a page (or to all pages of a category) via page_post.
+ * The category_id query parameter works because pages.id = categories.id.
+ */
 export function useCategoryPostIds(categoryId: string, pageId?: string) {
   return useQuery({
-    queryKey: ["category-post-ids", categoryId, pageId || "all"],
+    queryKey: ['category-post-ids', categoryId, pageId || 'all'],
     queryFn: async ({ signal }) => {
-      // Use large pageSize to get all post IDs in one request
-      const largePageSize = 1000;
-      let filters = `category_id==${categoryId}`;
-      if (pageId) {
-        filters += `,page_id==${pageId}`;
-      } else {
-        filters += `,page_id==null`;
-      }
-
-      const res = await getApiV10PostCategory(
+      const res = await getApiV10Post(
         {
+          category_id: categoryId,
+          page_id: pageId,
           page: 1,
-          pageSize: largePageSize,
-          filters,
+          pageSize: 1000,
         },
         signal
       );
 
-      if (res.status !== "success") {
-        throw new Error(res.message ?? "Get category posts error");
+      if (res.status !== 'success') {
+        throw new Error(res.message ?? 'Get category posts error');
       }
 
-      const responseData =
-        (
-          res as {
-            responseData?: {
-              rows?: Array<{ post_id?: string }>;
-              count?: number;
-            };
-          }
-        )?.responseData ?? {};
+      const rows =
+        (res as { responseData?: { rows?: Array<{ id?: string }> } })?.responseData
+          ?.rows || [];
 
-      const rows = Array.isArray(responseData.rows) ? responseData.rows : [];
-
-      // Extract only post_id from the response
-      return rows.map((r) => String(r.post_id ?? "")).filter(Boolean);
+      return rows.map((r) => String(r.id ?? '')).filter(Boolean);
     },
     staleTime: 5 * 60 * 1000,
     enabled: !!categoryId,
   });
 }
+

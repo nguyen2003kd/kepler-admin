@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Header } from "@/components/layout/header";
 import { usePostApiV10Post } from "@/api/endpoints/post";
-import { useGetApiV10Category } from "@/api/endpoints/category";
+import { useGetApiV10Page } from "@/api/endpoints/page";
 import { PostMutateStatus, type PostMutate } from "@/api/models";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toaster";
@@ -26,7 +26,7 @@ import {
   PostContentEditor,
   type PostContentSection,
 } from "@/components/features/news/PostContentEditor";
-import { HierarchicalCategorySelector } from '@/components/shared/hierarchical-category-selector';
+import { PageSelector } from '@/components/shared/page-selector';
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import baseConfig from "@configs/base";
 export default function CreateNewsPage() {
@@ -42,18 +42,17 @@ export default function CreateNewsPage() {
   const [publishedAt, setPublishedAt] = useState("");
   const [selectedThumbnail, setSelectedThumbnail] =
     useState<ImagePickerFile | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedPages, setSelectedPages] = useState<string[]>([]);
   const [showImagePicker, setShowImagePicker] = useState(false);
 
   const router = useRouter();
   const createPostMutation = usePostApiV10Post();
-  const { data: categoriesData } = useGetApiV10Category();
+  const { data: pagesData } = useGetApiV10Page({ pageSize: 200 });
   const canApproveL2 = ability.can("approve_post", "post-approval-2");
   const canApproveL1 = ability.can("approve_post", "post-approval-1");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const categories = (categoriesData?.responseData || []) as any[];
+  const pages = ((pagesData as { responseData?: { rows?: any[] } })?.responseData?.rows || []) as any[];
 
   const handleImageSelect = (file: ImagePickerFile) => {
     setSelectedThumbnail(file);
@@ -71,7 +70,7 @@ export default function CreateNewsPage() {
       return;
     }
 
-    if (selectedCategories.length === 0) {
+    if (selectedPages.length === 0) {
       toast.warning({ title: 'Thiếu trường', content: 'Vui lòng chọn ít nhất một danh mục' })
       return;
     }
@@ -116,7 +115,7 @@ export default function CreateNewsPage() {
             : undefined,
         expired_at: expiredAt ? new Date(expiredAt).toISOString() : undefined,
         published_at: publishedAt ? new Date(publishedAt).toISOString() : undefined,
-        category_ids: selectedCategories,
+        page_ids: selectedPages,
         thumbnail_file_id: selectedThumbnail?.id,
         post_content:
           apiPostContent.length > 0
@@ -244,11 +243,11 @@ export default function CreateNewsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Danh mục</Label>
-                  <HierarchicalCategorySelector
-                    categories={categories}
-                    selectedCategories={selectedCategories}
-                    onSelectionChange={setSelectedCategories}
+                  <Label>Trang</Label>
+                  <PageSelector
+                    pages={pages}
+                    selectedPageIds={selectedPages}
+                    onSelectionChange={setSelectedPages}
                   />
                 </div>
 

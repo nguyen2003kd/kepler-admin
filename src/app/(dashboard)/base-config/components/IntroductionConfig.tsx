@@ -15,10 +15,10 @@ import {
   GripVertical, Type, CreditCard, Tag, Minus,
 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { LucideIconPicker, DynamicIcon } from "@/components/shared/lucide-icon-picker";
 import { toast } from "sonner";
@@ -81,9 +81,9 @@ type PageBlock =
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
-const PAGE_CONFIG_KEY_VI = "introduction-page";
-const PAGE_CONFIG_KEY_EN = "introduction-page_en";
-interface PageConfigRow { id: string; key: string; value: string; }
+const BASE_CONFIG_KEY_VI = "introduction-page";
+const BASE_CONFIG_KEY_EN = "introduction-page_en";
+interface BaseConfigRow { id: string; key: string; value: string; }
 
 // ─── Block library definition ─────────────────────────────────────────────────
 interface BlockTemplate {
@@ -602,22 +602,22 @@ export function IntroductionConfig({
   const [enHasChanges, setEnHasChanges] = useState(false);
   const [newBlockId, setNewBlockId] = useState<string | null>(null);
 
-  const { data: viData, isLoading: viLoading, refetch: refetchVi } = useGetApiV10PageConfig({ filters: `key==${PAGE_CONFIG_KEY_VI}`, pageSize: 1 });
-  const { data: enData, isLoading: enLoading, refetch: refetchEn } = useGetApiV10PageConfig({ filters: `key==${PAGE_CONFIG_KEY_EN}`, pageSize: 1 });
-  const updateMutation = usePutApiV10PageConfigId();
-  const createMutation = usePostApiV10PageConfig();
+  const { data: viData, isLoading: viLoading, refetch: refetchVi } = useGetApiV10BaseConfig({ filters: `key==${BASE_CONFIG_KEY_VI}`, pageSize: 1 });
+  const { data: enData, isLoading: enLoading, refetch: refetchEn } = useGetApiV10BaseConfig({ filters: `key==${BASE_CONFIG_KEY_EN}`, pageSize: 1 });
+  const updateMutation = usePutApiV10BaseConfigId();
+  const createMutation = usePostApiV10BaseConfig();
 
   const isLoading = viLoading || enLoading;
   const blocks = lang === "vi" ? viBlocks : enBlocks;
   const setBlocks = lang === "vi" ? setViBlocks : setEnBlocks;
   const configId = lang === "vi" ? viConfigId : enConfigId;
-  const configKey = lang === "vi" ? PAGE_CONFIG_KEY_VI : PAGE_CONFIG_KEY_EN;
+  const configKey = lang === "vi" ? BASE_CONFIG_KEY_VI : BASE_CONFIG_KEY_EN;
   const hasChanges = lang === "vi" ? viHasChanges : enHasChanges;
   const setHasChanges = lang === "vi" ? setViHasChanges : setEnHasChanges;
 
   useEffect(() => {
     if (viData?.responseData?.rows && viData.responseData.rows.length > 0) {
-      const row = viData.responseData.rows[0] as unknown as PageConfigRow;
+      const row = viData.responseData.rows[0] as unknown as BaseConfigRow;
       setViConfigId(row.id);
       try {
         const parsed = JSON.parse(row.value);
@@ -629,7 +629,7 @@ export function IntroductionConfig({
 
   useEffect(() => {
     if (enData?.responseData?.rows && enData.responseData.rows.length > 0) {
-      const row = enData.responseData.rows[0] as unknown as PageConfigRow;
+      const row = enData.responseData.rows[0] as unknown as BaseConfigRow;
       setEnConfigId(row.id);
       try {
         const parsed = JSON.parse(row.value);

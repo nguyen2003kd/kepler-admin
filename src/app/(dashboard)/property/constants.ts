@@ -6,6 +6,9 @@ export const GROUP_OPTIONS = [
   { value: "MA", label: "Dự án cần M&A" },
 ] as const;
 
+export const PROJECT_GROUP_VALUES = ["INVESTMENT", "DISTRIBUTION", "MA"] as const;
+
+
 export const UNIT_OPTIONS = [
   { value: "VND", label: "đồng" },
   { value: "VND_MONTH", label: "đồng/tháng" },

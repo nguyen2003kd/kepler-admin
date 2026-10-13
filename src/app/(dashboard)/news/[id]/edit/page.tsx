@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Header } from "@/components/layout/header";
 import { useGetApiV10PostId, usePutApiV10PostId } from "@/api/endpoints/post";
-import { useGetApiV10Category } from "@/api/endpoints/category";
+import { useGetApiV10Page } from "@/api/endpoints/page";
 import { useGetApiV10FileId } from "@/api/endpoints/file";
 import { PostMutateStatus, type PostMutate } from "@/api/models";
 import { ArrowLeft, Save, Upload, X } from "lucide-react";
@@ -28,7 +28,7 @@ import {
   PostContentEditor,
   type PostContentSection,
 } from "@/components/features/news/PostContentEditor";
-import { HierarchicalCategorySelector } from "@/components/shared/hierarchical-category-selector";
+import { PageSelector } from "@/components/shared/page-selector";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import baseConfig from "@configs/base";
 export default function EditNewsPage() {
@@ -43,7 +43,7 @@ export default function EditNewsPage() {
   const { data: response, isLoading, error } = useGetApiV10PostId(newsId);
   const news = response?.responseData;
   const updatePostMutation = usePutApiV10PostId();
-  const { data: categoriesData } = useGetApiV10Category(undefined, {
+  const { data: pagesData } = useGetApiV10Page({ pageSize: 200 }, {
     query: {
       enabled: !!news,
     },
@@ -54,7 +54,7 @@ export default function EditNewsPage() {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const categories = (categoriesData?.responseData || []) as any[];
+  const pages = ((pagesData as { responseData?: { rows?: any[] } })?.responseData?.rows || []) as any[];
 
   const [title, setTitle] = useState("");
   const [code, setCode] = useState("");
@@ -67,7 +67,7 @@ export default function EditNewsPage() {
   const [publishedAt, setPublishedAt] = useState("");
   const [selectedThumbnail, setSelectedThumbnail] =
     useState<ImagePickerFile | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedPages, setSelectedPages] = useState<string[]>([]);
   const [showImagePicker, setShowImagePicker] = useState(false);
 
   const handleImageSelect = (file: ImagePickerFile) => {
@@ -83,7 +83,7 @@ export default function EditNewsPage() {
       setPosition(news.position || 1);
       setIsHidden(news.is_hidden || false);
       setIsService(news.is_service || false);
-      setSelectedCategories((news.category_ids as string[]) || []);
+      setSelectedPages((news.page_ids as string[]) || []);
 
       if (news.expired_at) {
         const date = new Date(news.expired_at);
@@ -182,7 +182,7 @@ export default function EditNewsPage() {
       return;
     }
 
-    if (selectedCategories.length === 0) {
+    if (selectedPages.length === 0) {
       toast.warning({ title: 'Thiếu trường', content: 'Vui lòng chọn ít nhất một danh mục' })
       return;
     }
@@ -211,7 +211,7 @@ export default function EditNewsPage() {
         published_at: publishedAt
           ? new Date(publishedAt).toISOString()
           : undefined,
-        category_ids: selectedCategories,
+        page_ids: selectedPages,
         thumbnail_file_id: selectedThumbnail?.id || undefined,
         post_content: postSections.map((section) => {
           const baseContent = {
@@ -407,11 +407,11 @@ export default function EditNewsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Danh mục</Label>
-                  <HierarchicalCategorySelector
-                    categories={categories}
-                    selectedCategories={selectedCategories}
-                    onSelectionChange={setSelectedCategories}
+                  <Label>Trang</Label>
+                  <PageSelector
+                    pages={pages}
+                    selectedPageIds={selectedPages}
+                    onSelectionChange={setSelectedPages}
                   />
                 </div>
 

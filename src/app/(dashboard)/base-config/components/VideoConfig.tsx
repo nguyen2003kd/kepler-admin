@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+} from "@/api/endpoints/base-config";
 import { Video, Trash2, Edit2, Plus, Loader2, Lock } from "lucide-react";
 import { toast } from "@/components/ui/toaster";
 import { useAbility } from "@/hooks/use-ability";
@@ -66,12 +66,12 @@ export function VideoConfig() {
   const [configId, setConfigId] = useState<string | null>(null);
   const [configKey, setConfigKey] = useState<string>("");
 
-  const { data, isLoading, refetch } = useGetApiV10PageConfig({
+  const { data, isLoading, refetch } = useGetApiV10BaseConfig({
     filters: `key==list_video`,
     pageSize: 1,
   });
 
-  const updateMutation = usePutApiV10PageConfigId();
+  const updateMutation = usePutApiV10BaseConfigId();
 
   // Generate thumbnails for videos loaded from config (page mount)
   useEffect(() => {

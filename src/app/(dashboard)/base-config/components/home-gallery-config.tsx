@@ -8,8 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ImagePicker, ImagePickerFile } from "@/components/shared/image-picker";
 import { ImageCropModal } from "@/components/shared/image-crop-modal";
 import { usePostApiV10File } from "@/api/endpoints/file";
-import { useGetApiV10PageConfig, usePutApiV10PageConfigId } from "@/api/endpoints/page-config";
-import type { PageConfig } from "@/api/models";
+import { useGetApiV10BaseConfig, usePutApiV10BaseConfigId } from "@/api/endpoints/base-config";
+import type { BaseConfig } from "@/api/models";
 import { Edit, Save, Loader2 } from "lucide-react";
 import { toast } from "@/components/ui/toaster";
 
@@ -56,17 +56,17 @@ export function HomeGalleryConfig() {
   const [isSaving, setIsSaving] = useState(false);
 
   const uploadFileMutation = usePostApiV10File();
-  const updateConfigMutation = usePutApiV10PageConfigId();
+  const updateConfigMutation = usePutApiV10BaseConfigId();
 
   // Fetch page config data
-  const { data: pageConfigData, isLoading } = useGetApiV10PageConfig({
+  const { data: BaseConfigData, isLoading } = useGetApiV10BaseConfig({
     pageSize: 100,
   });
 
   // Load data from API
   useEffect(() => {
-    if (pageConfigData?.responseData?.rows) {
-      const configs = pageConfigData.responseData.rows as PageConfig[];
+    if (BaseConfigData?.responseData?.rows) {
+      const configs = BaseConfigData.responseData.rows as BaseConfig[];
 
       // Update banner slides
       const updatedSlides = bannerSlides.map((slide) => {
@@ -97,7 +97,7 @@ export function HomeGalleryConfig() {
       setTempContentData(loadedData);
       setOriginalContentData(loadedData);
     }
-  }, [pageConfigData]);
+  }, [BaseConfigData]);
 
   const getImageUrl = (file: ImagePickerFile | undefined) => {
     if (!file) return "";
@@ -199,7 +199,7 @@ export function HomeGalleryConfig() {
               id: slide.configId!,
               data: {
                 key: slide.key,
-                language: pageConfigData?.responseData?.rows?.find((config) => config.id === slide.configId)?.language === "en" ? "en" : "vi",
+                language: BaseConfigData?.responseData?.rows?.find((config) => config.id === slide.configId)?.language === "en" ? "en" : "vi",
                 value: result.uploadedUrl,
               },
             });
@@ -213,7 +213,7 @@ export function HomeGalleryConfig() {
           id: contentData.titleId,
           data: {
             key: "title",
-            language: pageConfigData?.responseData?.rows?.find((config) => config.id === contentData.titleId)?.language === "en" ? "en" : "vi",
+            language: BaseConfigData?.responseData?.rows?.find((config) => config.id === contentData.titleId)?.language === "en" ? "en" : "vi",
             value: tempContentData.title.replace(/\n/g, "<br>"),
           },
         });
@@ -224,7 +224,7 @@ export function HomeGalleryConfig() {
           id: contentData.descriptionId,
           data: {
             key: "sub_title",
-            language: pageConfigData?.responseData?.rows?.find((config) => config.id === contentData.descriptionId)?.language === "en" ? "en" : "vi",
+            language: BaseConfigData?.responseData?.rows?.find((config) => config.id === contentData.descriptionId)?.language === "en" ? "en" : "vi",
             value: tempContentData.description,
           },
         });

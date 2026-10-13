@@ -14,12 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Save, Loader2, Image as ImageIcon, Type, Link2 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
 import { ImagePicker, ImagePickerFile } from "@/components/shared/image-picker";
-import { PageConfigMutate } from "@/api/models/pageConfigMutate";
+import { BaseConfigMutate } from "@/api/models/baseConfigMutate";
 import { toast } from "sonner";
 
 const resolveImageUrl = (path: string): string => {
@@ -61,7 +61,7 @@ interface HeroConfigProps {
 }
 
 export function HeroConfig({ canCreate, canUpdate }: HeroConfigProps) {
-  const { data, isLoading, refetch } = useGetApiV10PageConfig({
+  const { data, isLoading, refetch } = useGetApiV10BaseConfig({
     filters: `key==${HERO_CONFIG_KEY}`,
   });
   const [editing, setEditing] = useState(false);
@@ -91,8 +91,8 @@ export function HeroConfig({ canCreate, canUpdate }: HeroConfigProps) {
     }
   }, [data]);
 
-  const putMutation = usePutApiV10PageConfigId();
-  const postMutation = usePostApiV10PageConfig();
+  const putMutation = usePutApiV10BaseConfigId();
+  const postMutation = usePostApiV10BaseConfig();
 
   const handleSave = async () => {
     setSaving(true);
@@ -105,7 +105,7 @@ export function HeroConfig({ canCreate, canUpdate }: HeroConfigProps) {
             key: HERO_CONFIG_KEY,
             value,
             is_active: true,
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
       } else {
         await postMutation.mutateAsync({
@@ -113,7 +113,7 @@ export function HeroConfig({ canCreate, canUpdate }: HeroConfigProps) {
             key: HERO_CONFIG_KEY,
             value,
             is_active: true,
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
       }
       toast.success("Đã lưu cấu hình Hero Banner");

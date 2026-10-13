@@ -20,11 +20,11 @@ import {
   AlertCircle,
 } from "lucide-react";
 import {
-  useGetApiV10PageConfig,
-  usePutApiV10PageConfigId,
-  usePostApiV10PageConfig,
-} from "@/api/endpoints/page-config";
-import { PageConfigMutate } from "@/api/models/pageConfigMutate";
+  useGetApiV10BaseConfig,
+  usePutApiV10BaseConfigId,
+  usePostApiV10BaseConfig,
+} from "@/api/endpoints/base-config";
+import { BaseConfigMutate } from "@/api/models/baseConfigMutate";
 import { toast } from "sonner";
 
 const STATS_CONFIG_KEY_VI = "STATS_NUMBERS";
@@ -82,15 +82,15 @@ export function StatsConfig({ canCreate, canUpdate }: StatsConfigProps) {
   const [enEdit, setEnEdit] = useState<StatsConfigData>(defaultConfigEn);
   const [enConfigId, setEnConfigId] = useState<string>("");
 
-  const { data: viResp, isLoading: viLoading, refetch: refetchVi } = useGetApiV10PageConfig({
+  const { data: viResp, isLoading: viLoading, refetch: refetchVi } = useGetApiV10BaseConfig({
     filters: `key==${STATS_CONFIG_KEY_VI}`,
   });
-  const { data: enResp, isLoading: enLoading, refetch: refetchEn } = useGetApiV10PageConfig({
+  const { data: enResp, isLoading: enLoading, refetch: refetchEn } = useGetApiV10BaseConfig({
     filters: `key==${STATS_CONFIG_KEY_EN}`,
   });
 
-  const putMutation = usePutApiV10PageConfigId();
-  const postMutation = usePostApiV10PageConfig();
+  const putMutation = usePutApiV10BaseConfigId();
+  const postMutation = usePostApiV10BaseConfig();
 
   const isLoading = viLoading || enLoading;
   const canEdit = canCreate || canUpdate;
@@ -172,7 +172,7 @@ export function StatsConfig({ canCreate, canUpdate }: StatsConfigProps) {
             key: configKey,
             value,
             is_active: true,
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
       } else {
         await postMutation.mutateAsync({
@@ -181,7 +181,7 @@ export function StatsConfig({ canCreate, canUpdate }: StatsConfigProps) {
             value,
             is_active: true,
             language: lang,
-          } as PageConfigMutate,
+          } as BaseConfigMutate,
         });
       }
       toast.success("Đã lưu cấu hình số liệu thống kê");
