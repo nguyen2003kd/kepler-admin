@@ -9,6 +9,9 @@ import type { PostContent } from './postContent';
 
 export type PostWithContentAllOf = {
   post_content?: PostContent[];
-  /** Array of Category IDs associated with the post */
-  category_ids?: string[];
+  /**
+   * Array of Page IDs associated with the post (page_post)
+   * @nullable
+   */
+  page_ids?: string[] | null;
 };

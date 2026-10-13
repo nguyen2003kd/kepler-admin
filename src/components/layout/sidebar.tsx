@@ -26,6 +26,7 @@ import {
   Briefcase,
   ShieldCheck,
   Info,
+  LayoutTemplate,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -60,6 +61,7 @@ const ICON_MAP: Record<SidebarIconKey, React.ComponentType<{ className?: string 
   recruitment: Briefcase,
   shieldCheck: ShieldCheck,
   info: Info,
+  page: LayoutTemplate,
 };
 
 const navigation: NavItem[] = APP_ROUTES
