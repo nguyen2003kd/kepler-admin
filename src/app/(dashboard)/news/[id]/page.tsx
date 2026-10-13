@@ -168,7 +168,7 @@ export default function NewsDetailPage() {
     return (
       <div>
         <Header title="Chi tiết tin tức" />
-        <main className="container mx-auto p-4 md:p-6">
+        <main className="flex-1 space-y-6 p-6">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-gray-200 rounded w-3/4"></div>
             <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -183,7 +183,7 @@ export default function NewsDetailPage() {
     return (
       <div>
         <Header title="Không tìm thấy" />
-        <main className="container mx-auto p-4 md:p-6">
+        <main className="flex-1 space-y-6 p-6">
           <div className="text-center">
             <h2 className="text-xl font-semibold mb-2">
               Không tìm thấy tin tức
@@ -206,7 +206,7 @@ export default function NewsDetailPage() {
   return (
     <div>
       <Header title={news.title} />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="max-w-4xl mx-auto">
           {/* Header Actions */}
           <div className="flex items-center justify-between mb-6">

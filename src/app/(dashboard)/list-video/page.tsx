@@ -105,11 +105,11 @@ const Page: React.FC = () => {
   return (
     <div>
       <Header title="Kho video" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Kho lưu trữ video</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Kho lưu trữ video</h2>
               <p className="text-muted-foreground mt-1">Quản lý video của bạn ({totalCount} video)</p>
             </div>
             <Can I="upload" a="gallery_video">

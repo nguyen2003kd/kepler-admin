@@ -84,7 +84,7 @@ export default function CategoryPostsPage() {
   return (
     <div>
       <Header title={`Bài viết - ${category?.name || "Danh mục"}`} />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-8">
           <PageHeader categoryName={category?.name} />
 

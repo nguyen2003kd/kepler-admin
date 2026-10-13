@@ -5,16 +5,16 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Header } from '@/components/layout/header'
 import Can from '@/acl/Can'
 import {
-  CategoryEdit,
-  CategoryCreate,
-  CategoryBulkCreate,
-  CategoryStats,
-  CategoryTable,
+	CategoryEdit,
+	CategoryCreate,
+	CategoryBulkCreate,
+	CategoryStats,
+	CategoryTable,
 } from './components'
 import {
-  useGetApiV10Category,
-  useDeleteApiV10CategoryId,
-  getGetApiV10CategoryQueryKey,
+	useGetApiV10Category,
+	useDeleteApiV10CategoryId,
+	getGetApiV10CategoryQueryKey,
 } from '@/api/endpoints/category'
 import type { Category, CategoryLanguage } from '@/types/category'
 import { toast } from '@/components/ui/toaster'
@@ -107,7 +107,7 @@ const Page: React.FC = () => {
 		try {
 			await deleteMutation.mutateAsync({ id })
 			await queryClient.invalidateQueries({ queryKey: getGetApiV10CategoryQueryKey({ language }) })
-			toast.success({title:'Xóa danh mục thành công', content:'Danh mục đã được xóa.'})
+			toast.success({ title: 'Xóa danh mục thành công', content: 'Danh mục đã được xóa.' })
 		} catch (e) {
 			console.error('Delete failed', e)
 			const msg = extractErrorMessage(e)
@@ -135,13 +135,13 @@ const Page: React.FC = () => {
 	return (
 		<div>
 			<Header title="Danh mục" />
-			<main className="container mx-auto p-4 md:p-6">
+			<main className="flex-1 space-y-6 p-6">
 				<div className="space-y-8">
 					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 						<div>
-							<h2 className="text-3xl font-bold tracking-tight">Danh mục</h2>
+							<h2 className="text-2xl font-bold tracking-tight">Danh mục</h2>
 							<p className="text-muted-foreground">
-								Quản lý danh mục sản phẩm
+								Quản lý danh mục Header
 							</p>
 						</div>
 						{/* Language switcher + actions */}
@@ -174,7 +174,7 @@ const Page: React.FC = () => {
 
 					{/* Category Stats */}
 					{ability.can('view_statistics', 'category') && (
-					<CategoryStats stats={stats} />
+						<CategoryStats stats={stats} />
 					)}
 
 					{/* Categories Table */}

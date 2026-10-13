@@ -2,13 +2,6 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/data-table";
 import { Header } from "@/components/layout/header";
@@ -75,12 +68,12 @@ export default function NewsPage() {
   return (
     <div>
       <Header title="Tin tức" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-8">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Tin tức</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Tin tức</h2>
               <p className="text-muted-foreground">Quản lý tin tức</p>
             </div>
             <div className="flex space-x-2">
@@ -98,20 +91,16 @@ export default function NewsPage() {
           <NewsStats news={news} />
 
           {/* News Table */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Danh sách tin tức</CardTitle>
-              <CardDescription>Quản lý các bài viết tin tức</CardDescription>
-              {/* Tabs filter for is_service */}
-              <div className="mt-4">
+          <div className="space-y-4">
+            {/* Tabs filter for is_service */}
+            <div>
                 <Tabs
                   value={filterType}
                   onValueChange={(value) =>
                     setFilterType(value as "all" | "news" | "service")
                   }
-                  className="w-full"
                 >
-                  <TabsList className="inline-flex h-auto gap-1 bg-gray-100 p-1 rounded-lg">
+                  <TabsList>
                     <TabsTrigger
                       value="all"
                       className="data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm px-4 py-2 rounded-md text-sm font-medium transition-all"
@@ -134,10 +123,8 @@ export default function NewsPage() {
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <DataTable
+            </div>
+            <DataTable
                 columns={newsColumns}
                 data={filteredNews}
                 searchPlaceholder="Search tin tức..."
@@ -147,9 +134,8 @@ export default function NewsPage() {
                 hasNextPage={hasNextPage}
                 isFetchingNextPage={isFetchingNextPage}
                 onSearch={setSearchQ}
-              />
-            </CardContent>
-          </Card>
+            />
+          </div>
         </div>
 
         {/* Delete Confirmation Dialog */}

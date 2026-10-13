@@ -47,12 +47,14 @@ export function VisitsChart({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Số lượng truy cập theo tháng</CardTitle>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              Số lượng truy cập theo tháng
+            </CardTitle>
             <CardDescription>
               Thống kê truy cập năm {selectedYear}
             </CardDescription>
-          </div>
+          </CardHeader>
           <div className="flex items-center gap-2">
             <Input
               type="number"
@@ -136,7 +138,7 @@ export function VisitsChart({
                 </LineChart>
               </ResponsiveContainer>
             </ChartContainer>
-            <div className="mt-3 space-y-1 text-sm w-full max-w-md">
+            {/* <div className="mt-3 space-y-1 text-sm w-full max-w-md">
               {data.map((d, index) => (
                 <div
                   key={index}
@@ -188,7 +190,7 @@ export function VisitsChart({
                   </span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </>
         )}
       </CardContent>

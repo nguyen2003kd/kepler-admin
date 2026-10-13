@@ -185,30 +185,30 @@ export default function QuotationTable({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+    <div className="rounded-md border overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm table-fixed">
           <thead>
-            <tr className="bg-gradient-to-r from-slate-800 to-slate-700">
-              <th className="px-5 py-4 text-left text-white font-semibold tracking-wide">
+            <tr className="border-b bg-muted/50">
+              <th className="h-10 px-4 py-3 text-left font-medium">
                 <div className="flex items-center gap-2">Khách hàng</div>
               </th>
-              <th className="px-5 py-4 text-left text-white font-semibold tracking-wide">
+              <th className="h-10 px-4 py-3 text-left font-medium">
                 <div className="flex items-center gap-2">Liên hệ</div>
               </th>
-              <th className="px-5 py-4 text-left text-white font-semibold tracking-wide">
+              <th className="h-10 px-4 py-3 text-left font-medium">
                 <div className="flex items-center gap-2">Công ty</div>
               </th>
-              <th className="px-5 py-4 text-left text-white font-semibold tracking-wide">
+              <th className="h-10 px-4 py-3 text-left font-medium">
                 <div className="flex items-center gap-2">Dịch vụ</div>
               </th>
-              <th className="px-5 py-4 text-left text-white font-semibold tracking-wide">
+              <th className="h-10 px-4 py-3 text-left font-medium">
                 <div className="flex items-center gap-2">Trạng thái</div>
               </th>
               {/* <th className="px-5 py-4 text-left text-white font-semibold tracking-wide">
                 <div className="flex items-center gap-2">Loại mẫu</div>
               </th> */}
-              <th className="px-5 py-4 text-center text-white font-semibold tracking-wide">
+              <th className="h-10 px-4 py-3 text-center font-medium">
                 Thao tác
               </th>
             </tr>

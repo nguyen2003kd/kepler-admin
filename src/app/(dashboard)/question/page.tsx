@@ -113,9 +113,9 @@ const Page: React.FC = () => {
   return (
     <>
       <Header title="Liên hệ" />
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <main className="flex-1 space-y-6 p-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Quản lý Liên hệ</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Quản lý Liên hệ</h2>
           <p className="text-muted-foreground">Danh sách câu hỏi từ người dùng</p>
         </div>
 
@@ -126,7 +126,7 @@ const Page: React.FC = () => {
           isLoading={isLoading}
           onRefresh={handleRefresh}
         />
-      </div>
+      </main>
 
       <QuestionDetail item={viewing} open={Boolean(viewing)} onClose={() => setViewing(null)} />
 

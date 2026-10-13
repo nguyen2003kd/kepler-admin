@@ -144,11 +144,11 @@ const Page: React.FC = () => {
   return (
     <>
       <Header title="Dịch vụ" />
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <main className="flex-1 space-y-6 p-6">
         {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Quản lý Dịch vụ</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Quản lý Dịch vụ</h2>
             <p className="text-muted-foreground">
               Quản lý danh sách dịch vụ của website
             </p>
@@ -172,7 +172,7 @@ const Page: React.FC = () => {
           isLoading={isLoading}
           onRefresh={handleRefresh}
         />
-      </div>
+      </main>
 
       {/* Modals */}
       <ServiceCreate

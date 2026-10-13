@@ -90,6 +90,11 @@ export const APP_ROUTES: AppRouteConfig[] = [
     sidebar: { label: 'Danh mục', icon: 'category' },
   },
   {
+    path: '/page-management',
+    access: { resources: ['page'] },
+    sidebar: { label: 'Quản lý trang', icon: 'page' },
+  },
+  {
     path: '/question',
     sidebar: {
       label: 'Câu Hỏi Tuyển Dụng',
@@ -201,22 +206,17 @@ export const APP_ROUTES: AppRouteConfig[] = [
     sidebar: { label: 'Dịch vụ', icon: 'service' },
   },
   {
-    path: '/department',
-    access: { resources: ['department'] },
-    sidebar: { label: 'Phòng ban / Khối', icon: 'organizational-chart' },
-  },
-  {
-    path: '/page-management',
-    access: { resources: ['page'] },
-    sidebar: { label: 'Quản lý trang', icon: 'page' },
-  },
-  {
     path: '/property',
     access: {
       resources: ['property', 'news'],
       requiredActions: ['view', 'view_detail', 'create', 'create_post_info', 'update'],
     },
     sidebar: { label: 'Bất động sản', icon: 'service' },
+  },
+  {
+    path: '/department',
+    access: { resources: ['department'] },
+    sidebar: { label: 'Phòng ban / Khối', icon: 'organizational-chart' },
   },
 
   // {

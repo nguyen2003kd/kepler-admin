@@ -33,7 +33,6 @@ export function OverviewChart({ data, isLoading }: OverviewChartProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Eye className="h-5 w-5" />
           Tổng quan lượt xem
         </CardTitle>
         <CardDescription>

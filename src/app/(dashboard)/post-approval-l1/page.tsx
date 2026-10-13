@@ -4,14 +4,13 @@ import React from 'react'
 import Link from 'next/link'
 import { Header } from '@/components/layout/header'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PostApprovalResultStatus, PostStatus } from '@/api/models'
-import { CheckCircle2, Clock3, Eye, History, Search, XCircle, MoreHorizontal } from 'lucide-react'
+import { CheckCircle2, Eye, History, Search, XCircle, MoreHorizontal } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useApprovalL1 } from './hooks'
 import { formatApprovalDateTime, type ApprovalTabKey } from '@/types/post-approval'
@@ -49,10 +48,10 @@ export default function NewsApprovalL1Page() {
     <div>
       <Header title="Duyệt bài cấp 1" />
 
-      <main className="container mx-auto p-4 md:p-6 space-y-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Duyệt bài cấp 1</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Duyệt bài cấp 1</h2>
             <p className="text-muted-foreground">Reviewer duyệt bài từ trạng thái chờ duyệt L1 lên L2 hoặc từ chối.</p>
           </div>
 
@@ -66,13 +65,10 @@ export default function NewsApprovalL1Page() {
           </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock3 className="h-5 w-5 text-blue-600" />
-              Danh sách bài viết L1
-            </CardTitle>
-            <CardDescription>Có {totalCount} bài viết đang ở trạng thái chờ duyệt L1.</CardDescription>
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm text-muted-foreground">Có {totalCount} bài viết đang ở trạng thái chờ duyệt L1.</p>
+          </div>
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ApprovalTabKey)} className="mt-2">
               <TabsList>
                 <TabsTrigger value="pending">Chờ duyệt</TabsTrigger>
@@ -89,40 +85,37 @@ export default function NewsApprovalL1Page() {
                 className="pl-10"
               />
             </div>
-          </CardHeader>
-
-          <CardContent>
             <div className="rounded-md border overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-slate-700">
-                  <tr>
-                    <th className="text-left p-3 font-semibold">Mã</th>
-                    <th className="text-left p-3 font-semibold">Tiêu đề</th>
-                    <th className="text-left p-3 font-semibold">Trạng thái</th>
-                    <th className="text-left p-3 font-semibold">Ngày tạo</th>
-                    <th className="text-right p-3 font-semibold">Thao tác</th>
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="h-10 text-left px-4 font-medium">Mã</th>
+                    <th className="h-10 text-left px-4 font-medium">Tiêu đề</th>
+                    <th className="h-10 text-left px-4 font-medium">Trạng thái</th>
+                    <th className="h-10 text-left px-4 font-medium">Ngày tạo</th>
+                    <th className="h-10 text-right px-4 font-medium">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   {isLoading ? (
                     <tr>
-                      <td colSpan={5} className="p-8 text-center text-gray-500">Đang tải dữ liệu...</td>
+                      <td colSpan={5} className="h-32 text-center text-muted-foreground">Đang tải dữ liệu...</td>
                     </tr>
                   ) : posts.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-8 text-center text-gray-500">Không có bài viết phù hợp</td>
+                      <td colSpan={5} className="h-32 text-center text-muted-foreground">Không có bài viết phù hợp</td>
                     </tr>
                   ) : (
                     posts.map((post) => (
                       <tr
                         key={post.id}
-                        className={`border-t ${activePost?.id === post.id ? 'bg-blue-50' : ''}`}
+                        className={`border-b transition-colors hover:bg-muted/50 ${activePost?.id === post.id ? 'bg-blue-50' : ''}`}
                       >
-                        <td className="p-3 font-medium">{post.code || '-'}</td>
-                        <td className="p-3 min-w-[280px]"><p className="font-medium text-slate-900">{post.title || 'Không có tiêu đề'}</p></td>
-                        <td className="p-3">{getStatusBadge(post.status)}</td>
-                        <td className="p-3">{formatApprovalDateTime(post.created_at)}</td>
-                        <td className="p-3 text-right">
+                        <td className="px-4 py-3 font-medium">{post.code || '-'}</td>
+                        <td className="px-4 py-3 min-w-[280px]"><p className="font-medium">{post.title || 'Không có tiêu đề'}</p></td>
+                        <td className="px-4 py-3">{getStatusBadge(post.status)}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{formatApprovalDateTime(post.created_at)}</td>
+                        <td className="px-4 py-3 text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -181,8 +174,7 @@ export default function NewsApprovalL1Page() {
                 <p className="text-sm text-gray-500">Đã tải hết dữ liệu</p>
               )}
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </main>
 
       {/* Result Dialog */}
@@ -223,12 +215,12 @@ export default function NewsApprovalL1Page() {
           </DialogHeader>
           <div className="max-h-[420px] overflow-auto rounded-md border">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="p-3 text-left font-semibold">Cấp duyệt</th>
-                  <th className="p-3 text-left font-semibold">Hành động</th>
-                  <th className="p-3 text-left font-semibold">Ghi chú</th>
-                  <th className="p-3 text-left font-semibold">Thời gian</th>
+              <thead>
+                <tr className="border-b bg-muted/50">
+                  <th className="h-10 px-3 text-left font-medium">Cấp duyệt</th>
+                  <th className="h-10 px-3 text-left font-medium">Hành động</th>
+                  <th className="h-10 px-3 text-left font-medium">Ghi chú</th>
+                  <th className="h-10 px-3 text-left font-medium">Thời gian</th>
                 </tr>
               </thead>
               <tbody>

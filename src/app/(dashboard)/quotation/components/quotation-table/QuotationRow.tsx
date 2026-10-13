@@ -69,13 +69,13 @@ export const QuotationRow: React.FC<QuotationRowProps> = ({
     currentStatusName === "rejected" ||
     currentStatusName === "completed";
   return (
-    <tr className="border-t border-gray-100 transition-all duration-200 hover:bg-blue-50/50 group">
-      <td className="px-5 py-5 align-top">
+    <tr className="border-b transition-colors hover:bg-muted/50 group">
+      <td className="px-4 py-3 align-top">
         <div className="font-semibold text-gray-900">
           {getString(row, "name")}
         </div>
       </td>
-      <td className="px-5 py-5 align-top">
+      <td className="px-4 py-3 align-top">
         <div className="flex flex-col gap-1">
           <div className="text-sm text-gray-700 flex items-center gap-2">
             <span className="text-xs opacity-70">📧</span>
@@ -87,21 +87,21 @@ export const QuotationRow: React.FC<QuotationRowProps> = ({
           </div>
         </div>
       </td>
-      <td className="px-5 py-5 align-top">
+      <td className="px-4 py-3 align-top">
         <div className="text-sm font-medium text-gray-700">
           {getString(row, "organization_name") || (
             <span className="text-gray-400 italic">--</span>
           )}
         </div>
       </td>
-      <td className="px-5 py-5 align-top">
+      <td className="px-4 py-3 align-top">
         <div className="text-sm text-gray-800 bg-gray-50 px-2 py-1 rounded border border-gray-100 inline-block max-w-[200px] truncate">
           {getString(row, "contact_person") || (
             <span className="text-gray-400 italic">--</span>
           )}
         </div>
       </td>
-      <td className="px-5 py-5 align-top">
+      <td className="px-4 py-3 align-top">
         <div className="flex flex-col gap-2">
           <div className="relative">
             <select
@@ -157,7 +157,7 @@ export const QuotationRow: React.FC<QuotationRowProps> = ({
             )}
         </span>
       </td> */}
-      <td className="px-5 py-5 align-top text-center">
+      <td className="px-4 py-3 align-top text-right">
         <div className="flex items-center justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

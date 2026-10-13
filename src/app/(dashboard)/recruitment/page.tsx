@@ -225,11 +225,11 @@ const Page: React.FC = () => {
   return (
     <>
       <Header title="Tin tuyển dụng" />
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <main className="flex-1 space-y-6 p-6">
         {/* Page header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">
+            <h2 className="text-2xl font-bold tracking-tight">
               Quản lý Tin tuyển dụng
             </h2>
             <p className="text-muted-foreground">
@@ -248,7 +248,7 @@ const Page: React.FC = () => {
         </div>
 
         {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-gradient-to-r from-slate-50 to-white rounded-xl border border-gray-100 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex flex-1 items-center gap-3 w-full sm:w-auto">
             <div className="relative flex-1 sm:flex-none">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -256,12 +256,12 @@ const Page: React.FC = () => {
                 placeholder="Tìm kiếm vị trí, địa điểm..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full sm:w-80 pl-10 bg-white border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all rounded-lg"
+              className="w-full sm:w-80 pl-10"
               />
             </div>
             <Badge
               variant="secondary"
-              className="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 font-medium whitespace-nowrap"
+              className="px-3 py-1 font-medium whitespace-nowrap"
             >
               {filteredRecruitments.length} dòng
             </Badge>
@@ -272,7 +272,7 @@ const Page: React.FC = () => {
               size="sm"
               onClick={handleRefresh}
               disabled={isLoading}
-              className="bg-white hover:bg-gray-50 border-gray-200 text-gray-700 gap-2 shadow-sm"
+              className="gap-2"
             >
               <RefreshCw
                 className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
@@ -283,34 +283,34 @@ const Page: React.FC = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-lg overflow-hidden">
+        <div className="rounded-md border overflow-hidden">
           <div className="max-h-[520px] overflow-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gradient-to-r from-slate-800 to-slate-700 hover:from-slate-800 hover:to-slate-700 border-0">
-                  <TableHead className="w-12 text-white font-semibold tracking-wide py-4 px-3" />
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                <TableRow className="bg-muted/50 hover:bg-muted/50 border-0">
+                  <TableHead className="w-12 font-medium py-3 px-3" />
+                  <TableHead className="font-medium py-3 px-4">
                     Vị trí tuyển dụng
                   </TableHead>
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                  <TableHead className="font-medium py-3 px-4">
                     Địa điểm
                   </TableHead>
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                  <TableHead className="font-medium py-3 px-4">
                     Mức lương
                   </TableHead>
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                  <TableHead className="font-medium py-3 px-4">
                     Số lượng
                   </TableHead>
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                  <TableHead className="font-medium py-3 px-4">
                     Hạn nộp
                   </TableHead>
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                  <TableHead className="font-medium py-3 px-4">
                     Trạng thái
                   </TableHead>
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                  <TableHead className="font-medium py-3 px-4">
                     Ngày tạo
                   </TableHead>
-                  <TableHead className="text-white font-semibold tracking-wide py-4 px-4">
+                  <TableHead className="font-medium py-3 px-4">
                     Thao tác
                   </TableHead>
                 </TableRow>
@@ -358,7 +358,7 @@ const Page: React.FC = () => {
             </Table>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Modals — recruitment */}
       <RecruitmentCreate

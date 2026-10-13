@@ -129,13 +129,13 @@ export default function QuotationPage() {
   return (
     <>
       <Header title="Quản lý Báo giá" />
-      <div className="p-6 bg-gray-50 min-h-screen">
+      <main className="flex-1 space-y-6 p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <FileText className="text-cyan-600" />
             Quản lý Báo giá
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Quản lý và phản hồi các yêu cầu báo giá từ khách hàng
           </p>
 
@@ -259,7 +259,7 @@ export default function QuotationPage() {
             />
           )}
         </div>
-      </div>
+      </main>
     </>
   );
 }

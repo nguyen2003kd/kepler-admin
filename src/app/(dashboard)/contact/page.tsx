@@ -1,13 +1,6 @@
 "use client";
 
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 import { DataTable } from "@/components/shared/data-table";
 import {
@@ -110,11 +103,11 @@ export default function ContactPage() {
   return (
     <div>
       <Header title="Quản lý Liên hệ" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">
+              <h2 className="text-2xl font-bold tracking-tight">
                 Quản lý Liên hệ
               </h2>
               <p className="text-muted-foreground">
@@ -124,13 +117,7 @@ export default function ContactPage() {
           </div>
 
           {/* Contacts DataTable */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Danh sách liên hệ</CardTitle>
-              <CardDescription>Tổng cộng: {totalCount} liên hệ</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <DataTable
+          <DataTable
                 columns={columns}
                 data={contacts}
                 searchPlaceholder="Tìm kiếm theo tên, email hoặc điện thoại..."
@@ -156,9 +143,7 @@ export default function ContactPage() {
                     </Select>
                   </div>
                 }
-              />
-            </CardContent>
-          </Card>
+          />
         </div>
       </main>
 

@@ -265,12 +265,12 @@ export default function ServicesPageContent() {
   return (
     <div>
       <Header title="Quản lý dịch vụ" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-6">
           {/* Header */}
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Quản lý dịch vụ</h1>
+              <h1 className="text-2xl font-bold tracking-tight">Quản lý dịch vụ</h1>
               <p className="text-gray-600 mt-2">
                 Quản lý toàn bộ dịch vụ kiểm định và thử nghiệm chất lượng
               </p>

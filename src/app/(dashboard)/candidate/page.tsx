@@ -246,9 +246,9 @@ const Page: React.FC = () => {
   return (
     <>
       <Header title="Ứng viên" />
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-3xl font-bold tracking-tight">Quản lý Ứng viên</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Quản lý Ứng viên</h2>
           <Can I="export_excel" a="candidate">
             <Button onClick={handleExport} disabled={isExporting} className="gap-2">
               {isExporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
@@ -271,7 +271,7 @@ const Page: React.FC = () => {
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
         />
-      </div>
+      </main>
 
       <CandidateDetail
         candidate={viewingCandidate}

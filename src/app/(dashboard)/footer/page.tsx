@@ -99,7 +99,7 @@ export default function FooterPage() {
   return (
     <>
       <Header title="Quản lý Footer" />
-      <div className="space-y-6">
+      <main className="flex-1 space-y-6 p-6">
         <Card>
           <CardHeader className="border-b">
             <div className="flex items-center justify-between px-3">
@@ -142,7 +142,7 @@ export default function FooterPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </main>
 
       <ConfirmModal />
     </>

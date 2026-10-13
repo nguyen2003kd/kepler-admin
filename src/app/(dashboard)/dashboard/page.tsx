@@ -21,12 +21,12 @@ export default function DashboardPage() {
   return (
     <div>
       <Header title="Dashboard" />
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="flex-1 space-y-6 p-6">
         <div className="space-y-8">
           {/* Page Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
               <p className="text-muted-foreground">
                 Welcome back! Here&apos;s an overview of your business.
               </p>
