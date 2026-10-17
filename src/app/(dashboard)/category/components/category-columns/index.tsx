@@ -18,10 +18,8 @@ import {
   FolderTree,
   Plus,
   ExternalLink,
-  FileText,
 } from "lucide-react";
 import { DynamicIcon } from "@/components/shared/lucide-icon-picker";
-import Link from "next/link";
 import type { AnyAbility } from "@casl/ability";
 import type { Category, CategoryColumnsProps } from "@/types/category";
 
@@ -214,17 +212,6 @@ export const createCategoryColumns = ({
               <DropdownMenuItem onClick={() => onAddChild(category)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Thêm danh mục con
-              </DropdownMenuItem>
-            )}
-            {ability.can('view_post', 'category') && (
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/category/${category.id}/posts`}
-                  className="flex items-center"
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  Xem bài viết
-                </Link>
               </DropdownMenuItem>
             )}
             {ability.can('delete', 'category') && (

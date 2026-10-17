@@ -66,18 +66,3 @@ export type PostPage = {
   rows: News[];
 };
 
-export type PageInfo = {
-  id: string;
-  name: string;
-};
-
-export type PostCategoryItem = {
-  id: string;
-  post_id: string;
-  category_id: string;
-  page_id: string;
-  position: number;
-  created_at: string;
-  post: News;
-  page?: PageInfo;
-};
